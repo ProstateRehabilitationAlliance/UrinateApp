@@ -5,12 +5,11 @@ import {
   StyleSheet,
   Text,
   View,
-  Alert
 } from 'react-native';
-// import { requestUrl } from '../../Network/url';//接口url
-// import { RegExp } from '../../Network/RegExp';//正则
-// import { Global } from '../../common/Global';
-// import px2dp from "../../common/Tool";
+//   import { requestUrl } from '../../Network/url';//接口url
+//   import { RegExp } from '../../Network/RegExp';//正则
+//   import { Global } from '../../common/Global';
+//   import px2dp from "../../common/Tool";
 export default class App extends Component {
   // static navigationOptions = {
   //   header: null,
@@ -37,6 +36,7 @@ export default class App extends Component {
 
     return (<View style={styles.container} >
 
+      <Text>我的</Text>
     </View>);
   }
 }
