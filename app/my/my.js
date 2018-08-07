@@ -6,14 +6,8 @@ import {
   Text,
   View,
 } from 'react-native';
-//   import { requestUrl } from '../../Network/url';//接口url
-//   import { RegExp } from '../../Network/RegExp';//正则
-//   import { Global } from '../../common/Global';
-//   import px2dp from "../../common/Tool";
+
 export default class App extends Component {
-  // static navigationOptions = {
-  //   header: null,
-  // };
   constructor(props) {
     super(props);
     this.state = {

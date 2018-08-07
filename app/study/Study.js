@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 
 export default class Home extends Component {
- 
     constructor(props) {
         super(props);
         this.state = {
@@ -32,7 +31,7 @@ export default class Home extends Component {
         // const {navigate, goBack} = this.props.navigation;
 
         return (<View style={styles.container} >
-            <Text>首页</Text>
+            <Text>直播</Text>
             <TouchableOpacity activeOpacity={.8}
                 onPress={() => this.click()}>
                 <Text>点击</Text>
