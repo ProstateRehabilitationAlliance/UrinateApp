@@ -35,8 +35,8 @@ export default class SignIn extends Component {
         const { navigate, goBack } = this.props.navigation;
         return (
             <ScrollView
-                keyboardShouldPersistTaps={'handled'}
                 style={styles.container}
+                keyboardShouldPersistTaps={'handled'}
             >
                 <StatusBar
                     animated={true}//是否动画
@@ -349,7 +349,6 @@ const styles = StyleSheet.create({
         position: 'relative',
         flex: 1,
         backgroundColor: '#fff',
-        paddingBottom: global.TabBar,
     },
     // logo
     logoContent: {

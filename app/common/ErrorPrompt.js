@@ -1,3 +1,4 @@
+// 显示3秒 提示框 组件
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { global } from "../utils/Global";

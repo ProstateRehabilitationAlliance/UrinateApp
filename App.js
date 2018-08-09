@@ -37,7 +37,11 @@ export default class signIn extends Component {
                     </TouchableOpacity>
                 </View> */}
         return (
-            <ScrollView style={styles.container}>
+            <ScrollView
+                style={styles.container}
+                alwaysBounceVertical={true}// ios不满一屏时弹性
+                bounces={false}// ios弹性
+            >
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏
@@ -45,7 +49,8 @@ export default class signIn extends Component {
                     translucent={false}//android 设置状态栏是否为透明
                     showHideTransition="fade"//IOS状态栏改变时动画 fade:默认 slide
                     networkActivityIndicatorVisible={this.state.isLoading}//IOS设定网络活动指示器(就是那个菊花)是否显示在状态栏。
-                    statusBarStyle={"default"}//ios:白底黑字  android:黑底白字
+                    statusBarStyle={"default"}//状态栏样式 default	默认（IOS为白底黑字、Android为黑底白字）
+                    barStyle={"light-content"}// 状态栏文本的颜色。
                 />
                 <LinearGradient
                     start={{ x: 0.0, y: 0.25 }} end={{ x: 0.5, y: 1.0 }}

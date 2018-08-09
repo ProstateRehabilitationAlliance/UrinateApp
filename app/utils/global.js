@@ -15,7 +15,7 @@ import { isIphoneX } from 'react-native-iphone-x-helper';
 let { height, width } = Dimensions.get('window');
 export let global = {
     Token: '',// token
-    IOS: (Platform.OS === 'ios'),// 系统是iOS
+    IOS: Platform.OS === 'ios' ? true : false,// 系统是iOS
     Android: (Platform.OS === 'android'),// 系统是安卓
     SCREEN_WIDTH: width,// 获取屏幕宽度
     SCREEN_HEIGHT: height,// 获取屏幕高度

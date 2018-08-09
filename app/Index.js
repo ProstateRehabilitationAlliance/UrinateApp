@@ -22,10 +22,13 @@ import SignIn from "./sign/SignIn";// 登录
 import SignCodeIn from "./sign/SignCodeIn";// 验证码登录
 import ForgetPassword from "./sign/ForgetPassword";// 忘记密码
 
+import Approve from "./approve/Approve";// 认证页面
+
 import IndexTab from "./home/Home";// 工作台
 import ContactTab from "./contact/Contact";// 通讯录
 import StudyTab from "./study/Study";// 直播课
 import MyTab from "./my/My";// 个人中心
+import LookImg from "./common/LookImg";// 查看大图
 // 页面引入-end
 
 // tab-start
@@ -129,6 +132,9 @@ export default createSwitchNavigator(
         ForgetPassword: {
             screen: ForgetPassword,//忘记密码
         },
+        Approve: {
+            screen: Approve,//认证页面
+        },
         Home: {
             screen: MainView,//工作台
         },
@@ -141,7 +147,10 @@ export default createSwitchNavigator(
         My: {
             screen: MyTab,// 个人中心
         },
+        LookImg: {
+            screen: LookImg,// 查看大图
+        },
     }, {
-        initialRouteName: "Home",
+        initialRouteName: "Approve",
     }
 );

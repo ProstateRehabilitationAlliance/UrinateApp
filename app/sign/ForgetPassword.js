@@ -40,10 +40,7 @@ export default class ForgetPassword extends Component {
     render() {
         const { navigate, goBack } = this.props.navigation;
         return (
-            <ScrollView
-                keyboardShouldPersistTaps={'handled'}
-                style={styles.container}
-            >
+            <View style={styles.container}>
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏
@@ -67,157 +64,162 @@ export default class ForgetPassword extends Component {
                     <Text style={styles.navTitle}>安全认证</Text>
                 </View>
                 {/* 导航box-end */}
-                <View style={styles.inputContent}>
-                    {/* 手机号start */}
-                    <View style={[styles.inputItem, { borderBottomWidth: global.Pixel }, this.state.doctorPhoneReg ? null : styles.errorStyle]}>
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder={'请输入手机号'}
-                            placeholderTextColor={global.Colors.placeholder}
-                            onChangeText={(text) => this.setState({ doctorPhone: text })}
-                            defaultValue={this.state.doctorPhone}
-                            underlineColorAndroid={'transparent'}
-                            keyboardType={'numeric'}
-                            onFocus={this.doctorPhoneFocus.bind(this)}
-                            onBlur={this.doctorPhoneBlur.bind(this)}
-                            maxLength={11}
-                        />
-                    </View>
-                    {/* 手机号- end */}
-                    {/* 验证码- start */}
-                    <View style={[styles.inputItem, this.state.smsCodeReg ? null : styles.errorStyle]}>
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder={'请输入验证码'}
-                            placeholderTextColor={global.Colors.placeholder}
-                            onChangeText={(text) => this.setState({ smsCode: text })}
-                            defaultValue={this.state.smsCode}
-                            underlineColorAndroid={'transparent'}
-                            keyboardType={'numeric'}
-                            onFocus={this.smsCodeFocus.bind(this)}
-                            onBlur={this.smsCodeBlur.bind(this)}
-                            maxLength={6}
-                        />
-                        <View style={styles.isolationLine}></View>
-                        <CountDownButton
-                            style={{
-                                // paddingRight: global.px2dp(10),
-                                // paddingLeft: global.px2dp(10),
-                            }}
-                            textStyle={{
-                                fontSize: global.px2dp(15),
-                                color: global.Colors.color,
-                            }}
-                            timerCount={120}
-                            timerTitle={this.state.TimingText}
-                            enable={true}
-                            onClick={(shouldStartCounting) => {
-                                if (!this.state.doctorPhone) {
-                                    this.setState({
-                                        ErrorText: '请输入手机号',
-                                        doctorPhoneReg: false,
-                                        ErrorPrompt: false,
-                                    })
-                                    clearTimeout(this.timer);
-                                    this.timer = setTimeout(() => {
-                                        this.setState({
-                                            ErrorPrompt: true,
-                                        })
-                                    }, global.TimingCount)
-                                    shouldStartCounting(false);
-                                } else if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
-                                    this.setState({
-                                        ErrorText: '手机号码格式不正确',
-                                        doctorPhoneReg: false,
-                                        ErrorPrompt: false,
-                                    })
-                                    clearTimeout(this.timer);
-                                    this.timer = setTimeout(() => {
-                                        this.setState({
-                                            ErrorPrompt: true,
-                                        })
-                                    }, global.TimingCount)
-                                    shouldStartCounting(false);
-                                } else {
-                                    this.getPasswordSms();
-                                    shouldStartCounting(true);
-                                }
-                            }}
-                            timerEnd={() => {
-                                this.setState({
-                                    TimingText: '重新获取'
-                                })
-                            }} />
-                    </View>
-                    {/* 验证码- end */}
+                <ScrollView
+                    keyboardShouldPersistTaps={'handled'}
+                >
 
-                </View>
-                <View style={styles.inputContent}>
-                    {/* 密码 - start */}
-                    <View style={[styles.inputItem, { borderBottomWidth: global.Pixel }, this.state.doctorPasswordReg ? null : styles.errorStyle]}>
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder={'请输入密码6-10字符（数字+字母）'}
-                            placeholderTextColor={global.Colors.placeholder}
-                            onChangeText={(text) => this.setState({ doctorPassword: text })}
-                            underlineColorAndroid={'transparent'}
-                            keyboardType={'default'}
-                            secureTextEntry={this.state.isEyes ? true : false}
-                            onFocus={this.doctorPasswordFocus.bind(this)}
-                            onBlur={this.doctorPasswordBlur.bind(this)}
-                        />
-                        <TouchableOpacity
-                            activeOpacity={.8}
-                            onPress={() =>
-                                this.setState({
-                                    isEyes: !this.state.isEyes
-                                })
-                            }
-                            style={styles.eyesBtn}
-                        >
-                            <Image
-                                style={styles.eyeImg}
-                                source={this.state.isEyes ? require('../images/eyes_no.png') : require('../images/eyes_yes.png')}
+                    <View style={styles.inputContent}>
+                        {/* 手机号start */}
+                        <View style={[styles.inputItem, { borderBottomWidth: global.Pixel }, this.state.doctorPhoneReg ? null : styles.errorStyle]}>
+                            <TextInput
+                                style={styles.textInput}
+                                placeholder={'请输入手机号'}
+                                placeholderTextColor={global.Colors.placeholder}
+                                onChangeText={(text) => this.setState({ doctorPhone: text })}
+                                defaultValue={this.state.doctorPhone}
+                                underlineColorAndroid={'transparent'}
+                                keyboardType={'numeric'}
+                                onFocus={this.doctorPhoneFocus.bind(this)}
+                                onBlur={this.doctorPhoneBlur.bind(this)}
+                                maxLength={11}
                             />
-                        </TouchableOpacity>
-                    </View>
-                    {/* 密码 - end */}
-                    {/* 确认密码 - start */}
-                    <View style={[styles.inputItem, this.state.confirmPasswordReg ? null : styles.errorStyle]}>
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder={'请再次输入密码'}
-                            placeholderTextColor={global.Colors.placeholder}
-                            onChangeText={(text) => this.setState({ confirmPassword: text })}
-                            underlineColorAndroid={'transparent'}
-                            keyboardType={'default'}
-                            secureTextEntry={this.state.confirmEyes ? true : false}
-                            onFocus={this.confirmPasswordFocus.bind(this)}
-                            onBlur={this.confirmPasswordBlur.bind(this)}
-                        />
-                        <TouchableOpacity
-                            activeOpacity={.8}
-                            onPress={() =>
-                                this.setState({
-                                    confirmEyes: !this.state.confirmEyes
-                                })
-                            }
-                            style={styles.eyesBtn}
-                        >
-                            <Image
-                                style={styles.eyeImg}
-                                source={this.state.confirmEyes ? require('../images/eyes_no.png') : require('../images/eyes_yes.png')}
+                        </View>
+                        {/* 手机号- end */}
+                        {/* 验证码- start */}
+                        <View style={[styles.inputItem, this.state.smsCodeReg ? null : styles.errorStyle]}>
+                            <TextInput
+                                style={styles.textInput}
+                                placeholder={'请输入验证码'}
+                                placeholderTextColor={global.Colors.placeholder}
+                                onChangeText={(text) => this.setState({ smsCode: text })}
+                                defaultValue={this.state.smsCode}
+                                underlineColorAndroid={'transparent'}
+                                keyboardType={'numeric'}
+                                onFocus={this.smsCodeFocus.bind(this)}
+                                onBlur={this.smsCodeBlur.bind(this)}
+                                maxLength={6}
                             />
-                        </TouchableOpacity>
+                            <View style={styles.isolationLine}></View>
+                            <CountDownButton
+                                style={{
+                                    // paddingRight: global.px2dp(10),
+                                    // paddingLeft: global.px2dp(10),
+                                }}
+                                textStyle={{
+                                    fontSize: global.px2dp(15),
+                                    color: global.Colors.color,
+                                }}
+                                timerCount={120}
+                                timerTitle={this.state.TimingText}
+                                enable={true}
+                                onClick={(shouldStartCounting) => {
+                                    if (!this.state.doctorPhone) {
+                                        this.setState({
+                                            ErrorText: '请输入手机号',
+                                            doctorPhoneReg: false,
+                                            ErrorPrompt: false,
+                                        })
+                                        clearTimeout(this.timer);
+                                        this.timer = setTimeout(() => {
+                                            this.setState({
+                                                ErrorPrompt: true,
+                                            })
+                                        }, global.TimingCount)
+                                        shouldStartCounting(false);
+                                    } else if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
+                                        this.setState({
+                                            ErrorText: '手机号码格式不正确',
+                                            doctorPhoneReg: false,
+                                            ErrorPrompt: false,
+                                        })
+                                        clearTimeout(this.timer);
+                                        this.timer = setTimeout(() => {
+                                            this.setState({
+                                                ErrorPrompt: true,
+                                            })
+                                        }, global.TimingCount)
+                                        shouldStartCounting(false);
+                                    } else {
+                                        this.getPasswordSms();
+                                        shouldStartCounting(true);
+                                    }
+                                }}
+                                timerEnd={() => {
+                                    this.setState({
+                                        TimingText: '重新获取'
+                                    })
+                                }} />
+                        </View>
+                        {/* 验证码- end */}
+
                     </View>
-                    {/* 确认密码 - end */}
-                </View>
-                {/* 提交按钮box */}
-                <View style={styles.btnBox}>
-                    <Button text="完成" click={this.passwordReset.bind(this)} />
-                </View>
-                {this.state.ErrorPrompt ? null : <ErrorPrompt text={this.state.ErrorText} />}
-            </ScrollView>
+                    <View style={styles.inputContent}>
+                        {/* 密码 - start */}
+                        <View style={[styles.inputItem, { borderBottomWidth: global.Pixel }, this.state.doctorPasswordReg ? null : styles.errorStyle]}>
+                            <TextInput
+                                style={styles.textInput}
+                                placeholder={'请输入密码6-10字符（数字+字母）'}
+                                placeholderTextColor={global.Colors.placeholder}
+                                onChangeText={(text) => this.setState({ doctorPassword: text })}
+                                underlineColorAndroid={'transparent'}
+                                keyboardType={'default'}
+                                secureTextEntry={this.state.isEyes ? true : false}
+                                onFocus={this.doctorPasswordFocus.bind(this)}
+                                onBlur={this.doctorPasswordBlur.bind(this)}
+                            />
+                            <TouchableOpacity
+                                activeOpacity={.8}
+                                onPress={() =>
+                                    this.setState({
+                                        isEyes: !this.state.isEyes
+                                    })
+                                }
+                                style={styles.eyesBtn}
+                            >
+                                <Image
+                                    style={styles.eyeImg}
+                                    source={this.state.isEyes ? require('../images/eyes_no.png') : require('../images/eyes_yes.png')}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        {/* 密码 - end */}
+                        {/* 确认密码 - start */}
+                        <View style={[styles.inputItem, this.state.confirmPasswordReg ? null : styles.errorStyle]}>
+                            <TextInput
+                                style={styles.textInput}
+                                placeholder={'请再次输入密码'}
+                                placeholderTextColor={global.Colors.placeholder}
+                                onChangeText={(text) => this.setState({ confirmPassword: text })}
+                                underlineColorAndroid={'transparent'}
+                                keyboardType={'default'}
+                                secureTextEntry={this.state.confirmEyes ? true : false}
+                                onFocus={this.confirmPasswordFocus.bind(this)}
+                                onBlur={this.confirmPasswordBlur.bind(this)}
+                            />
+                            <TouchableOpacity
+                                activeOpacity={.8}
+                                onPress={() =>
+                                    this.setState({
+                                        confirmEyes: !this.state.confirmEyes
+                                    })
+                                }
+                                style={styles.eyesBtn}
+                            >
+                                <Image
+                                    style={styles.eyeImg}
+                                    source={this.state.confirmEyes ? require('../images/eyes_no.png') : require('../images/eyes_yes.png')}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        {/* 确认密码 - end */}
+                    </View>
+                    {/* 提交按钮box */}
+                    <View style={styles.btnBox}>
+                        <Button text="完成" click={this.passwordReset.bind(this)} />
+                    </View>
+                    {this.state.ErrorPrompt ? null : <ErrorPrompt text={this.state.ErrorText} />}
+                </ScrollView>
+            </View>
         );
     }
     // 账号焦点
@@ -263,7 +265,7 @@ export default class ForgetPassword extends Component {
         fetch(requestUrl.passwordSms + '?passwordPhone=' + this.state.doctorPhone, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',                     "token": global.Token,
+                'Content-Type': 'multipart/form-data', "token": global.Token,
             },
         })
             .then((response) => response.json())
@@ -557,7 +559,7 @@ export default class ForgetPassword extends Component {
             fetch(requestUrl.passwordReset, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',                     "token": global.Token,
+                    'Content-Type': 'multipart/form-data', "token": global.Token,
                 },
                 body: formData,
             })

@@ -4,7 +4,7 @@ import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import LinearGradient from 'react-native-linear-gradient';
-import { BoxShadow } from 'react-native-shadow'
+import { BoxShadow } from 'react-native-shadow';
 export default class Home extends Component {
     constructor(props) {
         super(props);
