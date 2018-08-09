@@ -47,25 +47,7 @@ export default class Start extends Component {
                         });
             } else {
                 // 获取认证信息
-                fetch(requestUrl.getAuthentication, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        "token": global.Token,
-                    },
-                }).then((response) => response.json())
-                    .then((responseData) => {
-                        console.log('responseData', responseData);
-                        if (responseData.code == 40001) {
-                            this.props.navigation.navigate("SignIn");
-                        } else {
-
-                        }
-                    })
-                    .catch(
-                        (error) => {
-                            console.log('error', error);
-                        });
+                this.props.navigation.navigate("SignIn");
             }
         })
     }
