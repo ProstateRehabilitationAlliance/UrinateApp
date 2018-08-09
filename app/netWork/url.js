@@ -8,7 +8,8 @@ export let requestUrl = {
     "loginSms": IP + "/api-user/doctor/loginSms",// 登陆获取短信验证码
     "passwordSms": IP + "/api-user/doctor/passwordSms",// 修改密码获取短信验证码
     "passwordReset": IP + "/api-user/doctor/passwordReset",// 重设 登陆密码
-    // "login": IP + "login",// 注册接口
+
+    "getAuthentication": IP + "/api-user/doctor/sign/get",// 查询认证信息
     // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
 };

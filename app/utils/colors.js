@@ -4,6 +4,7 @@ export default {
     yesColor: "#2c6cb5",
     noColor: "#888888",
     text333: "#333333",
+    text555: "#555555",
     text666: "#666666",
     text777: "#777777",
     text999: "#999999",

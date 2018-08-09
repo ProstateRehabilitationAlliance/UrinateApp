@@ -10,6 +10,8 @@
     "react": "16.4.1",
     "react-native": "0.55.4",
     "react-native-iphone-x-helper": "^1.0.3",
+    "react-native-linear-gradient": "^2.4.0",
+    "react-native-smscode-count-down": "^0.1.14",
     "react-navigation": "^2.11.2"
   },
   "devDependencies": {

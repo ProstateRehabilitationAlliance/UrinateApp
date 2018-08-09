@@ -5,15 +5,17 @@ import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";// 错误格式提示
+import { Storage } from "../utils/AsyncStorage";
 export default class SignIn extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isLoading: false,// 加载层
             isEyes: true,// 是否显示密码 true不显示 false显示
-            phoneReg: true,// 手机号是否符合规则
             ErrorPrompt: true,// 错误提示是否显示
             ErrorText: "",// 错误提示文字
+            doctorPhoneReg: true,// 手机号是否符合规则
+            doctorPasswordReg: true,// 密码是否符合规则
             doctorPhoneFocus: false,// 账号焦点
             doctorPasswordFocus: false,// 密码焦点
             doctorPhone: '',// 登录账号
@@ -58,7 +60,7 @@ export default class SignIn extends Component {
                         source={require('../images/textLogo.png')}
                     />
                     {/* 单纯输入框 */}
-                    <View style={[styles.inputItem, this.state.doctorPhoneFocus ? styles.doctorPhoneItemFocus : null, this.state.phoneReg ? null : styles.errorStyle]}>
+                    <View style={[styles.inputItem, this.state.doctorPhoneFocus ? styles.doctorPhoneItemFocus : null, this.state.doctorPhoneReg ? null : styles.errorStyle]}>
                         {this.state.doctorPhoneFocus ? <Text style={styles.inputTitle}>手机号</Text> : null}
                         <View style={styles.inputBox}>
                             <TextInput
@@ -90,7 +92,7 @@ export default class SignIn extends Component {
                         </View>
                     </View>
                     {/* 密码输入 */}
-                    <View style={[styles.inputItem, styles.passwordItem, this.state.doctorPasswordFocus ? styles.passwordItemFocus : null]}>
+                    <View style={[styles.inputItem, styles.passwordItem, this.state.doctorPasswordFocus ? styles.passwordItemFocus : null, this.state.doctorPasswordReg ? null : styles.errorStyle]}>
                         {this.state.doctorPasswordFocus ? <Text style={styles.inputTitle}>密码</Text> : null}
                         <View style={styles.passwordBox}>
                             <TextInput
@@ -99,7 +101,7 @@ export default class SignIn extends Component {
                                 placeholderTextColor={global.Colors.placeholder}
                                 onChangeText={(text) => this.setState({ doctorPassword: text })}
                                 underlineColorAndroid={'transparent'}
-                                keyboardType={'numeric'}
+                                keyboardType={'default'}
                                 secureTextEntry={this.state.isEyes ? true : false}
                                 onFocus={this.doctorPasswordFocus.bind(this)}
                                 onBlur={this.doctorPasswordBlur.bind(this)}
@@ -153,7 +155,7 @@ export default class SignIn extends Component {
                     </View>
                 </View>
 
-                {this.state.ErrorPrompt ? null : <ErrorPrompt text="手机格式错误" imgUrl={require('../images/error.png')} />}
+                {this.state.ErrorPrompt ? null : <ErrorPrompt text={this.state.ErrorText} imgUrl={require('../images/error.png')} />}
             </ScrollView>
         );
     }
@@ -161,7 +163,7 @@ export default class SignIn extends Component {
     doctorPhoneFocus() {
         this.setState({
             doctorPhoneFocus: true,
-            phoneReg: true,
+            doctorPhoneReg: true,
         })
     }
     // 账号失去焦点
@@ -169,19 +171,33 @@ export default class SignIn extends Component {
         this.setState({
             doctorPhoneFocus: false,
         })
-        if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
+        if (!this.state.doctorPhone) {
             this.setState({
-                phoneReg: false,
                 ErrorPrompt: false,
+                doctorPhoneReg: false,
+                ErrorText: '请输入手机号',
             })
-            setTimeout(()=>{
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            },2500)
+            }, global.TimingCount)
+        } else if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
+            this.setState({
+                ErrorPrompt: false,
+                doctorPhoneReg: false,
+                ErrorText: '手机号码格式不正确',
+            })
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPrompt: true,
+                })
+            }, global.TimingCount)
         } else {
             this.setState({
-                phoneReg: true,
+                doctorPhoneReg: true,
             })
         }
     }
@@ -196,15 +212,87 @@ export default class SignIn extends Component {
         this.setState({
             doctorPasswordFocus: false,
         })
-
+        if (!this.state.doctorPassword) {
+            this.setState({
+                ErrorPrompt: false,
+                doctorPasswordReg: false,
+                ErrorText: '请输入密码',
+            })
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPrompt: true,
+                })
+            }, global.TimingCount)
+        } else if (!regExp.Reg_PassWord.test(this.state.doctorPassword)) {
+            this.setState({
+                ErrorPrompt: false,
+                doctorPasswordReg: false,
+                ErrorText: '密码为6-10个字符（数字+字母）',
+            })
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPrompt: true,
+                })
+            }, global.TimingCount)
+        } else {
+            this.setState({
+                doctorPasswordReg: true,
+            })
+        }
     }
 
     // 登录事件
     signIn() {
-        if (!this.state.doctorPhone || !regExp.Reg_TelNo.test(this.state.doctorPhone)) {
+        if (!this.state.doctorPhone) {
             this.setState({
-                phoneReg: false,
+                ErrorPrompt: false,
+                doctorPhoneReg: false,
+                ErrorText: '请输入手机号',
             })
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPrompt: true,
+                })
+            }, global.TimingCount)
+        } else if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
+            this.setState({
+                ErrorPrompt: false,
+                doctorPhoneReg: false,
+                ErrorText: '手机号码格式不正确',
+            })
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPrompt: true,
+                })
+            }, global.TimingCount)
+        } else if (!this.state.doctorPassword) {
+            this.setState({
+                ErrorPrompt: false,
+                doctorPasswordReg: false,
+                ErrorText: '请输入密码',
+            })
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPrompt: true,
+                })
+            }, global.TimingCount)
+        } else if (!regExp.Reg_PassWord.test(this.state.doctorPassword)) {
+            this.setState({
+                ErrorPrompt: false,
+                doctorPasswordReg: false,
+                ErrorText: '密码为6-10个字符（数字+字母）',
+            })
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPrompt: true,
+                })
+            }, global.TimingCount)
         } else {
             let formData = new FormData();
             formData.append("doctorPhone", this.state.doctorPhone);
@@ -213,12 +301,41 @@ export default class SignIn extends Component {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    "token": global.Token,
                 },
                 body: formData,
             })
                 .then((response) => response.json())
                 .then((responseData) => {
                     console.log('responseData', responseData);
+                    if (responseData.code == 20000) {
+                        // global.Alert.alert("登录成功");
+                        Storage.setItem("token", responseData.result);
+                        global.Token = responseData.result;
+                        this.props.navigation.navigate("Home");
+                    } else if (responseData.code == 20005) {
+                        this.setState({
+                            ErrorPrompt: false,
+                            ErrorText: "账号或密码错误"
+                        })
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPrompt: true,
+                            })
+                        }, global.TimingCount)
+                    } else {
+                        this.setState({
+                            ErrorPrompt: false,
+                            ErrorText: "登录失败"
+                        })
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPrompt: true,
+                            })
+                        }, global.TimingCount)
+                    }
                 })
                 .catch((error) => {
                     console.log('error', error);
@@ -300,6 +417,7 @@ const styles = StyleSheet.create({
         color: global.Colors.text333,
         height: global.px2dp(42),
         fontWeight: "500",
+        padding: 0,
     },
     inputTitle: {
         paddingTop: global.px2dp(5),

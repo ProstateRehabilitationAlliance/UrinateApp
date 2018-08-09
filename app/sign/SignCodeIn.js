@@ -5,16 +5,24 @@ import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";// 错误格式提示
+import CountDownButton from 'react-native-smscode-count-down';// 倒计时
 export default class SignCodeIn extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isLoading: false,// 加载层
-            phoneReg: true,// 手机号是否符合规则
+            TimingFlag: false,// 是否在倒计时
+            TimingText: "获取验证码",// 获取验证码文字
+
             ErrorPrompt: true,// 错误提示是否显示
             ErrorText: '',// 错误提示文字
+
             doctorPhoneFocus: false,// 账号焦点
             smsCodeFocus: false,// 校验码焦点
+
+            phoneReg: true,// 手机号是否符合规则
+            smsCodeReg: true,// 验证码是否符合规则
+
             doctorPhone: '',// 登录账号
             smsCode: '',// 校验码
         }
@@ -89,7 +97,7 @@ export default class SignCodeIn extends Component {
                         </View>
                     </View>
                     {/* 验证码输入 */}
-                    <View style={[styles.inputItem, styles.passwordItem, this.state.smsCodeFocus ? styles.smsCodeFocus : null]}>
+                    <View style={[styles.inputItem, styles.passwordItem, this.state.smsCodeFocus ? styles.smsCodeFocus : null, this.state.smsCodeReg ? null : styles.errorStyle]}>
                         {this.state.smsCodeFocus ? <Text style={styles.inputTitle}>校验码</Text> : null}
                         <View style={styles.passwordBox}>
                             <TextInput
@@ -120,13 +128,55 @@ export default class SignCodeIn extends Component {
                                     />
                                 </TouchableOpacity> : null}
                                 <View style={styles.isolationLine}></View>
-                                <TouchableOpacity
-                                    activeOpacity={.8}
-                                    onPress={() => { this.getLoginSms() }}
-                                    style={styles.forgetBtn}
-                                >
-                                    <Text style={styles.forgetText}>获取验证码</Text>
-                                </TouchableOpacity>
+                                <CountDownButton
+                                    style={{
+                                        // paddingRight: global.px2dp(10),
+                                        // paddingLeft: global.px2dp(10),
+                                    }}
+                                    textStyle={{
+                                        fontSize: global.px2dp(15),
+                                        color: global.Colors.color,
+                                    }}
+                                    timerCount={120}
+                                    timerTitle={this.state.TimingText}
+                                    enable={true}
+                                    onClick={(shouldStartCounting) => {
+                                        if (!this.state.doctorPhone) {
+                                            this.setState({
+                                                ErrorPrompt: false,
+                                                phoneReg: false,
+                                                ErrorText: '请输入手机号',
+                                            })
+                                            clearTimeout(this.timer);
+                                            this.timer = setTimeout(() => {
+                                                this.setState({
+                                                    ErrorPrompt: true,
+                                                })
+                                            }, global.TimingCount)
+                                            shouldStartCounting(false);
+                                        } else if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
+                                            this.setState({
+                                                ErrorPrompt: false,
+                                                phoneReg: false,
+                                                ErrorText: '手机号码格式不正确',
+                                            })
+                                            clearTimeout(this.timer);
+                                            this.timer = setTimeout(() => {
+                                                this.setState({
+                                                    ErrorPrompt: true,
+                                                })
+                                            }, global.TimingCount)
+                                            shouldStartCounting(false);
+                                        } else {
+                                            this.getLoginSms();
+                                            shouldStartCounting(true);
+                                        }
+                                    }}
+                                    timerEnd={() => {
+                                        this.setState({
+                                            TimingText: '重新获取'
+                                        })
+                                    }} />
                             </View>
                         </View>
                     </View>
@@ -180,19 +230,19 @@ export default class SignCodeIn extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
             this.setState({
                 phoneReg: false,
                 ErrorPrompt: false,
-                ErrorText: '手机号格式错误'
+                ErrorText: '手机号码格式不正确'
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else {
             this.setState({
                 phoneReg: true,
@@ -203,6 +253,7 @@ export default class SignCodeIn extends Component {
     smsCodeFocus() {
         this.setState({
             smsCodeFocus: true,
+            smsCodeReg: true,
         })
     }
     // 校验码失去焦点事件
@@ -210,13 +261,42 @@ export default class SignCodeIn extends Component {
         this.setState({
             smsCodeFocus: false,
         })
-
+        if (!this.state.smsCode) {
+            this.setState({
+                smsCodeReg: false,
+                ErrorPrompt: false,
+                ErrorText: '请输入验证码',
+            })
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPrompt: true,
+                })
+            }, global.TimingCount)
+        } else if (!regExp.Reg_Number.test(this.state.smsCode)) {
+            this.setState({
+                smsCodeReg: false,
+                ErrorPrompt: false,
+                ErrorText: '验证码格式错误'
+            })
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPrompt: true,
+                })
+            }, global.TimingCount)
+        } else {
+            this.setState({
+                smsCodeReg: true,
+            })
+        }
     }
     // 获取校验码
     getLoginSms() {
         if (!this.state.doctorPhone) {
             this.setState({
                 ErrorPrompt: false,
+                phoneReg: false,
                 ErrorText: '请输入手机号',
             })
             clearTimeout(this.timer);
@@ -224,7 +304,7 @@ export default class SignCodeIn extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
             this.setState({
                 ErrorPrompt: false,
@@ -236,21 +316,53 @@ export default class SignCodeIn extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else {
             fetch(requestUrl.loginSms + '?loginPhone=' + this.state.doctorPhone, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'multipart/form-data',                     "token": global.Token,
                 },
             })
                 .then((response) => response.json())
                 .then((responseData) => {
                     console.log('responseData', responseData);
                     if (responseData.code == 20005) {
-                        // 手机号未注册
+                        this.setState({
+                            ErrorPrompt: false,
+                            phoneReg: false,
+                            ErrorText: '该手机号还未注册',
+                        })
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPrompt: true,
+                            })
+                        }, global.TimingCount)
+                    } else if (responseData.code == 20000) {
+                        this.setState({
+                            ErrorPrompt: false,
+                            phoneReg: false,
+                            ErrorText: '验证码发送成功',
+                        })
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPrompt: true,
+                            })
+                        }, global.TimingCount)
                     } else {
-
+                        this.setState({
+                            ErrorPrompt: false,
+                            phoneReg: false,
+                            ErrorText: '验证码发送失败',
+                        })
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPrompt: true,
+                            })
+                        }, global.TimingCount)
                     }
                 })
                 .catch((error) => {
@@ -271,7 +383,7 @@ export default class SignCodeIn extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
             this.setState({
                 ErrorPrompt: false,
@@ -283,7 +395,7 @@ export default class SignCodeIn extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!this.state.smsCode) {
             this.setState({
                 ErrorPrompt: false,
@@ -294,7 +406,7 @@ export default class SignCodeIn extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!regExp.Reg_Number.test(this.state.smsCode)) {
             this.setState({
                 ErrorPrompt: false,
@@ -305,7 +417,7 @@ export default class SignCodeIn extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else {
             let formData = new FormData();
             formData.append("doctorPhone", this.state.doctorPhone);
@@ -313,13 +425,48 @@ export default class SignCodeIn extends Component {
             fetch(requestUrl.smsLogin, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'multipart/form-data',                     "token": global.Token,
                 },
                 body: formData,
             })
                 .then((response) => response.json())
                 .then((responseData) => {
                     console.log('responseData', responseData);
+                    if (responseData.code == 20000) {
+                        this.setState({
+                            ErrorPrompt: false,
+                            ErrorText: '登录成功',
+                        })
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPrompt: true,
+                            })
+                        }, global.TimingCount)
+                    } else if (responseData.code == 50006) {
+                        this.setState({
+                            ErrorPrompt: false,
+                            smsCodeReg: false,
+                            ErrorText: '验证码错误',
+                        })
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPrompt: true,
+                            })
+                        }, global.TimingCount)
+                    } else {
+                        this.setState({
+                            ErrorPrompt: false,
+                            ErrorText: '登录失败',
+                        })
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPrompt: true,
+                            })
+                        }, global.TimingCount)
+                    }
                 })
                 .catch((error) => {
                     console.log('error', error);

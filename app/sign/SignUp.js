@@ -5,6 +5,8 @@ import { regExp } from "../netWork/RegExp";
 import { requestUrl } from "../netWork/Url";
 import Button from "../common/Button";// 按钮
 import ErrorPrompt from "../common/ErrorPrompt";
+import CountDownButton from 'react-native-smscode-count-down';// 倒计时
+
 export default class SignUp extends Component {
     constructor(props) {
         super(props);
@@ -12,6 +14,8 @@ export default class SignUp extends Component {
             isLoading: false,// 状态栏加载图标
             ErrorPrompt: true,// 错误提示是否显示
             ErrorText: "",// 错误提示文字
+            TimingFlag: false,// 是否在倒计时
+            TimingText: "获取验证码",// 获取验证码文字
 
             phoneReg: true,// 手机号校验
             smsCodeReg: true,// 验证码校验
@@ -135,13 +139,62 @@ export default class SignUp extends Component {
                                     />
                                 </TouchableOpacity> : null}
                                 <View style={styles.isolationLine}></View>
-                                <TouchableOpacity
+                                {/* <TouchableOpacity
                                     activeOpacity={.8}
                                     onPress={() => { this.getRegisterSms() }}
                                     style={styles.forgetBtn}
                                 >
                                     <Text style={styles.forgetText}>获取验证码</Text>
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
+                                <CountDownButton
+                                    style={{
+                                        // paddingRight: global.px2dp(10),
+                                        // paddingLeft: global.px2dp(10),
+                                    }}
+                                    textStyle={{
+                                        fontSize: global.px2dp(15),
+                                        color: global.Colors.color,
+                                    }}
+                                    timerCount={120}
+                                    timerTitle={this.state.TimingText}
+                                    enable={true}
+                                    onClick={(shouldStartCounting) => {
+                                        if (!this.state.doctorPhone) {
+                                            this.setState({
+                                                ErrorText: '请输入手机号',
+                                                phoneReg: false,
+                                                ErrorPrompt: false,
+                                            })
+                                            clearTimeout(this.timer);
+                                            this.timer = setTimeout(() => {
+                                                this.setState({
+                                                    ErrorPrompt: true,
+                                                })
+                                            }, global.TimingCount)
+                                            shouldStartCounting(false);
+                                        } else if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
+                                            this.setState({
+                                                ErrorText: '手机号码格式不正确',
+                                                phoneReg: false,
+                                                ErrorPrompt: false,
+                                            })
+                                            clearTimeout(this.timer);
+                                            this.timer = setTimeout(() => {
+                                                this.setState({
+                                                    ErrorPrompt: true,
+                                                })
+                                            }, global.TimingCount)
+                                            shouldStartCounting(false);
+                                        } else {
+                                            this.getRegisterSms();
+                                            shouldStartCounting(true);
+                                        }
+                                    }}
+                                    timerEnd={() => {
+                                        this.setState({
+                                            TimingText: '重新获取'
+                                        })
+                                    }} />
                             </View>
                         </View>
                     </View>
@@ -249,7 +302,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
             this.setState({
                 ErrorText: '手机号码格式不正确',
@@ -261,7 +314,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else {
             this.setState({
                 phoneReg: true,
@@ -291,7 +344,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!regExp.Reg_Number.test(this.state.smsCode)) {
             this.setState({
                 ErrorText: '验证码格式不正确',
@@ -303,7 +356,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else {
             this.setState({
                 smsCodeReg: true,
@@ -333,7 +386,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!regExp.Reg_PassWord.test(this.state.doctorPassword)) {
             this.setState({
                 ErrorText: '密码为6-10个字符（数字+字母）',
@@ -345,7 +398,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else {
             this.setState({
                 doctorPasswordReg: true,
@@ -375,7 +428,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!regExp.Reg_PassWord.test(this.state.confirmPassword)) {
             this.setState({
                 ErrorText: '密码为6-10个字符（数字+字母）',
@@ -387,7 +440,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (this.state.confirmPassword != this.state.doctorPassword) {
             this.setState({
                 ErrorText: '两次密码不一致',
@@ -399,7 +452,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else {
             this.setState({
                 confirmPasswordReg: true,
@@ -419,7 +472,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
             this.setState({
                 ErrorText: '手机号码格式不正确',
@@ -431,12 +484,12 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else {
             fetch(requestUrl.registerSms + '?registerPhone=' + this.state.doctorPhone, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'multipart/form-data',                     "token": global.Token,
                 },
             })
                 .then((response) => response.json())
@@ -466,7 +519,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
             this.setState({
                 ErrorText: '手机号码格式不正确',
@@ -478,7 +531,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!this.state.smsCode) {
             this.setState({
                 ErrorText: '请输入验证码',
@@ -490,7 +543,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!regExp.Reg_Number.test(this.state.smsCode)) {
             this.setState({
                 ErrorText: '验证码格式不正确',
@@ -502,7 +555,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!this.state.doctorPassword) {
             this.setState({
                 ErrorText: '请输入密码',
@@ -514,7 +567,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!regExp.Reg_PassWord.test(this.state.doctorPassword)) {
             this.setState({
                 ErrorText: '密码为6-10个字符（数字+字母）',
@@ -526,7 +579,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!this.state.confirmPassword) {
             this.setState({
                 ErrorText: '请再次输入密码',
@@ -538,7 +591,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (!regExp.Reg_PassWord.test(this.state.confirmPassword)) {
             this.setState({
                 ErrorText: '密码为6-10个字符（数字+字母）',
@@ -550,11 +603,11 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else if (this.state.confirmPassword != this.state.doctorPassword) {
             this.setState({
                 ErrorText: '两次密码不一致',
-                doctorPasswordReg: false,
+                confirmPasswordReg: false,
                 ErrorPrompt: false,
             })
             clearTimeout(this.timer);
@@ -562,7 +615,7 @@ export default class SignUp extends Component {
                 this.setState({
                     ErrorPrompt: true,
                 })
-            }, 2500)
+            }, global.TimingCount)
         } else {
             let formData = new FormData();
             formData.append("doctorPhone", this.state.doctorPhone);
@@ -571,13 +624,48 @@ export default class SignUp extends Component {
             fetch(requestUrl.register, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'multipart/form-data',                     "token": global.Token,
                 },
                 body: formData,
             })
                 .then((response) => response.json())
                 .then((responseData) => {
                     console.log('responseData', responseData);
+                    if (responseData.code == 20000) {
+                        this.setState({
+                            ErrorPrompt: false,
+                            ErrorText: '注册成功',
+                        })
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPrompt: true,
+                            })
+                        }, global.TimingCount)
+                    } else if (responseData.code == 50006) {
+                        this.setState({
+                            ErrorPrompt: false,
+                            smsCodeReg: false,
+                            ErrorText: '验证码错误',
+                        })
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPrompt: true,
+                            })
+                        }, global.TimingCount)
+                    } else {
+                        this.setState({
+                            ErrorPrompt: false,
+                            ErrorText: '注册失败',
+                        })
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPrompt: true,
+                            })
+                        }, global.TimingCount)
+                    }
                 })
                 .catch((error) => {
                     console.log('error', error);
