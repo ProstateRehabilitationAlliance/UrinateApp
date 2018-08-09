@@ -21,23 +21,12 @@ export default class My extends Component {
         // 4获取数据 在 render 后
     }
     render() {
-        // 3 渲染 render
-        // 变量声明
         const { navigate, goBack } = this.props.navigation;
-        {/* <View style={styles.container} >
-                    <Text> 我的</Text>
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={{ uri: 'https://img1.360buyimg.com/da/jfs/t23440/198/1552616732/96159/b2b38b62/5b62c871N7bc2b6fd.jpg' }}
-                        defaultSource={require('../images/radio_yes.png')}// 默认图片
-                    />
-                    <TouchableOpacity activeOpacity={.8}
-                        onPress={() => this.click()}>
-                        <Text>点击</Text>
-                    </TouchableOpacity>
-                </View> */}
         return (
-            <ScrollView style={styles.container}>
+            <ScrollView
+                alwaysBounceVertical={true}// ios不满一屏时弹性
+                bounces={false}// ios弹性
+                style={styles.container}>
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏
@@ -56,7 +45,7 @@ export default class My extends Component {
                     <View style={styles.navContent}>
                         <Image
                             style={styles.doctorImg}
-                            // source={{ uri: 'https://img1.360buyimg.com/da/jfs/t23440/198/1552616732/96159/b2b38b62/5b62c871N7bc2b6fd.jpg' }}
+                            source={require('../images/default_doc_img.png')}
                             defaultSource={require('../images/default_doc_img.png')}// 默认图片
                         />
                         <View style={styles.navBox}>
@@ -226,6 +215,7 @@ export default class My extends Component {
                         />
                     </TouchableOpacity>
                 </View>
+                <View style={{height: global.px2dp(20)}}></View>
             </ScrollView>
         );
     }

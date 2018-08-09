@@ -4,11 +4,13 @@ import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import LinearGradient from 'react-native-linear-gradient';
+import { BoxShadow } from 'react-native-shadow'
 export default class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isLoading: false,
+            authenticationFlag: false,
         }
     }
     getInitalState() {
@@ -21,23 +23,24 @@ export default class Home extends Component {
         // 4获取数据 在 render 后
     }
     render() {
-        // 3 渲染 render
-        // 变量声明
+        const shadowOpt = {
+            width: global.px2dp(340),
+            height: global.px2dp(258),
+            color: "#000",
+            border: 20,
+            radius: 0,
+            opacity: .2,
+            x: 0,
+            y: 0,
+            style: styles.boxShadow,
+        }
         const { navigate, goBack } = this.props.navigation;
-        {/* <View style={styles.container} >
-                    <Text> 我的</Text>
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={{ uri: 'https://img1.360buyimg.com/da/jfs/t23440/198/1552616732/96159/b2b38b62/5b62c871N7bc2b6fd.jpg' }}
-                        defaultSource={require('../images/radio_yes.png')}// 默认图片
-                    />
-                    <TouchableOpacity activeOpacity={.8}
-                        onPress={() => this.click()}>
-                        <Text>点击</Text>
-                    </TouchableOpacity>
-                </View> */}
         return (
-            <ScrollView style={styles.container}>
+            <ScrollView
+                style={styles.container}
+                alwaysBounceVertical={true}// ios不满一屏时弹性
+                bounces={false}// ios弹性
+            >
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏
@@ -45,14 +48,15 @@ export default class Home extends Component {
                     translucent={false}//android 设置状态栏是否为透明
                     showHideTransition="fade"//IOS状态栏改变时动画 fade:默认 slide
                     networkActivityIndicatorVisible={this.state.isLoading}//IOS设定网络活动指示器(就是那个菊花)是否显示在状态栏。
-                    statusBarStyle={"default"}//ios:白底黑字  android:黑底白字
+                    statusBarStyle={"default"}//状态栏样式 default	默认（IOS为白底黑字、Android为黑底白字）
+                    barStyle={"light-content"}// 状态栏文本的颜色。
                 />
                 <LinearGradient
-                     start={{ x: 0, y: 1 }}
-                     end={{ x: 1, y: 1 }}
-                     // locations={[0, 1]}
-                     colors={global.LinearGradient}
-                     style={styles.linearGradient}>
+                    start={{ x: 0, y: 1 }}
+                    end={{ x: 1, y: 1 }}
+                    // locations={[0, 1]}
+                    colors={global.LinearGradient}
+                    style={styles.linearGradient}>
                     <View style={styles.navContent}>
                         <Image
                             style={styles.allianceName}
@@ -62,75 +66,105 @@ export default class Home extends Component {
                         <TouchableOpacity
                             style={styles.QRCodeBtn}
                             activeOpacity={.8}
-                            onPress={() => {}}>
+                            onPress={() => { }}>
                             <Image
-                            source={require('../images/qr_code_btn.png')}
-                        />
+                                source={require('../images/qr_code_btn.png')}
+                            />
                             <Text style={styles.QRCodeText}>我的二维码</Text>
                         </TouchableOpacity>
                     </View>
                 </LinearGradient>
-                <View style={styles.content}>
-                <View style={styles.titleBox}>
-                    <View style={styles.titleLine}></View>
-                    <Text style={styles.titleText}>李林玉医生工作站</Text>
-                </View>
-                {/* 统计部分-start */}
-                <View style={styles.statisticsContent}>
-                    <View style={styles.statisticsItem}>
-                        <Text style={styles.statisticsNum}>暂无数据</Text>
-                        <Text style={styles.statisticsText}>已帮助位患者</Text>
-                    </View>
-                    <View style={styles.statisticsLine}></View>
-                    <View style={styles.statisticsItem}>
-                        <Text style={styles.statisticsNum}>暂无数据</Text>
-                        <Text style={styles.statisticsText}>已帮助位患者</Text>
-                    </View>
-                </View>
-                {/* 统计部分-end */}
+                <BoxShadow
+                    setting={shadowOpt}>
+                    <View style={styles.content}>
+                        {/* 条幅-start */}
+                        <View style={styles.scrollContent}>
+                            <Text style={styles.scrollText}>{this.state.authenticationFlag ? "医院科室" : "你好！欢迎来到栗子医学"}</Text>
+                            <View style={styles.offcutBox}></View>
+                        </View>
+                        {/* 条幅-end */}
 
-                {/* 三大模块-start */}
-                    <View style={styles.moduleContent}>
-                        <TouchableOpacity
-                            style={styles.moduleBtn}
-                            activeOpacity={.8}
-                            onPress={() => {}}>
-                            <Image
-                            style={styles.moduleImg}
-                            source={require('../images/inquiry.png')}
-                        />
-                            <Text style={styles.moduleText}>问诊</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.moduleBtn}
-                            activeOpacity={.8}
-                            onPress={() => {}}>
-                            <Image
-                            style={styles.moduleImg}
-                            source={require('../images/patient.png')}
-                        />
-                            <Text style={styles.moduleText}>患者管理</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.moduleBtn}
-                            activeOpacity={.8}
-                            onPress={() => {}}>
-                            <Image
-                            style={styles.moduleImg}
-                            source={require('../images/shift_examine.png')}
-                        />
-                            <Text style={styles.moduleText}>转诊管理</Text>
-                        </TouchableOpacity>
-                    </View>
-                {/* 三大模块-end */}
+                        <View style={styles.headContent}>
+                            <View style={styles.titleLine}></View>
+                            <View style={styles.headBox}>
+                                {this.state.authenticationFlag ?
+                                    <Text style={styles.headText}>"医生名"医生工作站</Text>
+                                    :
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => { }}
+                                    >
+                                        <Text style={styles.headText}>你暂时还未认证，请先 <Text style={{ color: global.Colors.color347fc2 }}>去认证</Text></Text>
+                                    </TouchableOpacity>
+                                }
+                            </View>
+                        </View>
+                        {/* 统计部分-start */}
+                        <View style={styles.statisticsContent}>
+                            <View style={styles.statisticsItem}>
+                                <Text style={[styles.statisticsNum, { color: this.state.authenticationFlag ? global.Colors.color : global.Colors.text555, }]}>{this.state.authenticationFlag ? "9999" : "暂无数据"}</Text>
+                                <Text style={styles.statisticsText}>访问量</Text>
+                            </View>
+                            <View style={styles.statisticsLine}></View>
+                            <View style={styles.statisticsItem}>
+                                <Text style={[styles.statisticsNum, { color: this.state.authenticationFlag ? global.Colors.color : global.Colors.text555, }]}>{this.state.authenticationFlag ? "9999" : "暂无数据"}</Text>
+                                <Text style={styles.statisticsText}>已帮助位患者</Text>
+                            </View>
+                        </View>
+                        {/* 统计部分-end */}
 
-                </View>
+                        {/* 三大模块-start */}
+                        <View style={styles.moduleContent}>
+                            <TouchableOpacity
+                                style={styles.moduleBtn}
+                                activeOpacity={.8}
+                                onPress={() => { }}>
+                                <Image
+                                    style={styles.moduleImg}
+                                    source={require('../images/inquiry.png')}
+                                />
+                                <Text style={styles.moduleText}>问诊</Text>
+                                {this.state.authenticationFlag ? <View style={styles.countBox}>
+                                    <Text style={styles.countText}>99+</Text>
+                                </View> : null}
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.moduleBtn}
+                                activeOpacity={.8}
+                                onPress={() => { }}>
+                                <Image
+                                    style={styles.moduleImg}
+                                    source={require('../images/patient.png')}
+                                />
+                                <Text style={styles.moduleText}>患者管理</Text>
+                                {this.state.authenticationFlag ? <View style={styles.countBox}>
+                                    <Text style={styles.countText}>99+</Text>
+                                </View> : null}
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.moduleBtn}
+                                activeOpacity={.8}
+                                onPress={() => { }}>
+                                <Image
+                                    style={styles.moduleImg}
+                                    source={require('../images/shift_examine.png')}
+                                />
+                                <Text style={styles.moduleText}>转诊管理</Text>
+                                {this.state.authenticationFlag ? <View style={styles.countBox}>
+                                    <Text style={styles.countText}>99+</Text>
+                                </View> : null}
+                            </TouchableOpacity>
+                        </View>
+                        {/* 三大模块-end */}
+
+                    </View>
+                </BoxShadow>
                 <View style={styles.titleBox}>
                     <View style={styles.titleLine}></View>
                     <Text style={styles.titleText}>院内公告</Text>
                 </View>
                 <View style={styles.bannerContent}>
-                    <Image source={require('../images/banner.png')}/>
+                    <Image style={styles.bannerImg} source={require('../images/banner.png')} />
                 </View>
             </ScrollView>
         );
@@ -141,12 +175,11 @@ const styles = StyleSheet.create({
     container: {
         position: 'relative',
         flex: 1,
-        backgroundColor: global.Colors.bgColor,
-        paddingBottom: global.TabBar,
+        backgroundColor: global.Colors.textfff,
     },
     linearGradient: {
         paddingTop: global.StatusBarHeight,
-        height: global.px2dp(163),
+        height: global.px2dp(143) + global.StatusBarHeight,
     },
     navContent: {
         paddingLeft: global.px2dp(10),
@@ -178,26 +211,70 @@ const styles = StyleSheet.create({
     },
 
     // 主体部分
-    content: {
+    boxShadow: {
         marginTop: global.px2dp(-45),
         marginBottom: global.px2dp(6),
         marginLeft: global.px2dp(20),
+    },
+    content: {
         width: global.px2dp(340),
         height: global.px2dp(258),
         backgroundColor: global.Colors.textfff,
         borderRadius: global.px2dp(5),
+        // shadowColor: '#000',
+        // shadowOffset: { width: 0, height: 0 },
+        // shadowRadius: 6,
+        // shadowOpacity: .2,
     },
+    // 条幅-start
+    scrollContent: {
+        position: 'relative',
+        justifyContent: 'center',
+        maxWidth: global.px2dp(257),
+        height: global.px2dp(32),
+        borderTopRightRadius: global.px2dp(16),
+        borderBottomRightRadius: global.px2dp(16),
+        marginLeft: global.px2dp(-5),
+        marginTop: global.px2dp(12),
+        backgroundColor: global.Colors.color347fc2,
+    },
+    scrollText: {
+        paddingLeft: global.px2dp(13),
+        color: global.Colors.textfff,
+        fontSize: global.px2dp(17),
+    },
+    offcutBox: {
+        position: 'absolute',
+        bottom: global.px2dp(-5),
+        left: 0,
+        width: 0,
+        height: 0,
+        borderColor: global.Colors.color,
+        borderTopColor: 'transparent',
+        borderRightColor: 'transparent',
+        borderLeftColor: 'transparent',
+        transform: [{ rotate: '45deg' }],
+        borderRadius: 6,
+        borderTopWidth: global.px2dp(6),
+        borderBottomWidth: global.px2dp(6),
+        borderRightWidth: global.px2dp(6),
+        borderLeftWidth: global.px2dp(6),
+    },
+    // 条幅-end
+
     // 统计部分
     statisticsContent: {
         marginRight: global.px2dp(22),
         marginLeft: global.px2dp(22),
-        height: global.px2dp(63),
+        height: global.px2dp(60),
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         borderColor: "#cdcdcd",
         borderTopWidth: global.Pixel,
         borderBottomWidth: global.Pixel,
+        // borderRightColor: "transparent",
+        // borderWidth: global.Pixel,
         // borderStyle: 'dotted',
     },
     statisticsItem: {
@@ -207,7 +284,6 @@ const styles = StyleSheet.create({
     },
     statisticsNum: {
         fontSize: global.px2dp(20),
-        color: global.Colors.color,
     },
     statisticsText: {
         marginTop: global.px2dp(9),
@@ -219,16 +295,17 @@ const styles = StyleSheet.create({
         width: global.px2dp(2),
         height: global.px2dp(18),
     },
-    // 三大模块
+    // 三大模块 -start
     moduleContent: {
         marginRight: global.px2dp(22),
         marginLeft: global.px2dp(22),
-        height: global.px2dp(101),
+        height: global.px2dp(100),
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
     },
     moduleBtn: {
+        position: 'relative',
         flex: 1,
         justifyContent: 'space-around',
         alignItems: 'center',
@@ -240,7 +317,41 @@ const styles = StyleSheet.create({
         color: global.Colors.text333,
         fontSize: global.px2dp(13),
     },
-    // 标题
+    countBox: {
+        position: 'absolute',
+        top: global.px2dp(3),
+        right: global.px2dp(15),
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: global.px2dp(22),
+        height: global.px2dp(14),
+        backgroundColor: global.Colors.colorFD2C2D,
+        borderTopRightRadius: global.px2dp(6),
+        borderBottomRightRadius: global.px2dp(6),
+        borderTopLeftRadius: global.px2dp(6),
+    },
+    countText: {
+        fontSize: global.px2dp(10),
+        color: global.Colors.textfff,
+    },
+    // 三大模块 - end 
+    // 大标题-start
+    headContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: global.px2dp(15),
+        marginTop: global.px2dp(18),
+        marginBottom: global.px2dp(16),
+    },
+    headBox: {
+        alignItems: 'center',
+    },
+    headText: {
+        fontSize: global.px2dp(16),
+        color: global.Colors.text555,
+    },
+    // 大标题-end
+    // 标题-院内公告 -start
     titleBox: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -251,20 +362,25 @@ const styles = StyleSheet.create({
     },
     titleLine: {
         backgroundColor: global.Colors.color,
-        width: global.px2dp(3), 
+        width: global.px2dp(3),
         height: global.px2dp(15),
         borderRadius: global.px2dp(3),
+        marginRight: global.px2dp(7),
     },
     titleText: {
-        marginLeft: global.px2dp(7),
         fontSize: global.px2dp(16),
         color: global.Colors.text555,
     },
+    // 标题-院内公告 - end
+
     // 轮播图
     bannerContent: {
         marginLeft: global.px2dp(15),
         marginRight: global.px2dp(15),
-    }
-
+        marginBottom: global.px2dp(20),
+    },
+    bannerImg: {
+        width: global.px2dp(346),
+    },
 });
 

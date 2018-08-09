@@ -142,6 +142,6 @@ export default createSwitchNavigator(
             screen: MyTab,// 个人中心
         },
     }, {
-        initialRouteName: "Start",
+        initialRouteName: "Home",
     }
 );
