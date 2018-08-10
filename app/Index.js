@@ -28,6 +28,8 @@ import IndexTab from "./home/Home";// 工作台
 import ContactTab from "./contact/Contact";// 通讯录
 import StudyTab from "./study/Study";// 直播课
 import MyTab from "./my/My";// 个人中心
+import Authentication from "./my/Authentication";// 认证信息
+
 import LookImg from "./common/LookImg";// 查看大图
 // 页面引入-end
 
@@ -147,10 +149,13 @@ export default createSwitchNavigator(
         My: {
             screen: MyTab,// 个人中心
         },
+        Authentication: {
+            screen: Authentication,// 认证信息查看
+        },
         LookImg: {
             screen: LookImg,// 查看大图
         },
     }, {
-        initialRouteName: "Approve",
+        initialRouteName: "Start",
     }
 );

@@ -43,6 +43,5 @@ const styles = StyleSheet.create({
         fontSize: global.px2dp(18),
         color: global.Colors.textfff,
         fontWeight: "bold",
-        letterSpacing: 6,
     },
 });
