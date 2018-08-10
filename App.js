@@ -25,6 +25,56 @@ export default class Protocol extends Component {
         // 3 渲染 render
         // 变量声明
         // const { navigate, goBack } = this.props.navigation;
+        {/* <FlatList
+                                style={styles.flatListStyle}
+                                data={this.state.titleData}
+                                // initialNumToRender={20}
+                                keyExtractor={item => item.id}
+                                // ListFooterComponent={() => {
+                                // 尾部组件
+                                // }}
+                                renderItem={({ item }) => this.titleRenderItem(item)}
+                                // 分隔线
+                                ItemSeparatorComponent={() => {
+                                    return (
+                                        <View style={{
+                                            height: global.Pixel,
+                                            backgroundColor: global.Colors.text999,
+                                        }}></View>
+                                    )
+                                }}
+                            // onRefresh={() => { }}//头部刷新组件
+                            // refreshing={this.state.isRefresh}//加载图标
+                            // onEndReached={() => this.onEndReached()} // 加载更多
+                            // onEndReachedThreshold={.1}// 加载更多触发时机
+                            // ListEmptyComponent={() => {
+                            //     // 无数据时显示的内容
+                            //     return (
+                            //         <View style={styles.noDataBox}>
+                            //             <Image source={require('../../images/no_data.png')} />
+                            //             <Text style={styles.noDataText}>暂无信息</Text>
+                            //         </View>
+                            //     )
+                            // }}
+                            /> */}
+        // titleRenderItem = (item) => {
+        //     console.log(item)
+        //     const { navigate } = this.props.navigation;
+        //     return (
+        //         <TouchableOpacity
+        //             onPress={() => {
+        //                 console.log(item)
+        //             }}
+        //             activeOpacity={.8}
+        //             key={item.id}
+        //         >
+        //             <View>
+        //                 <Text>{item.name}</Text>
+        //             </View>
+        //         </TouchableOpacity>
+
+        //     )
+        // }
         {/* <View style={styles.container} >
                     <Text> 我的</Text>
                     <Image

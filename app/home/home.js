@@ -92,7 +92,9 @@ export default class Home extends Component {
                                     :
                                     <TouchableOpacity
                                         activeOpacity={.8}
-                                        onPress={() => { }}
+                                        onPress={() => {
+                                            this.props.navigation.navigate('Approve')
+                                        }}
                                     >
                                         <Text style={styles.headText}>你暂时还未认证，请先 <Text style={{ color: global.Colors.color347fc2 }}>去认证</Text></Text>
                                     </TouchableOpacity>

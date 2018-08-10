@@ -124,7 +124,7 @@ export default class My extends Component {
                         style={[styles.navigateBtn]}
                         activeOpacity={.8}
                         onPress={() => {
-                            // navigate();
+                            navigate('Authentication');
                         }}>
                         <View style={styles.navigateBox}>
                             <Image

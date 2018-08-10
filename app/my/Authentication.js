@@ -5,23 +5,31 @@ import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";
 import Nav from "../common/Nav";
+import ErrorPrompt from "../common/ErrorPrompt";
 export default class Authentication extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isLoading: false,
 
-            hospitalId: "2b018d7a485111e8b001d017c2d24457",// 医院id
-            branchId: "65311568b3d011e7b77800163e08d49b",// 科室id
-            titleId: "67e854ad48b64d92bfd7c10d417c44f9",// 职称id
-            idCardFront: "https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IDCard_up.jpg",//
-            idCardContrary: "https://disease-records-1256660245.cosbj.myqcloud.com/1376f7dc91f4434ba755cdae5df980d8.jpg",//身份证正面照片地址
-            doctorCardFront: "https://disease-records-1256660245.cosbj.myqcloud.com/1376f7dc91f4434ba755cdae5df980d8.jpg",//医师执业证正面照片地址
-            doctorCardContrary: "https://disease-records-1256660245.cosbj.myqcloud.com/1376f7dc91f4434ba755cdae5df980d8.jpg",//医师执业证反面照片地址
-            workCard: "https://disease-records-1256660245.cosbj.myqcloud.com/1376f7dc91f4434ba755cdae5df980d8.jpg",//手持工牌照片地址
-            approveStatus: "AUTHENTICATION_PROGRESS",// 认证状态
-            // 您提交的认证信息未通过，请您重新上传
+            ErrorPromptFlag: false,
+            ErrorPromptText: '',
+            ErrorPromptImg: '',
 
+            doctorName: "",
+            doctorSex: "",
+            doctorCardNumber: "",
+
+            hospitalId: "",// 医院id
+            branchId: "",// 科室id
+            titleId: "",// 职称id
+            idCardFront: "",//
+            doctorCardFront: "",//医师执业证正面照片地址
+            workCard: "",//手持工牌照片地址
+            approveStatus: "",// 认证状态
+            // AUTHENTICATION_PROGRESS  审核中
+            // AUTHENTICATION_SUCCESS 认证成功
+            // AUTHENTICATION_FAILED 认证失败
         }
     }
     getInitalState() {
@@ -31,7 +39,149 @@ export default class Authentication extends Component {
         // 2仅调用一次在 render 前
     }
     componentDidMount() {
-        // 4获取数据 在 render 后
+        // 查询认证信息-start
+        fetch(requestUrl.getAuthentication, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        approveStatus: responseData.result.approveStatus,
+                        branchId: responseData.result.branchId,
+                        doctorCardFront: responseData.result.doctorCardFront,
+                        idCardFront: responseData.result.idCardFront,
+                        titleId: responseData.result.titleId,
+                        workCard: responseData.result.workCard,
+                    })
+                } else if (responseData.code == 40001) {
+                    // 登录超时
+
+                } else if (responseData.code == 50000) {
+                    this.setState({
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '服务器繁忙',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer);
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPrompt: false,
+                        })
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '服务器繁忙',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer);
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPrompt: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+        // 查询认证信息-end
+
+        // 认证状态查询-start
+        fetch(requestUrl.getSignStatus, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    // 认证成功
+                    // 查询身份证信息-start
+                    fetch(requestUrl.getIdCardInfo, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            "token": global.Token,
+                        },
+                    }).then((response) => response.json())
+                        .then((responseData) => {
+                            console.log('responseData', responseData);
+                            if (responseData.code == 20000) {
+                                // 查询成功
+                                this.setState({
+                                    doctorName: responseData.result.doctorName,
+                                    doctorSex: responseData.result.doctorSex,
+                                    doctorCardNumber: responseData.result.doctorCardNumber
+                                })
+                            } else if (responseData.code == 40001) {
+                                // 登陆超时
+
+                            } else if (responseData.code == 40004) {
+                                // 数据为空
+
+                            } else if (responseData.code == 50000) {
+                                // 系统异常
+                                this.setState({
+                                    ErrorPromptFlag: true,
+                                    ErrorPromptText: '服务器繁忙',
+                                    ErrorPromptImg: require('../images/error.png'),
+                                })
+                                clearTimeout(this.timer);
+                                this.timer = setTimeout(() => {
+                                    this.setState({
+                                        ErrorPrompt: false,
+                                    })
+                                }, global.TimingCount)
+                            } else {
+                                this.setState({
+                                    ErrorPromptFlag: true,
+                                    ErrorPromptText: '服务器繁忙',
+                                    ErrorPromptImg: require('../images/error.png'),
+                                })
+                                clearTimeout(this.timer);
+                                this.timer = setTimeout(() => {
+                                    this.setState({
+                                        ErrorPrompt: false,
+                                    })
+                                }, global.TimingCount)
+                            }
+                        })
+                        .catch((error) => {
+                            console.log('error', error);
+                        });
+                    // 查询身份证信息-end
+                } else if (responseData.code == 40001) {
+                    // 登录超时
+
+                } else if (responseData.code == 40002) {
+                    // "系统认证中"
+
+                } else if (responseData.code == 40003) {
+                    // "认证信息审核失败 需要重新填写"
+
+                } else if (responseData.code == 40004) {
+                    // "认证信息未填写"
+
+                } else if (responseData.code == 50000) {
+                    // 系统错误、
+
+                } else {
+
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+        // 认证状态查询-end
+
     }
     render() {
         // 3 渲染 render
@@ -39,11 +189,20 @@ export default class Authentication extends Component {
         return (
             <View style={styles.container}>
                 <Nav title="认证信息" leftClick={this.goBack()} />
-                <ScrollView>
-                    <View style={styles.approveStatusContnet}>
-                        <Image source={require('../images/approve.png')} />
-                        <Text style={styles.approveStatusText}>您提交的认证信息未通过，请您重新上传</Text>
-                    </View>
+                <ScrollView style={{marginBottom: global.px2dp(15)}}>
+                    {/*  // AUTHENTICATION_PROGRESS  审核中 */}
+                    {this.state.approveStatus == "AUTHENTICATION_PROGRESS" ?
+                        <View style={styles.approveStatusContnet}>
+                            <Image source={require('../images/approve.png')} />
+                            <Text style={styles.approveStatusText}>您提交的认证信息正在审核中...</Text>
+                        </View> : null}
+                    {/*  // AUTHENTICATION_FAILED 认证失败 */}
+                    {this.state.approveStatus == "AUTHENTICATION_FAILED" ?
+                        <View style={styles.approveStatusContnet}>
+                            <Image source={require('../images/approve.png')} />
+                            <Text style={styles.approveStatusText}>您提交的认证信息未通过，请您重新上传</Text>
+                        </View> : null}
+
                     <View style={styles.itemContent}>
                         {/* title 模块 start */}
                         <View style={styles.titleContent}>
@@ -56,9 +215,9 @@ export default class Authentication extends Component {
                         {/* 医生信息-start */}
                         <View style={styles.infoContent}>
                             <View style={styles.infoBox}>
-                                <Text style={styles.infoText}>姓名:</Text>
-                                <Text style={[styles.infoText, { marginLeft: global.px2dp(28), }]}>性别:</Text>
-                                <Text style={styles.infoText}>身份证号:130***************2018</Text>
+                                <Text style={styles.infoText}>姓名:{this.state.doctorName ? this.state.doctorName : '***'}</Text>
+                                <Text style={[styles.infoText, { marginLeft: global.px2dp(28), }]}>性别:{this.state.doctorSex ? this.state.doctorSex : '*'}</Text>
+                                <Text style={styles.infoText}>身份证号:{this.state.doctorCardNumber ? this.state.doctorCardNumber : '*****************'}</Text>
                             </View>
                             <TouchableOpacity
                                 activeOpacity={.8}
@@ -113,13 +272,6 @@ export default class Authentication extends Component {
                                 >
                                     <Image style={styles.aptitudeImg} source={{ uri: this.state.doctorCardFront }} />
                                 </TouchableOpacity>
-                                <TouchableOpacity
-                                    activeOpacity={.8}
-                                    onPress={() => { }}
-                                    style={styles.aptitudeBtn}
-                                >
-                                    <Image style={styles.aptitudeImg} source={{ uri: this.state.doctorCardContrary }} />
-                                </TouchableOpacity>
                             </View>
                         </View>
                         <View style={[styles.aptitudeItem]}>
@@ -139,7 +291,9 @@ export default class Authentication extends Component {
                     <View style={styles.protocolContent}>
                         <TouchableOpacity
                             activeOpacity={.8}
-                            onPress={() => { }}
+                            onPress={() => {
+                                navigate("Protocol");
+                            }}
                             style={styles.protocolBtn}
                         >
                             <Text style={styles.protocolText}>联盟平台协议</Text>
@@ -147,10 +301,14 @@ export default class Authentication extends Component {
                         </TouchableOpacity>
                     </View>
                     {/* 协议-end */}
-                    <View style={styles.btnBox}>
-                        <Button text="重新上传" click={this.submit.bind(this)} />
-                    </View>
+
+                    {/*  // AUTHENTICATION_FAILED 认证失败 */}
+                    {this.state.approveStatus == "AUTHENTICATION_FAILED" ?
+                        <View style={styles.btnBox}>
+                            <Button text="重新上传" click={this.submit.bind(this)} />
+                        </View> : null}
                 </ScrollView>
+                {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View>
         );
     }
@@ -160,7 +318,7 @@ export default class Authentication extends Component {
     }
     // 提交事件
     submit() {
-
+        this.props.navigation.navigate("Approve");
     }
 }
 

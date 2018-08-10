@@ -12,6 +12,7 @@ export default {
     colorccc: "#cccccc",
     colorfff: "#ffffff",
     color347fc2: "#347fc2",
+    color3375BD: "#3375BD",
     color3b7dc8: "#3b7dc8",
     colorFD2C2D: "#FD2C2D",
     color5286C2: "#5286C2",
