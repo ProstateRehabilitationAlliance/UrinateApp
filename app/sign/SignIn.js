@@ -12,8 +12,9 @@ export default class SignIn extends Component {
         this.state = {
             isLoading: false,// 加载层
             isEyes: true,// 是否显示密码 true不显示 false显示
-            ErrorPrompt: true,// 错误提示是否显示
-            ErrorText: "",// 错误提示文字
+            ErrorPrompt: true,// 提示是否显示
+            ErrorText: "",// 提示文字
+            ErrorImg: '',// 提示图片
             doctorPhoneReg: true,// 手机号是否符合规则
             doctorPasswordReg: true,// 密码是否符合规则
             doctorPhoneFocus: false,// 账号焦点
@@ -155,7 +156,7 @@ export default class SignIn extends Component {
                     </View>
                 </View>
 
-                {this.state.ErrorPrompt ? null : <ErrorPrompt text={this.state.ErrorText} imgUrl={require('../images/error.png')} />}
+                {this.state.ErrorPrompt ? null : <ErrorPrompt text={this.state.ErrorText} imgUrl={this.state.ErrorImg} />}
             </ScrollView>
         );
     }
@@ -176,6 +177,7 @@ export default class SignIn extends Component {
                 ErrorPrompt: false,
                 doctorPhoneReg: false,
                 ErrorText: '请输入手机号',
+                ErrorImg: require('../images/error.png'),
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -188,6 +190,7 @@ export default class SignIn extends Component {
                 ErrorPrompt: false,
                 doctorPhoneReg: false,
                 ErrorText: '手机号码格式不正确',
+                ErrorImg: require('../images/error.png'),
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -217,6 +220,7 @@ export default class SignIn extends Component {
                 ErrorPrompt: false,
                 doctorPasswordReg: false,
                 ErrorText: '请输入密码',
+                ErrorImg: require('../images/error.png'),
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -229,6 +233,7 @@ export default class SignIn extends Component {
                 ErrorPrompt: false,
                 doctorPasswordReg: false,
                 ErrorText: '密码为6-10个字符（数字+字母）',
+                ErrorImg: require('../images/error.png'),
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -250,6 +255,7 @@ export default class SignIn extends Component {
                 ErrorPrompt: false,
                 doctorPhoneReg: false,
                 ErrorText: '请输入手机号',
+                ErrorImg: require('../images/error.png'),
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -262,6 +268,7 @@ export default class SignIn extends Component {
                 ErrorPrompt: false,
                 doctorPhoneReg: false,
                 ErrorText: '手机号码格式不正确',
+                ErrorImg: require('../images/error.png'),
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -274,6 +281,7 @@ export default class SignIn extends Component {
                 ErrorPrompt: false,
                 doctorPasswordReg: false,
                 ErrorText: '请输入密码',
+                ErrorImg: require('../images/error.png'),
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -286,6 +294,7 @@ export default class SignIn extends Component {
                 ErrorPrompt: false,
                 doctorPasswordReg: false,
                 ErrorText: '密码为6-10个字符（数字+字母）',
+                ErrorImg: require('../images/error.png'),
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -294,6 +303,12 @@ export default class SignIn extends Component {
                 })
             }, global.TimingCount)
         } else {
+            this.setState({
+                isLoading: true,
+                ErrorPrompt: false,
+                ErrorText: '加载中...',
+                ErrorImg: require('../images/loading.png'),
+            })
             let formData = new FormData();
             formData.append("doctorPhone", this.state.doctorPhone);
             formData.append("doctorPassword", this.state.doctorPassword);
@@ -309,14 +324,27 @@ export default class SignIn extends Component {
                 .then((responseData) => {
                     console.log('responseData', responseData);
                     if (responseData.code == 20000) {
-                        // global.Alert.alert("登录成功");
+                        this.setState({
+                            isLoading: false,
+                            ErrorPrompt: false,
+                            ErrorText: '登录成功',
+                            ErrorImg: require('../images/succeed.png'),
+                        })
                         Storage.setItem("token", responseData.result);
                         global.Token = responseData.result;
-                        this.props.navigation.navigate("Home");
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPrompt: true,
+                            })
+                            this.props.navigation.navigate("Home");
+                        }, global.TimingCount)
                     } else if (responseData.code == 20005) {
                         this.setState({
+                            isLoading: false,
                             ErrorPrompt: false,
-                            ErrorText: "账号或密码错误"
+                            ErrorText: "账号或密码错误",
+                            ErrorImg: require('../images/error.png'),
                         })
                         clearTimeout(this.timer);
                         this.timer = setTimeout(() => {
@@ -326,7 +354,9 @@ export default class SignIn extends Component {
                         }, global.TimingCount)
                     } else {
                         this.setState({
+                            isLoading: false,
                             ErrorPrompt: false,
+                            ErrorImg: require('../images/error.png'),
                             ErrorText: "登录失败"
                         })
                         clearTimeout(this.timer);

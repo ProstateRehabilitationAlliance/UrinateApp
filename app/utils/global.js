@@ -28,7 +28,7 @@ export let global = {
     NavHeight: Platform.OS === 'ios' ? (isIphoneX() ? 88 : 64) : 44,// 导航高度
     TabBar: isIphoneX() ? 34 : 0,// tabBar 高度
     IPhoneX: isIphoneX(),// 判断iPhoneX
-    TimingCount: 2500,// 提示框显示石材
+    TimingCount: 800,// 提示框显示石材
     LinearGradient: ["#59a9e8", "#2c6cb5"],
 };
 

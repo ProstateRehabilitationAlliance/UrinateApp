@@ -14,8 +14,9 @@ export default class ForgetPassword extends Component {
             isEyes: true,// 是否显示密码 true不显示 false显示
             confirmEyes: true,// 确认密码眼睛
 
-            ErrorPrompt: true,// 错误提示是否显示
-            ErrorText: "",// 错误提示文字
+            ErrorPrompt: true,// 提示是否显示
+            ErrorText: "",// 提示文字
+            ErrorImg: '',// 提示图片
 
             doctorPhoneReg: true,// 手机号是否符合规则
             doctorPasswordReg: true,// 密码是否符合规则
@@ -118,6 +119,7 @@ export default class ForgetPassword extends Component {
                                             ErrorText: '请输入手机号',
                                             doctorPhoneReg: false,
                                             ErrorPrompt: false,
+                                            ErrorImg: require('../images/error.png')
                                         })
                                         clearTimeout(this.timer);
                                         this.timer = setTimeout(() => {
@@ -131,6 +133,7 @@ export default class ForgetPassword extends Component {
                                             ErrorText: '手机号码格式不正确',
                                             doctorPhoneReg: false,
                                             ErrorPrompt: false,
+                                            ErrorImg: require('../images/error.png')
                                         })
                                         clearTimeout(this.timer);
                                         this.timer = setTimeout(() => {
@@ -217,8 +220,8 @@ export default class ForgetPassword extends Component {
                     <View style={styles.btnBox}>
                         <Button text="完成" click={this.passwordReset.bind(this)} />
                     </View>
-                    {this.state.ErrorPrompt ? null : <ErrorPrompt text={this.state.ErrorText} />}
                 </ScrollView>
+                {this.state.ErrorPrompt ? null : <ErrorPrompt text={this.state.ErrorText} imgUrl={this.state.ErrorImg} />}
             </View>
         );
     }
@@ -235,6 +238,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 doctorPhoneReg: false,
                 ErrorText: '请输入手机号',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -247,6 +251,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 doctorPhoneReg: false,
                 ErrorText: '手机号码格式不正确',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -262,6 +267,13 @@ export default class ForgetPassword extends Component {
     }
     // 获取验证码
     getPasswordSms() {
+        this.setState({
+            isLoading: true,
+            ErrorPrompt: false,
+            doctorPhoneReg: true,
+            ErrorText: '正在获取验证码...',
+            ErrorImg: require('../images/loading.png')
+        })
         fetch(requestUrl.passwordSms + '?passwordPhone=' + this.state.doctorPhone, {
             method: 'GET',
             headers: {
@@ -273,9 +285,11 @@ export default class ForgetPassword extends Component {
                 console.log('responseData', responseData);
                 if (responseData.code == 20005) {
                     this.setState({
+                        isLoading: false,
                         ErrorPrompt: false,
                         doctorPhoneReg: false,
                         ErrorText: '该手机号还未注册',
+                        ErrorImg: require('../images/error.png')
                     })
                     clearTimeout(this.timer);
                     this.timer = setTimeout(() => {
@@ -285,9 +299,11 @@ export default class ForgetPassword extends Component {
                     }, global.TimingCount)
                 } else if (responseData.code == 20000) {
                     this.setState({
+                        isLoading: false,
                         ErrorPrompt: false,
                         doctorPhoneReg: false,
                         ErrorText: '验证码发送成功',
+                        ErrorImg: require('../images/succeed.png')
                     })
                     clearTimeout(this.timer);
                     this.timer = setTimeout(() => {
@@ -297,9 +313,11 @@ export default class ForgetPassword extends Component {
                     }, global.TimingCount)
                 } else {
                     this.setState({
+                        isLoading: false,
                         ErrorPrompt: false,
                         doctorPhoneReg: false,
                         ErrorText: '验证码发送失败',
+                        ErrorImg: require('../images/error.png')
                     })
                     clearTimeout(this.timer);
                     this.timer = setTimeout(() => {
@@ -326,6 +344,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 smsCodeReg: false,
                 ErrorText: '请输入验证码',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -338,6 +357,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 smsCodeReg: false,
                 ErrorText: '验证码格式不正确',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -364,6 +384,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 doctorPasswordReg: false,
                 ErrorText: '请输入密码',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -376,6 +397,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 doctorPasswordReg: false,
                 ErrorText: '密码为6-10个字符（数字+字母）',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -404,6 +426,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 confirmPasswordReg: false,
                 ErrorText: '请再次输入密码',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -416,6 +439,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 confirmPasswordReg: false,
                 ErrorText: '确认密码为6-10个字符（数字+字母）',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -428,6 +452,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 confirmPasswordReg: false,
                 ErrorText: '两次密码不一致',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -448,6 +473,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 doctorPhoneReg: false,
                 ErrorText: '请输入手机号',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -460,6 +486,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 doctorPhoneReg: false,
                 ErrorText: '手机号码格式不正确',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -472,6 +499,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 smsCodeReg: false,
                 ErrorText: '请输入验证码',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -484,6 +512,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 smsCodeReg: false,
                 ErrorText: '验证码格式不正确',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -496,6 +525,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 doctorPasswordReg: false,
                 ErrorText: '请输入密码',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -508,6 +538,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 doctorPasswordReg: false,
                 ErrorText: '密码为6-10个字符（数字+字母）',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -520,6 +551,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 confirmPasswordReg: false,
                 ErrorText: '请再次输入密码',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -532,6 +564,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 confirmPasswordReg: false,
                 ErrorText: '确认密码为6-10个字符（数字+字母）',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -544,6 +577,7 @@ export default class ForgetPassword extends Component {
                 ErrorPrompt: false,
                 confirmPasswordReg: false,
                 ErrorText: '两次密码不一致',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -552,6 +586,12 @@ export default class ForgetPassword extends Component {
                 })
             }, global.TimingCount)
         } else {
+            this.setState({
+                isLoading: true,
+                ErrorPrompt: false,
+                ErrorText: '提交中...',
+                ErrorImg: require('../images/loading.png')
+            })
             let formData = new FormData();
             formData.append("doctorPhone", this.state.doctorPhone);
             formData.append("doctorPassword", this.state.doctorPassword);
@@ -567,22 +607,33 @@ export default class ForgetPassword extends Component {
                 .then((responseData) => {
                     console.log('responseData', responseData);
                     if (responseData.code == 20000) {
-                        global.Alert.alert("重置密码成功")
-                    } else if (responseData.code == 50006) {
                         this.setState({
+                            isLoading: false,
                             ErrorPrompt: false,
-                            ErrorText: "验证码错误"
+                            ErrorText: '密码重置成功',
+                            ErrorImg: require('../images/succeed.png')
                         })
                         clearTimeout(this.timer);
                         this.timer = setTimeout(() => {
                             this.setState({
                                 ErrorPrompt: true,
                             })
+                            this.props.navigation.navigate("SignIn")
                         }, global.TimingCount)
+                    } else if (responseData.code == 50006) {
+                        this.setState({
+                            isLoading: false,
+                            ErrorPrompt: false,
+                            ErrorText: "验证码错误",
+                            ErrorImg: require('../images/error.png')
+                        })
+
                     } else {
                         this.setState({
+                            isLoading: false,
                             ErrorPrompt: false,
-                            ErrorText: "重置密码失败"
+                            ErrorText: "重置密码失败",
+                            ErrorImg: require('../images/error.png')
                         })
                         clearTimeout(this.timer);
                         this.timer = setTimeout(() => {
@@ -602,12 +653,12 @@ export default class ForgetPassword extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        position: 'relative',
         backgroundColor: global.Colors.bgColor,
         paddingBottom: global.TabBar,
     },
     // 导航Box
     navContent: {
-        position: 'relative',
         paddingTop: global.StatusBarHeight,
         height: global.NavHeight,
         backgroundColor: global.Colors.textfff,

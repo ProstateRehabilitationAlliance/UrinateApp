@@ -13,7 +13,7 @@ export default class ErrorPrompt extends Component {
                 <View style={styles.content}>
                     <Image
                         style={styles.img}
-                        source={this.props.imgUrl}
+                        source={this.props.imgUrl ? this.props.imgUrl : require('../images/error.png')}
                     />
                     <Text style={styles.text}>{this.props.text}</Text>
                 </View>
@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
         paddingRight: global.px2dp(15),
         paddingLeft: global.px2dp(15),
         paddingBottom: global.px2dp(15),
+        minWidth: global.px2dp(120),
     },
     img: {
         width: global.px2dp(34),

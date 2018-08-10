@@ -14,8 +14,9 @@ export default class SignCodeIn extends Component {
             TimingFlag: false,// 是否在倒计时
             TimingText: "获取验证码",// 获取验证码文字
 
-            ErrorPrompt: true,// 错误提示是否显示
-            ErrorText: '',// 错误提示文字
+            ErrorPrompt: true,// 提示是否显示
+            ErrorText: '',// 提示文字
+            ErrorImg: '',// 提示图片
 
             doctorPhoneFocus: false,// 账号焦点
             smsCodeFocus: false,// 校验码焦点
@@ -109,6 +110,7 @@ export default class SignCodeIn extends Component {
                                 underlineColorAndroid={'transparent'}
                                 keyboardType={'numeric'}
                                 secureTextEntry={this.state.isEyes ? true : false}
+                                maxLength={6}
                                 onFocus={this.smsCodeFocus.bind(this)}
                                 onBlur={this.smsCodeBlur.bind(this)}
                             />
@@ -146,6 +148,7 @@ export default class SignCodeIn extends Component {
                                                 ErrorPrompt: false,
                                                 phoneReg: false,
                                                 ErrorText: '请输入手机号',
+                                                ErrorImg: require('../images/error.png')
                                             })
                                             clearTimeout(this.timer);
                                             this.timer = setTimeout(() => {
@@ -159,6 +162,7 @@ export default class SignCodeIn extends Component {
                                                 ErrorPrompt: false,
                                                 phoneReg: false,
                                                 ErrorText: '手机号码格式不正确',
+                                                ErrorImg: require('../images/error.png')
                                             })
                                             clearTimeout(this.timer);
                                             this.timer = setTimeout(() => {
@@ -203,7 +207,7 @@ export default class SignCodeIn extends Component {
                     </View>
                 </View>
 
-                {this.state.ErrorPrompt ? null : <ErrorPrompt text={this.state.ErrorText} imgUrl={require('../images/error.png')} />}
+                {this.state.ErrorPrompt ? null : <ErrorPrompt text={this.state.ErrorText} imgUrl={this.state.ErrorImg} />}
             </ScrollView>
         );
     }
@@ -224,6 +228,7 @@ export default class SignCodeIn extends Component {
                 phoneReg: false,
                 ErrorPrompt: false,
                 ErrorText: '请输入手机号',
+                ErrorImg: require('../images/error.png'),
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -235,7 +240,8 @@ export default class SignCodeIn extends Component {
             this.setState({
                 phoneReg: false,
                 ErrorPrompt: false,
-                ErrorText: '手机号码格式不正确'
+                ErrorText: '手机号码格式不正确',
+                ErrorImg: require('../images/error.png'),
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -265,6 +271,7 @@ export default class SignCodeIn extends Component {
             this.setState({
                 smsCodeReg: false,
                 ErrorPrompt: false,
+                ErrorImg: require('../images/error.png'),
                 ErrorText: '请输入验证码',
             })
             clearTimeout(this.timer);
@@ -277,6 +284,7 @@ export default class SignCodeIn extends Component {
             this.setState({
                 smsCodeReg: false,
                 ErrorPrompt: false,
+                ErrorImg: require('../images/error.png'),
                 ErrorText: '验证码格式错误'
             })
             clearTimeout(this.timer);
@@ -297,6 +305,7 @@ export default class SignCodeIn extends Component {
             this.setState({
                 ErrorPrompt: false,
                 phoneReg: false,
+                ErrorImg: require('../images/error.png'),
                 ErrorText: '请输入手机号',
             })
             clearTimeout(this.timer);
@@ -309,6 +318,7 @@ export default class SignCodeIn extends Component {
             this.setState({
                 ErrorPrompt: false,
                 phoneReg: false,
+                ErrorImg: require('../images/error.png'),
                 ErrorText: '手机号码格式不正确',
             })
             clearTimeout(this.timer);
@@ -318,10 +328,17 @@ export default class SignCodeIn extends Component {
                 })
             }, global.TimingCount)
         } else {
+            this.setState({
+                phoneReg: true,
+                isLoading: true,
+                ErrorPrompt: false,
+                ErrorImg: require('../images/loading.png'),
+                ErrorText: '正在获取验证码...',
+            })
             fetch(requestUrl.loginSms + '?loginPhone=' + this.state.doctorPhone, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'multipart/form-data',                     "token": global.Token,
+                    'Content-Type': 'multipart/form-data', "token": global.Token,
                 },
             })
                 .then((response) => response.json())
@@ -329,9 +346,11 @@ export default class SignCodeIn extends Component {
                     console.log('responseData', responseData);
                     if (responseData.code == 20005) {
                         this.setState({
+                            isLoading: false,
                             ErrorPrompt: false,
                             phoneReg: false,
                             ErrorText: '该手机号还未注册',
+                            ErrorImg: require('../images/error.png')
                         })
                         clearTimeout(this.timer);
                         this.timer = setTimeout(() => {
@@ -341,9 +360,10 @@ export default class SignCodeIn extends Component {
                         }, global.TimingCount)
                     } else if (responseData.code == 20000) {
                         this.setState({
+                            isLoading: false,
                             ErrorPrompt: false,
-                            phoneReg: false,
                             ErrorText: '验证码发送成功',
+                            ErrorImg: require('../images/succeed.png')
                         })
                         clearTimeout(this.timer);
                         this.timer = setTimeout(() => {
@@ -353,9 +373,11 @@ export default class SignCodeIn extends Component {
                         }, global.TimingCount)
                     } else {
                         this.setState({
+                            isLoading: false,
                             ErrorPrompt: false,
                             phoneReg: false,
                             ErrorText: '验证码发送失败',
+                            ErrorImg: require('../images/error.png')
                         })
                         clearTimeout(this.timer);
                         this.timer = setTimeout(() => {
@@ -377,6 +399,7 @@ export default class SignCodeIn extends Component {
             this.setState({
                 ErrorPrompt: false,
                 ErrorText: '请输入手机号',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -389,6 +412,7 @@ export default class SignCodeIn extends Component {
                 ErrorPrompt: false,
                 phoneReg: false,
                 ErrorText: '手机号码格式不正确',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -400,6 +424,7 @@ export default class SignCodeIn extends Component {
             this.setState({
                 ErrorPrompt: false,
                 ErrorText: '请输入验证码',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -411,6 +436,7 @@ export default class SignCodeIn extends Component {
             this.setState({
                 ErrorPrompt: false,
                 ErrorText: '验证码格式不正确',
+                ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
@@ -419,13 +445,19 @@ export default class SignCodeIn extends Component {
                 })
             }, global.TimingCount)
         } else {
+            this.setState({
+                isLoading: true,
+                ErrorPrompt: false,
+                ErrorText: '登录中...',
+                ErrorImg: require('../images/loading.png')
+            })
             let formData = new FormData();
             formData.append("doctorPhone", this.state.doctorPhone);
             formData.append("smsCode", this.state.smsCode);
             fetch(requestUrl.smsLogin, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',                     "token": global.Token,
+                    'Content-Type': 'multipart/form-data', "token": global.Token,
                 },
                 body: formData,
             })
@@ -434,20 +466,27 @@ export default class SignCodeIn extends Component {
                     console.log('responseData', responseData);
                     if (responseData.code == 20000) {
                         this.setState({
+                            isLoading: false,
                             ErrorPrompt: false,
                             ErrorText: '登录成功',
+                            ErrorImg: require('../images/succeed.png')
                         })
+                        Storage.setItem("token", responseData.result);
+                        global.Token = responseData.result;
                         clearTimeout(this.timer);
                         this.timer = setTimeout(() => {
                             this.setState({
                                 ErrorPrompt: true,
                             })
+                            this.props.navigation.navigate("Home");
                         }, global.TimingCount)
                     } else if (responseData.code == 50006) {
                         this.setState({
+                            isLoading: false,
                             ErrorPrompt: false,
                             smsCodeReg: false,
                             ErrorText: '验证码错误',
+                            ErrorImg: require('../images/error.png')
                         })
                         clearTimeout(this.timer);
                         this.timer = setTimeout(() => {
@@ -457,8 +496,10 @@ export default class SignCodeIn extends Component {
                         }, global.TimingCount)
                     } else {
                         this.setState({
+                            isLoading: false,
                             ErrorPrompt: false,
                             ErrorText: '登录失败',
+                            ErrorImg: require('../images/error.png')
                         })
                         clearTimeout(this.timer);
                         this.timer = setTimeout(() => {
