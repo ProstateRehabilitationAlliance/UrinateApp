@@ -29,6 +29,7 @@ import ContactTab from "./contact/Contact";// 通讯录
 import StudyTab from "./study/Study";// 直播课
 import MyTab from "./my/My";// 个人中心
 import Authentication from "./my/Authentication";// 认证信息
+import Protocol from "./my/Protocol";// 协议
 
 import LookImg from "./common/LookImg";// 查看大图
 // 页面引入-end
@@ -151,6 +152,9 @@ export default createSwitchNavigator(
         },
         Authentication: {
             screen: Authentication,// 认证信息查看
+        },
+        Protocol: {
+            screen: Protocol,// 协议
         },
         LookImg: {
             screen: LookImg,// 查看大图

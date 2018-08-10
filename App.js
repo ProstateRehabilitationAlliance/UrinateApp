@@ -3,8 +3,9 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView,
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
-import LinearGradient from 'react-native-linear-gradient';
-export default class signIn extends Component {
+import Button from "../common/Button";// 按钮组件
+import Nav from "../common/Nav";// 导航组件
+export default class Protocol extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -37,11 +38,7 @@ export default class signIn extends Component {
                     </TouchableOpacity>
                 </View> */}
         return (
-            <ScrollView
-                style={styles.container}
-                alwaysBounceVertical={true}// ios不满一屏时弹性
-                bounces={false}// ios弹性
-            >
+            <View style={styles.container}>
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏
@@ -52,14 +49,15 @@ export default class signIn extends Component {
                     statusBarStyle={"default"}//状态栏样式 default	默认（IOS为白底黑字、Android为黑底白字）
                     barStyle={"light-content"}// 状态栏文本的颜色。
                 />
-                <LinearGradient
-                    start={{ x: 0.0, y: 0.25 }} end={{ x: 0.5, y: 1.0 }}
-                    locations={[0, 0.5, 0.6]}
-                    colors={['#4c669f', '#3b5998', '#192f6a']}
-                    style={styles.linearGradient}>
-                </LinearGradient>
-            </ScrollView>
+                <Nav title={"协议"} leftClick={this.goBack.bind(this)} />
+                <ScrollView>
+
+                </ScrollView>
+            </View>
         );
+    }
+    goBack() {
+        global.Alert.alert('后退')
     }
 }
 
@@ -67,8 +65,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: global.Colors.bgColor,
-        paddingTop: 20,
-        paddingBottom: global.TabBar,
     }
 });
 
