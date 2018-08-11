@@ -7,6 +7,9 @@ import Button from "../common/Button";
 import Nav from "../common/Nav";
 import ErrorPrompt from "../common/ErrorPrompt";
 export default class Authentication extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {
@@ -188,8 +191,8 @@ export default class Authentication extends Component {
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container}>
-                <Nav title="认证信息" leftClick={this.goBack()} />
-                <ScrollView style={{marginBottom: global.px2dp(15)}}>
+                <Nav title="认证信息" leftClick={this.goBack.bind(this)} />
+                <ScrollView style={{ marginBottom: global.px2dp(15) }}>
                     {/*  // AUTHENTICATION_PROGRESS  审核中 */}
                     {this.state.approveStatus == "AUTHENTICATION_PROGRESS" ?
                         <View style={styles.approveStatusContnet}>
@@ -314,7 +317,7 @@ export default class Authentication extends Component {
     }
     // 后退事件
     goBack() {
-
+        this.props.navigation.goBack();
     }
     // 提交事件
     submit() {

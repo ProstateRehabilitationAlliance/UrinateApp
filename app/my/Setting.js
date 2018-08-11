@@ -6,6 +6,9 @@ import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";// 按钮组件
 import Nav from "../common/Nav";// 导航组件
 export default class Setting extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {
@@ -48,7 +51,7 @@ export default class Setting extends Component {
                     <View style={styles.content}>
                         <TouchableOpacity
                             activeOpacity={.8}
-                            onPress={() => { }}
+                            onPress={() => { navigate('Feedback'); }}
                             style={[styles.itemBtn, { borderBottomColor: global.Colors.text999, borderBottomWidth: global.Pixel }]}
                         >
                             <Text style={styles.itemTitle}>意见反馈</Text>
@@ -56,7 +59,7 @@ export default class Setting extends Component {
                         </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={.8}
-                            onPress={() => { }}
+                            onPress={() => { navigate('About'); }}
                             style={styles.itemBtn}
                         >
                             <Text style={styles.itemTitle}>关于</Text>
@@ -64,7 +67,7 @@ export default class Setting extends Component {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.btnBox}>
-                        <Button text={"退出登录"} click={this.loginOut.bind(this)} style={{borderRadius: global.px2dp(3)}}/>
+                        <Button text={"退出登录"} click={this.loginOut.bind(this)} style={{ borderRadius: global.px2dp(3) }} />
                     </View>
                 </ScrollView>
             </View>

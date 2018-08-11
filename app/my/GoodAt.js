@@ -6,10 +6,13 @@ import { global } from '../utils/Global';// 常量
 import Nav from "../common/Nav";// 导航组件
 import ErrorPrompt from "../common/ErrorPrompt";
 export default class GoodAt extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: true,
+            isLoading: false,
 
             ErrorPromptFlag: false,
             ErrorPromptText: '',

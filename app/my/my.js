@@ -106,7 +106,7 @@ export default class My extends Component {
                         style={[styles.navigateBtn, { borderBottomWidth: global.Pixel }]}
                         activeOpacity={.8}
                         onPress={() => {
-                            // navigate();
+                            navigate('PersonalInfo');
                         }}>
                         <View style={styles.navigateBox}>
                             <Image
@@ -182,7 +182,7 @@ export default class My extends Component {
                         style={[styles.navigateBtn, { borderBottomWidth: global.Pixel }]}
                         activeOpacity={.8}
                         onPress={() => {
-                            // navigate();
+                            navigate("Setting");
                         }}>
                         <View style={styles.navigateBox}>
                             <Image
@@ -215,7 +215,7 @@ export default class My extends Component {
                         />
                     </TouchableOpacity>
                 </View>
-                <View style={{height: global.px2dp(20)}}></View>
+                <View style={{ height: global.px2dp(20) }}></View>
             </ScrollView>
         );
     }

@@ -7,6 +7,9 @@ import Button from "../common/Button";// 按钮组件
 import Nav from "../common/Nav";// 导航组件
 import ErrorPrompt from "../common/ErrorPrompt";
 export default class Feedback extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {

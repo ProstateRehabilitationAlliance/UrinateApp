@@ -24,10 +24,13 @@ const photoOptions = {
     },
 };
 export default class HeadImg extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: true,
+            isLoading: false,
 
             ErrorPromptFlag: false,
             ErrorPromptText: '',

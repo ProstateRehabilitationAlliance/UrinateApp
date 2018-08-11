@@ -11,6 +11,9 @@ import { global } from '../utils/Global';
 import ImageViewer from 'seer-react-native-image-zoom-viewer';
 
 export default class LookImg extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {

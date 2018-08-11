@@ -7,6 +7,9 @@ import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";// 错误格式提示
 import { Storage } from "../utils/AsyncStorage";
 export default class SignIn extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {

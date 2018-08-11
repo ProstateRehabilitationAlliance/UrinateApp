@@ -8,6 +8,9 @@ import ErrorPrompt from "../common/ErrorPrompt";
 import CountDownButton from 'react-native-smscode-count-down';// 倒计时
 
 export default class SignUp extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {

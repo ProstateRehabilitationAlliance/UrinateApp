@@ -6,6 +6,9 @@ import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";// 按钮组件
 import Nav from "../common/Nav";// 导航组件
 export default class Protocol extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {

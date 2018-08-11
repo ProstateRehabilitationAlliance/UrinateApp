@@ -5,6 +5,9 @@ import { requestUrl } from './netWork/Url';// IP地址
 import { global } from './utils/Global';// 常量
 import { Storage } from "./utils/AsyncStorage";
 export default class Start extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {

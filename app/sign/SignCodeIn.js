@@ -7,6 +7,9 @@ import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";// 错误格式提示
 import CountDownButton from 'react-native-smscode-count-down';// 倒计时
 export default class SignCodeIn extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {

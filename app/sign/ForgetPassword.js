@@ -7,6 +7,9 @@ import CountDownButton from 'react-native-smscode-count-down';// 倒计时
 import Button from "../common/Button";
 import ErrorPrompt from "../common/ErrorPrompt";
 export default class ForgetPassword extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {

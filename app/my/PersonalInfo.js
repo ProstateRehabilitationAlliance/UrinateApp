@@ -6,6 +6,9 @@ import { global } from '../utils/Global';// 常量
 import Nav from "../common/Nav";// 导航组件
 import ErrorPrompt from "../common/ErrorPrompt";
 export default class PersonalInfo extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {
@@ -35,9 +38,6 @@ export default class PersonalInfo extends Component {
         // 2仅调用一次在 render 前
     }
     componentDidMount() {
-
-
-
         // 获取个人信息数据-start
         return false;
         this.setState({
@@ -116,23 +116,9 @@ export default class PersonalInfo extends Component {
                 console.log('error', error);
             });
         // 获取个人信息数据-end
-
-
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
-        {/* <View style={styles.container} >
-                    <Text> 我的</Text>
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={{ uri: 'https://img1.360buyimg.com/da/jfs/t23440/198/1552616732/96159/b2b38b62/5b62c871N7bc2b6fd.jpg' }}
-                        defaultSource={require('../images/radio_yes.png')}// 默认图片
-                    />
-                    <TouchableOpacity activeOpacity={.8}
-                        onPress={() => this.click()}>
-                        <Text>点击</Text>
-                    </TouchableOpacity>
-                </View> */}
         return (
             <View style={styles.container}>
                 <Nav isLoading={this.state.isLoading} title={"个人信息"} leftClick={this.goBack.bind(this)} />
@@ -150,7 +136,9 @@ export default class PersonalInfo extends Component {
                         <TouchableOpacity
                             style={styles.itemContent}
                             activeOpacity={.8}
-                            onPress={() => { }}>
+                            onPress={() => {
+                                navigate('HeadImg');
+                            }}>
                             <Text style={styles.itemTitle}>照片</Text>
                             <View style={styles.itemBox}>
                                 <Image
@@ -200,14 +188,14 @@ export default class PersonalInfo extends Component {
                         <TouchableOpacity
                             style={styles.itemContent}
                             activeOpacity={.8}
-                            onPress={() => { }}>
+                            onPress={() => { navigate('Resume'); }}>
                             <Text style={styles.itemTitle}>个人简历</Text>
                             <Image source={require('../images/arrow_right_grey.png')} />
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.itemContent}
                             activeOpacity={.8}
-                            onPress={() => { }}>
+                            onPress={() => { navigate('GoodAt'); }}>
                             <Text style={styles.itemTitle}>擅长</Text>
                             <Image source={require('../images/arrow_right_grey.png')} />
                         </TouchableOpacity>
