@@ -69,7 +69,7 @@ export default class Protocol extends Component {
         );
     }
     goBack() {
-        global.Alert.alert('后退')
+        this.props.navigation.goBack();
     }
     submit() {
         global.Alert.alert('完成')

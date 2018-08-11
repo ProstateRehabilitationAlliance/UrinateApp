@@ -9,6 +9,9 @@ import UpFile from "../common/UpFile";
 import ErrorPrompt from "../common/ErrorPrompt";
 import SubmitPrompt from "../common/SubmitPrompt";
 export default class Approve extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {
@@ -194,7 +197,7 @@ export default class Approve extends Component {
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container}>
-                <Nav title="认证信息" leftClick={this.goBack()} />
+                <Nav title="认证信息" leftClick={this.goBack.bind(this)} />
                 <ScrollView>
                     <View style={styles.itemContent}>
                         {/* title 模块 start */}
@@ -606,7 +609,7 @@ export default class Approve extends Component {
     }
     // 后退事件
     goBack() {
-
+        this.props.navigation.goBack();
     }
     // 提交事件
     submit() {

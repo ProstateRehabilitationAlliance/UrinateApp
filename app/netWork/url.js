@@ -8,10 +8,13 @@ export let requestUrl = {
     "smsLogin": IP + "/api-user/doctor/smsLogin",// 验证码登陆接口
     "loginSms": IP + "/api-user/doctor/loginSms",// 登陆获取短信验证码
     "passwordSms": IP + "/api-user/doctor/passwordSms",// 修改密码获取短信验证码
-    "passwordReset": IP + "/api-user/doctor/passwordReset",// 重设 登陆密码
+    "passwordReset": IP + "/api-user/doctor/passwordReset",// 重置 登陆密码
+    "getUsername": IP + "/api-user/doctor/getUsername",// 获取用户登陆手机号
+    "updatePassword": IP + "/api-user/doctor/updatePassword",// 根据旧密码修改密码
+
     // 文件上传
     "uploadAuthentication": IP + "/api-third/cos/upload",// 上传认证图片接口
-    "loginImg": IP + "/api-third/cos/upload",// 上传医生头像接口
+    "uploadHeadImg": IP + "/api-third/cos/upload",// 上传医生头像接口
 
 
     // 认证相关
@@ -27,6 +30,15 @@ export let requestUrl = {
     "getBranchServiceJson": IP + "/api-stata/cache/static/getBranchServiceJson",// 科室信息查询
     "getHospitalJson": IP + "/api-stata/cache/static/getHospitalJson",// 查询医院信息
 
+    // 个人中心
+    "getDoctorDetail": IP + "/doctor/detail/getDoctorDetail",// 医生查询个人信息
+    "updateDoctorDetail": IP + "/doctor/detail/updateDoctorDetail",// 医生修改个人信息
+    "findDoctorList": IP + "/api-user/doctor/detail/findDoctorList",// 条件查询医生列表
+    "getDoctorDetailById": IP + "/api-user/doctor/detail/getDoctorDetailById",// 其他用户查询医生信息
+    
+    "addFeedback": IP + "/api-stata/feedback/add",// 添加反馈意见
 
+    // "login": IP + "login",// 注册接口
+    // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
 };

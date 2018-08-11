@@ -6,7 +6,24 @@ import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";
 import Nav from "../common/Nav";// 导航组件
-export default class Protocol extends Component {
+import ImagePicker from 'react-native-image-picker';
+const photoOptions = {
+    title: '请选择',
+    cancelButtonTitle: '取消',
+    takePhotoButtonTitle: '拍照',
+    chooseFromLibraryButtonTitle: '选择相册',
+    quality: .75,
+    allowsEditing: false,// ios图片裁剪
+    mediaType: 'photo',//photo照片 或 video视频
+    noData: false,
+    maxWidth: 720,
+    maxHeight: 1280,
+    storageOptions: {
+        skipBackup: true,
+        path: 'images'
+    },
+};
+export default class HeadImg extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,6 +32,9 @@ export default class Protocol extends Component {
             ErrorPromptFlag: false,
             ErrorPromptText: '',
             ErrorPromptImg: '',
+
+            headImg: '',
+            headImgUrl: '',
         }
     }
     getInitalState() {
@@ -27,91 +47,93 @@ export default class Protocol extends Component {
         // 4获取数据 在 render 后
     }
     render() {
-        // 3 渲染 render
-        // 变量声明
-        // const { navigate, goBack } = this.props.navigation;
-        {/* <FlatList
-                                style={styles.flatListStyle}
-                                data={this.state.titleData}
-                                // initialNumToRender={20}
-                                keyExtractor={item => item.id}
-                                // ListFooterComponent={() => {
-                                // 尾部组件
-                                // }}
-                                renderItem={({ item }) => this.titleRenderItem(item)}
-                                // 分隔线
-                                ItemSeparatorComponent={() => {
-                                    return (
-                                        <View style={{
-                                            height: global.Pixel,
-                                            backgroundColor: global.Colors.text999,
-                                        }}></View>
-                                    )
-                                }}
-                            // onRefresh={() => { }}//头部刷新组件
-                            // refreshing={this.state.isRefresh}//加载图标
-                            // onEndReached={() => this.onEndReached()} // 加载更多
-                            // onEndReachedThreshold={.1}// 加载更多触发时机
-                            // ListEmptyComponent={() => {
-                            //     // 无数据时显示的内容
-                            //     return (
-                            //         <View style={styles.noDataBox}>
-                            //             <Image source={require('../../images/no_data.png')} />
-                            //             <Text style={styles.noDataText}>暂无信息</Text>
-                            //         </View>
-                            //     )
-                            // }}
-                            /> */}
-        // titleRenderItem = (item) => {
-        //     console.log(item)
-        //     const { navigate } = this.props.navigation;
-        //     return (
-        //         <TouchableOpacity
-        //             onPress={() => {
-        //                 console.log(item)
-        //             }}
-        //             activeOpacity={.8}
-        //             key={item.id}
-        //         >
-        //             <View>
-        //                 <Text>{item.name}</Text>
-        //             </View>
-        //         </TouchableOpacity>
-
-        //     )
-        // }
-        {/* <View style={styles.container} >
-                    <Text> 我的</Text>
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={{ uri: 'https://img1.360buyimg.com/da/jfs/t23440/198/1552616732/96159/b2b38b62/5b62c871N7bc2b6fd.jpg' }}
-                        defaultSource={require('../images/radio_yes.png')}// 默认图片
-                    />
-                    <TouchableOpacity activeOpacity={.8}
-                        onPress={() => this.click()}>
-                        <Text>点击</Text>
-                    </TouchableOpacity>
-                </View> */}
+        const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container}>
-                <Nav isLoading={this.state.isLoading} title={"协议"} leftClick={this.goBack.bind(this)} />
+                <Nav
+                    isLoading={this.state.isLoading}
+                    title={"更换头像"}
+                    leftClick={this.goBack.bind(this)} />
                 <ScrollView>
+                    <TouchableOpacity
+                        style={styles.upImgBtn}
+                        activeOpacity={.8}
+                        onPress={() => { this.openMycamera() }}>
+                        <Image style={styles.upImg} source={require('../images/head_btn.png')} />
+                        <Text style={styles.upImgText}>点击上传头像</Text>
+                    </TouchableOpacity>
                     <View style={styles.btnBox}>
-                        <Button text={'保存'} click={this.submit.bind(this)} />
+                        <Button text={'保 存'} click={this.submit.bind(this)} />
                     </View>
                 </ScrollView>
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View>
         );
     }
+    openMycamera = () => {
+        ImagePicker.showImagePicker(photoOptions, (response) => {
+            if (response.didCancel) {
+                return null;
+            } else if (response.error) {
+                console.log('ImagePicker Error:', response.error)
+            } else if (response.customButton) {
+                console.log('Usr tapped custom button:', response.customButton)
+            } else {
+                this.setState({
+                    headImg: response.uri
+                })
+                this.uploadHeadImg(response);
+            }
+        })
+    }
+    uploadHeadImg(response) {
+        let formData = new FormData();
+        formData.append("file", {
+            uri: response.uri,
+            type: 'image/jpeg',
+            name: response.fileName
+        });
+        formData.append("recordType", 'doctor-sign');
+        fetch(requestUrl.uploadHeadImg, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+            body: formData,
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        headImgUrl: responseData.result
+                    })
+                } else {
+                    this.setState({
+                        ErrorPrompt: true,
+                        ErrorText: '头像上传失败请重新上传',
+                        ErrorImg: require('../images/error.png'),
+                    });
+                    clearTimeout(this.timer);
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPrompt: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
     goBack() {
         this.props.navigation.goBack();
     }
     submit() {
-        if (!this.state.text) {
+        if (!this.state.headImgUrl) {
             this.setState({
                 ErrorPromptFlag: true,
-                ErrorPromptText: '请输入内容',
+                ErrorPromptText: '请上传照片',
                 ErrorPromptImg: require('../images/error.png'),
             })
             clearTimeout(this.timer)
@@ -127,6 +149,7 @@ export default class Protocol extends Component {
                 ErrorPromptText: '提交中...',
                 ErrorPromptImg: require('../images/loading.png'),
             })
+            // 修改医生信息接口
             let formData = new FormData();
             formData.append("feedbackText", this.state.text);
             fetch(requestUrl.addFeedback, {
@@ -179,8 +202,21 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: global.Colors.bgColor,
     },
+
+    upImgBtn: {
+        width: global.SCREEN_WIDTH,
+        height: global.px2dp(245),
+        backgroundColor: global.Colors.textfff,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    upImgText: {
+        fontSize: global.px2dp(18),
+        color: global.Colors.text333,
+        marginTop: global.px2dp(21),
+    },
     btnBox: {
-        marginTop: global.px2dp(15),
+        marginTop: global.px2dp(33),
         marginLeft: global.px2dp(15),
         marginRight: global.px2dp(15),
     },

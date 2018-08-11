@@ -6,7 +6,9 @@ import LinearGradient from 'react-native-linear-gradient';
 export default class signIn extends Component {
     static defaultProps = {
         leftClick: function () { },
+        rightClick: function () { },
         title: '',
+        isLoading: false,
     };
     constructor(props) {
         super(props);
@@ -37,7 +39,7 @@ export default class signIn extends Component {
                     backgroundColor={'#000'}//android 设置状态栏背景颜色
                     translucent={false}//android 设置状态栏是否为透明
                     showHideTransition="fade"//IOS状态栏改变时动画 fade:默认 slide
-                    networkActivityIndicatorVisible={this.state.isLoading}//IOS设定网络活动指示器(就是那个菊花)是否显示在状态栏。
+                    networkActivityIndicatorVisible={this.props.isLoading}//IOS设定网络活动指示器(就是那个菊花)是否显示在状态栏。
                     statusBarStyle={"default"}//状态栏样式 default	默认（IOS为白底黑字、Android为黑底白字）
                     barStyle={"light-content"}// 状态栏文本的颜色。
                 />
@@ -52,7 +54,8 @@ export default class signIn extends Component {
                     <TouchableOpacity
                         style={styles.rightBtn}
                         activeOpacity={.8}
-                        onPress={this.props.click}>
+                        onPress={this.props.rightClick}>
+                        {this.props.dom}
                     </TouchableOpacity>
                 </View>
             </LinearGradient>
@@ -62,13 +65,17 @@ export default class signIn extends Component {
 
 const styles = StyleSheet.create({
     container: {
+        position: 'relative',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         height: global.NavHeight,
         paddingTop: global.StatusBarHeight,
     },
     leftBtn: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
         paddingLeft: global.px2dp(15),
         paddingTop: global.px2dp(13),
         paddingRight: global.px2dp(15),
@@ -79,6 +86,10 @@ const styles = StyleSheet.create({
         color: global.Colors.textfff,
     },
     rightBtn: {
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+        minWidth: global.px2dp(40),
         paddingLeft: global.px2dp(15),
         paddingTop: global.px2dp(13),
         paddingRight: global.px2dp(15),

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, ScrollView, } from 'react-native';
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
-import Button from "../common/Button";// 按钮组件
-import ErrorPrompt from "../common/ErrorPrompt";
 import Nav from "../common/Nav";// 导航组件
-export default class Protocol extends Component {
+import ErrorPrompt from "../common/ErrorPrompt";
+export default class GoodAt extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,6 +14,9 @@ export default class Protocol extends Component {
             ErrorPromptFlag: false,
             ErrorPromptText: '',
             ErrorPromptImg: '',
+
+            textareaHeight: 246,
+            text: '',
         }
     }
     getInitalState() {
@@ -27,82 +29,50 @@ export default class Protocol extends Component {
         // 4获取数据 在 render 后
     }
     render() {
-        // 3 渲染 render
-        // 变量声明
-        // const { navigate, goBack } = this.props.navigation;
-        {/* <FlatList
-                                style={styles.flatListStyle}
-                                data={this.state.titleData}
-                                // initialNumToRender={20}
-                                keyExtractor={item => item.id}
-                                // ListFooterComponent={() => {
-                                // 尾部组件
-                                // }}
-                                renderItem={({ item }) => this.titleRenderItem(item)}
-                                // 分隔线
-                                ItemSeparatorComponent={() => {
-                                    return (
-                                        <View style={{
-                                            height: global.Pixel,
-                                            backgroundColor: global.Colors.text999,
-                                        }}></View>
-                                    )
-                                }}
-                            // onRefresh={() => { }}//头部刷新组件
-                            // refreshing={this.state.isRefresh}//加载图标
-                            // onEndReached={() => this.onEndReached()} // 加载更多
-                            // onEndReachedThreshold={.1}// 加载更多触发时机
-                            // ListEmptyComponent={() => {
-                            //     // 无数据时显示的内容
-                            //     return (
-                            //         <View style={styles.noDataBox}>
-                            //             <Image source={require('../../images/no_data.png')} />
-                            //             <Text style={styles.noDataText}>暂无信息</Text>
-                            //         </View>
-                            //     )
-                            // }}
-                            /> */}
-        // titleRenderItem = (item) => {
-        //     console.log(item)
-        //     const { navigate } = this.props.navigation;
-        //     return (
-        //         <TouchableOpacity
-        //             onPress={() => {
-        //                 console.log(item)
-        //             }}
-        //             activeOpacity={.8}
-        //             key={item.id}
-        //         >
-        //             <View>
-        //                 <Text>{item.name}</Text>
-        //             </View>
-        //         </TouchableOpacity>
+        const { navigate, goBack } = this.props.navigation;
 
-        //     )
-        // }
-        {/* <View style={styles.container} >
-                    <Text> 我的</Text>
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={{ uri: 'https://img1.360buyimg.com/da/jfs/t23440/198/1552616732/96159/b2b38b62/5b62c871N7bc2b6fd.jpg' }}
-                        defaultSource={require('../images/radio_yes.png')}// 默认图片
-                    />
-                    <TouchableOpacity activeOpacity={.8}
-                        onPress={() => this.click()}>
-                        <Text>点击</Text>
-                    </TouchableOpacity>
-                </View> */}
         return (
             <View style={styles.container}>
-                <Nav isLoading={this.state.isLoading} title={"协议"} leftClick={this.goBack.bind(this)} />
+                <Nav
+                    isLoading={this.state.isLoading}
+                    title={"个人擅长"}
+                    leftClick={this.goBack.bind(this)}
+                    rightClick={this.submit.bind(this)}
+                    dom={<Text style={styles.submitText}>保存</Text>}
+                />
                 <ScrollView>
-                    <View style={styles.btnBox}>
-                        <Button text={'保存'} click={this.submit.bind(this)} />
-                    </View>
+                    <TextInput
+                        style={[styles.textareaStyle, {
+                            minHeight: 246,
+                        }]}
+                        placeholder={'请输入您的擅长…'}
+                        placeholderTextColor={global.Colors.placeholder}
+                        multiline={true}
+                        onChangeText={(text) => {
+                            if (text !== this.state.text) {
+                                this.setState({
+                                    text: text,
+                                })
+                            }
+                        }}
+                        defaultValue={this.state.text}
+                        onContentSizeChange={this.onContentSizeChange.bind(this)}
+                        underlineColorAndroid={'transparent'}
+                        onBlur={this.blurReg.bind(this)}
+                        keyboardType={'default'}
+                    />
                 </ScrollView>
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View>
         );
+    }
+    blurReg() {
+
+    }
+    onContentSizeChange(event) {
+        this.setState({
+            textareaHeight: event.nativeEvent.contentSize.height,
+        })
     }
     goBack() {
         this.props.navigation.goBack();
@@ -179,10 +149,21 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: global.Colors.bgColor,
     },
-    btnBox: {
+    textareaStyle: {
+        backgroundColor: global.Colors.textfff,
+        paddingTop: global.px2dp(10),
+        paddingLeft: global.px2dp(10),
+        paddingRight: global.px2dp(10),
+        paddingBottom: global.px2dp(10),
         marginTop: global.px2dp(15),
-        marginLeft: global.px2dp(15),
-        marginRight: global.px2dp(15),
+        fontSize: global.px2dp(16),
+        lineHeight: global.px2dp(21),
+        color: global.Colors.text333,
+        textAlignVertical: 'top',
     },
+    submitText: {
+        fontSize: global.px2dp(16),
+        color: global.Colors.textfff,
+    }
 });
 

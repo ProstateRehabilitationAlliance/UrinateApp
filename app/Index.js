@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, Platform } from 'react-native';
-import { createSwitchNavigator, createBottomTabNavigator } from "react-navigation";
+import { createStackNavigator, createBottomTabNavigator } from "react-navigation";
 
 // 首页tab图标-start
 const IndexIcon = require('./images/tab_index.png');
@@ -28,8 +28,15 @@ import IndexTab from "./home/Home";// 工作台
 import ContactTab from "./contact/Contact";// 通讯录
 import StudyTab from "./study/Study";// 直播课
 import MyTab from "./my/My";// 个人中心
-import Authentication from "./my/Authentication";// 认证信息
-import Protocol from "./my/Protocol";// 协议
+    import PersonalInfo from "./my/PersonalInfo";// 查看个人信息
+        import HeadImg from "./my/HeadImg";// 头像
+        import Resume from "./my/Resume";// 简介
+        import GoodAt from "./my/GoodAt";// 擅长
+    import Authentication from "./my/Authentication";// 查看认证信息
+        import Protocol from "./my/Protocol";// 协议
+    import Setting from "./my/Setting";// 设置
+        import Feedback from "./my/Feedback";// 反馈
+        import About from "./my/About";// 关于
 
 import LookImg from "./common/LookImg";// 查看大图
 // 页面引入-end
@@ -118,7 +125,7 @@ const styles = StyleSheet.create({
 });
 // tab-end
 
-export default createSwitchNavigator(
+export default createStackNavigator(
     {
         Start: {
             screen: Start,//启动页
@@ -140,6 +147,9 @@ export default createSwitchNavigator(
         },
         Home: {
             screen: MainView,//工作台
+            navigationOptions: {
+                header: null,
+            }
         },
         ContactTab: {
             screen: ContactTab,//通讯录
@@ -150,16 +160,37 @@ export default createSwitchNavigator(
         My: {
             screen: MyTab,// 个人中心
         },
+        PersonalInfo: {
+            screen: PersonalInfo,// 个人信息查看
+        },
+        HeadImg: {
+            screen: HeadImg,// 头像
+        },
+        GoodAt: {
+            screen: GoodAt,// 擅长
+        },
+        Resume: {
+            screen: Resume,// 简介
+        },
         Authentication: {
             screen: Authentication,// 认证信息查看
         },
         Protocol: {
             screen: Protocol,// 协议
         },
+        Setting: {
+            screen: Setting,// 设置
+        },
+        Feedback: {
+            screen: Feedback,// 反馈
+        },
+        About: {
+            screen: About,// 关于
+        },
         LookImg: {
             screen: LookImg,// 查看大图
         },
     }, {
-        initialRouteName: "Start",
+        initialRouteName: "Home",
     }
 );
