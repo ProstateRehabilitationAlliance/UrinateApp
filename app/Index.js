@@ -26,6 +26,9 @@ import Approve from "./approve/Approve";// 认证页面
 
 import IndexTab from "./home/Home";// 工作台
 import ContactTab from "./contact/Contact";// 通讯录
+    import DoctorSearch from "./contact/DoctorSearch";// 通讯录搜索页
+    import DoctorDetails from "./contact/DoctorDetails";// 医生详情
+
 import StudyTab from "./study/Study";// 直播课
 import MyTab from "./my/My";// 个人中心
     import PersonalInfo from "./my/PersonalInfo";// 查看个人信息
@@ -154,6 +157,12 @@ export default createStackNavigator(
         ContactTab: {
             screen: ContactTab,//通讯录
         },
+        DoctorSearch: {
+            screen: DoctorSearch,// 搜索页
+        },
+        DoctorDetails: {
+            screen: DoctorDetails,// 医生详情
+        },
         StudyTab: {
             screen: StudyTab,//直播课
         },
@@ -191,6 +200,6 @@ export default createStackNavigator(
             screen: LookImg,// 查看大图
         },
     }, {
-        initialRouteName: "Home",
+        initialRouteName: "DoctorDetails",
     }
 );

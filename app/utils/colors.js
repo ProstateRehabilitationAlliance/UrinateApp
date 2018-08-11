@@ -22,4 +22,5 @@ export default {
     colorff0000: "#ff0000",
     placeholder: '#cccccc',
     lightBlue: "#59a9e8",
+    transparent: "transparent",
 };

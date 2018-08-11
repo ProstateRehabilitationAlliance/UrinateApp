@@ -33,15 +33,12 @@ export default class Home extends Component {
         return (<View style={styles.container} >
             <Text>直播</Text>
             <TouchableOpacity activeOpacity={.8}
-                onPress={() => this.click()}>
+                onPress={() => {}}>
                 <Text>点击</Text>
             </TouchableOpacity>
         </View>);
     }
-    click() {
-        console.log(this)
-        this.props.navigation.navigate("My")
-    }
+    
 }
 
 const styles = StyleSheet.create({

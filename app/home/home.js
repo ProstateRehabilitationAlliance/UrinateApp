@@ -196,10 +196,6 @@ const styles = StyleSheet.create({
         width: global.Pixel,
         height: global.px2dp(34),
         backgroundColor: global.Colors.textfff,
-        // shadowColor: 'red',
-        // shadowOpacity: 1,
-        // shadowOffset: 10,
-        // shadowRadius: 10,
     },
     QRCodeBtn: {
         flexDirection: 'column',

@@ -7,6 +7,9 @@ import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";
 import Nav from "../common/Nav";// 导航组件
 export default class Protocol extends Component {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
         this.state = {
@@ -29,7 +32,7 @@ export default class Protocol extends Component {
     render() {
         // 3 渲染 render
         // 变量声明
-        // const { navigate, goBack } = this.props.navigation;
+        const { navigate, goBack } = this.props.navigation;
         {/* <FlatList
                                 style={styles.flatListStyle}
                                 data={this.state.titleData}
