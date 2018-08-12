@@ -8,6 +8,7 @@ export default {
     text555: "#555555",
     text666: "#666666",
     text777: "#777777",
+    text888: "#888888",
     text999: "#999999",
     textfff: "#ffffff",
     colorccc: "#cccccc",

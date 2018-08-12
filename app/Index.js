@@ -25,21 +25,23 @@ import ForgetPassword from "./sign/ForgetPassword";// 忘记密码
 import Approve from "./approve/Approve";// 认证页面
 
 import IndexTab from "./home/Home";// 工作台
+import Order from "./home/Order";// 订单
+import OrderDetails from "./home/OrderDetails";// 订单详情
 import ContactTab from "./contact/Contact";// 通讯录
-    import DoctorSearch from "./contact/DoctorSearch";// 通讯录搜索页
-    import DoctorDetails from "./contact/DoctorDetails";// 医生详情
+import DoctorSearch from "./contact/DoctorSearch";// 通讯录搜索页
+import DoctorDetails from "./contact/DoctorDetails";// 医生详情
 
 import StudyTab from "./study/Study";// 直播课
 import MyTab from "./my/My";// 个人中心
-    import PersonalInfo from "./my/PersonalInfo";// 查看个人信息
-        import HeadImg from "./my/HeadImg";// 头像
-        import Resume from "./my/Resume";// 简介
-        import GoodAt from "./my/GoodAt";// 擅长
-    import Authentication from "./my/Authentication";// 查看认证信息
-        import Protocol from "./my/Protocol";// 协议
-    import Setting from "./my/Setting";// 设置
-        import Feedback from "./my/Feedback";// 反馈
-        import About from "./my/About";// 关于
+import PersonalInfo from "./my/PersonalInfo";// 查看个人信息
+import HeadImg from "./my/HeadImg";// 头像
+import Resume from "./my/Resume";// 简介
+import GoodAt from "./my/GoodAt";// 擅长
+import Authentication from "./my/Authentication";// 查看认证信息
+import Protocol from "./my/Protocol";// 协议
+import Setting from "./my/Setting";// 设置
+import Feedback from "./my/Feedback";// 反馈
+import About from "./my/About";// 关于
 
 import LookImg from "./common/LookImg";// 查看大图
 // 页面引入-end
@@ -154,6 +156,12 @@ export default createStackNavigator(
                 header: null,
             }
         },
+        Order: {
+            screen: Order,//订单
+        },
+        OrderDetails: {
+            screen: OrderDetails,//订单详情
+        },
         ContactTab: {
             screen: ContactTab,//通讯录
         },
@@ -200,6 +208,6 @@ export default createStackNavigator(
             screen: LookImg,// 查看大图
         },
     }, {
-        initialRouteName: "DoctorDetails",
+        initialRouteName: "Start",
     }
 );
