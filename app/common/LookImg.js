@@ -68,8 +68,7 @@ export default class LookImg extends Component {
                     saveToLocalByLongPress={false}
                     onClick={() => {
                         // 点击事件
-                        // RouteName.pop();
-                        // goBack();
+                        goBack();
                     }}
                     index={this.state.index}// 从第几张开始
                 />

@@ -4,6 +4,10 @@ import { regExp } from './netWork/RegExp';// 正则
 import { requestUrl } from './netWork/Url';// IP地址
 import { global } from './utils/Global';// 常量
 import { Storage } from "./utils/AsyncStorage";
+import SQLite from './common/SQLite';
+import { sql } from "./netWork/Sql";
+var sqLite = new SQLite();
+var db;
 export default class Start extends Component {
     static navigationOptions = {
         header: null,
@@ -21,11 +25,17 @@ export default class Start extends Component {
         // 2仅调用一次在 render 前
     }
     componentDidMount() {
+        db = sqLite.open();
+        //建表
+        sqLite.dropTable(sql.dropUser);
+        sqLite.dropTable(sql.dropBranch);
+        sqLite.createTable();
         Storage.getItem('token', (data) => {
             if (data) {
                 global.Token = data;
-                // 获取认证信息
-                fetch(requestUrl.getAuthentication, {
+                db = sqLite.open();
+                // 获取认证状态 判断登录状态
+                fetch(requestUrl.getSignStatus, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -37,9 +47,6 @@ export default class Start extends Component {
                         if (responseData.code == 40001) {
                             // 未登录
                             this.props.navigation.navigate("SignIn");
-                        } else if (responseData.code == 40004) {
-                            // 未认证
-                            this.props.navigation.navigate("Home");
                         } else {
                             this.props.navigation.navigate("Home");
                         }
@@ -49,7 +56,6 @@ export default class Start extends Component {
                             console.log('error', error);
                         });
             } else {
-                // 获取认证信息
                 this.props.navigation.navigate("SignIn");
             }
         })

@@ -5,6 +5,10 @@ import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import Nav from "../common/Nav";// 导航组件
 import ErrorPrompt from "../common/ErrorPrompt";
+import SQLite from '../common/SQLite';
+import { sql } from "../netWork/Sql";
+var sqLite = new SQLite();
+var db;
 export default class GoodAt extends Component {
     static navigationOptions = {
         header: null,
@@ -19,7 +23,8 @@ export default class GoodAt extends Component {
             ErrorPromptImg: '',
 
             textareaHeight: 246,
-            text: '',
+            oldText: '',
+            newText: '',
         }
     }
     getInitalState() {
@@ -29,7 +34,14 @@ export default class GoodAt extends Component {
         // 2仅调用一次在 render 前
     }
     componentDidMount() {
-        // 4获取数据 在 render 后
+        db = sqLite.open();
+        db.transaction((tx) => {
+            tx.executeSql("select * from user where id = ?", [global.token], (tx, results) => {
+                this.setState({
+                    oldText: results.rows.item(0).doctorResume,
+                })
+            })
+        })
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
@@ -52,13 +64,11 @@ export default class GoodAt extends Component {
                         placeholderTextColor={global.Colors.placeholder}
                         multiline={true}
                         onChangeText={(text) => {
-                            if (text !== this.state.text) {
-                                this.setState({
-                                    text: text,
-                                })
-                            }
+                            this.setState({
+                                newText: text,
+                            })
                         }}
-                        defaultValue={this.state.text}
+                        defaultValue={this.state.oldText}
                         onContentSizeChange={this.onContentSizeChange.bind(this)}
                         underlineColorAndroid={'transparent'}
                         onBlur={this.blurReg.bind(this)}
@@ -81,10 +91,22 @@ export default class GoodAt extends Component {
         this.props.navigation.goBack();
     }
     submit() {
-        if (!this.state.text) {
+        if (!this.state.newText) {
             this.setState({
                 ErrorPromptFlag: true,
                 ErrorPromptText: '请输入内容',
+                ErrorPromptImg: require('../images/error.png'),
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (this.state.newText == this.state.oldText) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '请修改内容',
                 ErrorPromptImg: require('../images/error.png'),
             })
             clearTimeout(this.timer)
@@ -101,8 +123,8 @@ export default class GoodAt extends Component {
                 ErrorPromptImg: require('../images/loading.png'),
             })
             let formData = new FormData();
-            formData.append("feedbackText", this.state.text);
-            fetch(requestUrl.addFeedback, {
+            formData.append("doctorResume", this.state.newText);
+            fetch(requestUrl.updateDoctorDetail, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -119,11 +141,13 @@ export default class GoodAt extends Component {
                             ErrorPromptText: '提交成功',
                             ErrorPromptImg: require('../images/succeed.png'),
                         })
+                        sqLite.deleteData(sql.deleteUser);
                         clearTimeout(this.timer)
                         this.timer = setTimeout(() => {
                             this.setState({
                                 ErrorPromptFlag: false,
                             })
+                            this.props.navigation.goBack();
                         }, global.TimingCount)
                     } else {
                         this.setState({

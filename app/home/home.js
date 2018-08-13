@@ -5,12 +5,22 @@ import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import LinearGradient from 'react-native-linear-gradient';
 import { BoxShadow } from 'react-native-shadow';
+import SQLite from '../common/SQLite';
+import { sql } from "../netWork/Sql";
+var sqLite = new SQLite();
+var db;
 export default class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isLoading: false,
-            authenticationFlag: false,
+
+            signStatus: '', // 认证状态
+            // AUTHENTICATION_PROGRESS,//认证中
+            // AUTHENTICATION_SUCCESS,//认证成功
+            // AUTHENTICATION_FAILED, //认证失败
+            // AUTHENTICATION_EMPTY //未填写认证信息
+
         }
     }
     getInitalState() {
@@ -19,9 +29,125 @@ export default class Home extends Component {
     componentWillMount() {
         // 2仅调用一次在 render 前
     }
-    componentDidMount() {
-        // 4获取数据 在 render 后
+    // 认证状态插入数据表
+    insertUser(signStatus) {
+        db = sqLite.open();
+        db.transaction((tx) => {
+            tx.executeSql("select * from user", [], (tx, results) => {
+                var len = results.rows.length;
+                if (len <= 0) {
+                    let sql = "INSERT INTO user(id,doctorName,doctorSex,doctorAddress,doctorCardNumber,hospitalId,hospitalName,branchId,branchName,titleId,titleName,headImg,doctorResume,doctorStrong,signStatus)" + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    tx.executeSql(sql, [global.Token, '', '', '', '', '', '', '', '', '', '', '', '', '', signStatus], () => {
+
+                    }, (err) => {
+                        console.log(err);
+                    });
+                } else {
+                    let sql = "UPDATE user SET signStatus = ? WHERE id = ?";
+                    tx.executeSql(sql, [signStatus, global.Token], () => {
+
+                    }, (err) => {
+                        console.log(err);
+                    });
+                }
+            })
+        }, (error) => {
+            console.log(error);
+        });
     }
+    componentDidMount() {
+        // 获取认证状态 判断登录状态
+        fetch(requestUrl.getSignStatus, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                // AUTHENTICATION_PROGRESS,//认证中
+                // AUTHENTICATION_SUCCESS,//认证成功
+                // AUTHENTICATION_FAILED, //认证失败
+                // AUTHENTICATION_EMPTY //未填写认证信息
+                if (responseData.code == 20000) {
+                    // 认证成功
+                    this.setState({
+                        signStatus: "AUTHENTICATION_SUCCESS",
+                        authenticationFlag: true,
+                    })
+                    this.insertUser("AUTHENTICATION_SUCCESS");
+                } else if (responseData.code == 40001) {
+                    // 未登录
+                    this.props.navigation.navigate("SignIn");
+                } else if (responseData.code == 40002) {
+                    // 认证中
+                    this.setState({
+                        signStatus: "AUTHENTICATION_PROGRESS",
+                    })
+                    this.insertUser("AUTHENTICATION_PROGRESS");
+                } else if (responseData.code == 40003) {
+                    // 认证信息审核失败
+                    this.setState({
+                        signStatus: "AUTHENTICATION_FAILED",
+                    })
+                    this.insertUser("AUTHENTICATION_FAILED");
+                } else if (responseData.code == 40004) {
+                    // 认证信息未填写
+                    this.setState({
+                        signStatus: "AUTHENTICATION_EMPTY",
+                    })
+                    this.insertUser("AUTHENTICATION_EMPTY");
+                } else if (responseData.code == 50000) {
+
+                } else {
+
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
+    scrollText() {
+        if (this.state.signStatus == "AUTHENTICATION_SUCCESS") {
+            return (<Text style={styles.scrollText}>"医院 + 科室"</Text>)
+        } else {
+            return (<Text style={styles.scrollText}>你好！欢迎来到栗子医学</Text>)
+        }
+    }
+    headTextHtml() {
+        if (this.state.signStatus == "AUTHENTICATION_SUCCESS") {
+            return (<Text style={styles.headText}>"医生名"医生工作站</Text>)
+        } else if (this.state.signStatus == "AUTHENTICATION_EMPTY") {
+            return (
+                <TouchableOpacity
+                    activeOpacity={.8}
+                    onPress={() => {
+                        this.props.navigation.navigate('Approve');
+                    }}
+                >
+                    <Text style={styles.headText}>你暂时还未认证，请先 <Text style={{ color: global.Colors.color347fc2 }}>去认证</Text></Text>
+                </TouchableOpacity>
+            )
+        } else if (this.state.signStatus == "AUTHENTICATION_FAILED") {
+            return (
+                <TouchableOpacity
+                    activeOpacity={.8}
+                    onPress={() => {
+                        this.props.navigation.navigate('Approve');
+                    }}
+                >
+                    <Text style={styles.headText}>认证失败，请重新认证 <Text style={{ color: global.Colors.color347fc2 }}>去认证</Text></Text>
+                </TouchableOpacity>
+            )
+        } else {
+            return (
+                <Text style={styles.headText}>认证信息审核中...</Text>
+            )
+        }
+    }
+
+
     render() {
         const shadowOpt = {
             width: global.px2dp(340),
@@ -35,6 +161,7 @@ export default class Home extends Component {
             style: styles.boxShadow,
         }
         const { navigate, goBack } = this.props.navigation;
+
         return (
             <ScrollView
                 style={styles.container}
@@ -79,7 +206,7 @@ export default class Home extends Component {
                     <View style={styles.content}>
                         {/* 条幅-start */}
                         <View style={styles.scrollContent}>
-                            <Text style={styles.scrollText}>{this.state.authenticationFlag ? "医院科室" : "你好！欢迎来到栗子医学"}</Text>
+                            {this.scrollText()}
                             <View style={styles.offcutBox}></View>
                         </View>
                         {/* 条幅-end */}
@@ -87,29 +214,18 @@ export default class Home extends Component {
                         <View style={styles.headContent}>
                             <View style={styles.titleLine}></View>
                             <View style={styles.headBox}>
-                                {this.state.authenticationFlag ?
-                                    <Text style={styles.headText}>"医生名"医生工作站</Text>
-                                    :
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => {
-                                            this.props.navigation.navigate('Approve')
-                                        }}
-                                    >
-                                        <Text style={styles.headText}>你暂时还未认证，请先 <Text style={{ color: global.Colors.color347fc2 }}>去认证</Text></Text>
-                                    </TouchableOpacity>
-                                }
+                                {this.headTextHtml()}
                             </View>
                         </View>
                         {/* 统计部分-start */}
                         <View style={styles.statisticsContent}>
                             <View style={styles.statisticsItem}>
-                                <Text style={[styles.statisticsNum, { color: this.state.authenticationFlag ? global.Colors.color : global.Colors.text555, }]}>{this.state.authenticationFlag ? "9999" : "暂无数据"}</Text>
+                                <Text style={[styles.statisticsNum, { color: this.state.authenticationFlag ? global.Colors.color : global.Colors.text555, fontSize: this.state.authenticationFlag ? global.px2dp(20) : global.px2dp(12) }]}>{this.state.authenticationFlag ? "9999" : "暂无数据"}</Text>
                                 <Text style={styles.statisticsText}>访问量</Text>
                             </View>
                             <View style={styles.statisticsLine}></View>
                             <View style={styles.statisticsItem}>
-                                <Text style={[styles.statisticsNum, { color: this.state.authenticationFlag ? global.Colors.color : global.Colors.text555, }]}>{this.state.authenticationFlag ? "9999" : "暂无数据"}</Text>
+                                <Text style={[styles.statisticsNum, { color: this.state.authenticationFlag ? global.Colors.color : global.Colors.text555, fontSize: this.state.authenticationFlag ? global.px2dp(20) : global.px2dp(12) }]}>{this.state.authenticationFlag ? "9999" : "暂无数据"}</Text>
                                 <Text style={styles.statisticsText}>已帮助位患者</Text>
                             </View>
                         </View>

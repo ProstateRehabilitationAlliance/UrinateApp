@@ -4,11 +4,20 @@ import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import LinearGradient from 'react-native-linear-gradient';
+import SQLite from '../common/SQLite';
+import { sql } from "../netWork/Sql";
+var sqLite = new SQLite();
+var db;
 export default class My extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isLoading: false,
+            userInfo: {},
+            hospitalName: '',// 医院名
+            branchName: '',// 科室名
+            titleName: '',//职称名字
+            signStatus: "",// 认证状态
         }
     }
     getInitalState() {
@@ -17,8 +26,197 @@ export default class My extends Component {
     componentWillMount() {
         // 2仅调用一次在 render 前
     }
+    upDateUser(obj) {
+        db = sqLite.open();
+        db.transaction((tx) => {
+            let sql = "UPDATE user SET doctorName = ?,doctorSex=?,doctorAddress=?,doctorCardNumber=?,hospitalId=?,branchId=?,titleId=?,headImg=?,doctorResume=?,doctorStrong=? WHERE id = ?";
+            tx.executeSql(sql, [obj.doctorName, obj.doctorSex, obj.doctorAddress, obj.doctorCardNumber, obj.hospitalId, obj.branchId, obj.titleId, obj.headImg, obj.doctorResume, obj.doctorStrong, global.Token], () => {
+
+            }, (err) => {
+                console.log(err);
+            });
+        }, (error) => {
+            console.log(error);
+        });
+    }
+    // 根据 id 查 对应的名字
+    idToName() {
+        db = sqLite.open();
+        db.transaction((tx) => {
+            tx.executeSql("select * from hospital where id = ?", [this.state.userInfo.hospitalId], (tx, results) => {
+                var len = results.rows.length;
+                this.setState({
+                    hospitalName: results.rows.item(0).hospitalName
+                })
+                let sql = "UPDATE user SET hospitalName = ? WHERE id = ?";
+                tx.executeSql(sql, [results.rows.item(0).hospitalName, global.Token], () => {
+
+                }, (err) => {
+                    console.log(err);
+                });
+            })
+            tx.executeSql("select * from branch where id = ?", [this.state.userInfo.branchId], (tx, results) => {
+                var len = results.rows.length;
+                this.setState({
+                    branchName: results.rows.item(0).branchName
+                })
+                let sql = "UPDATE user SET branchName = ? WHERE id = ?";
+                tx.executeSql(sql, [results.rows.item(0).branchName, global.Token], () => {
+
+                }, (err) => {
+                    console.log(err);
+                });
+            })
+            tx.executeSql("select * from title where id = ?", [this.state.userInfo.titleId], (tx, results) => {
+                var len = results.rows.length;
+                this.setState({
+                    titleName: results.rows.item(0).titleName
+                })
+                let sql = "UPDATE user SET titleName = ? WHERE id = ?";
+                tx.executeSql(sql, [results.rows.item(0).titleName, global.Token], () => {
+
+                }, (err) => {
+                    console.log(err);
+                });
+            })
+        })
+    }
+    getDoctorDetail() {
+        // 获取个人信息数据-start
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '加载中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        });
+        fetch(requestUrl.getDoctorDetail, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: false,
+                        userInfo: responseData.result,
+                    })
+                    this.idToName();
+                    this.upDateUser(responseData.result);
+                } else if (responseData == 40004) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '您还未认证',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                } else if (responseData == 50000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '服务器繁忙',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '服务器繁忙',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+        // 获取个人信息数据 - end
+    }
     componentDidMount() {
-        // 4获取数据 在 render 后
+        db = sqLite.open();
+        db.transaction((tx) => {
+            tx.executeSql("select * from user", [], (tx, results) => {
+                this.setState({
+                    signStatus: results.rows.item(0).signStatus,
+                    userInfo: results.rows.item(0),
+                })
+                if (!results.rows.item(0).doctorName) {
+                    this.getDoctorDetail();
+                }
+            })
+        }, (error) => {
+            console.log(error);
+        });
+    }
+    navHTML() {
+        // AUTHENTICATION_PROGRESS,//认证中
+        // AUTHENTICATION_SUCCESS,//认证成功
+        // AUTHENTICATION_FAILED, //认证失败
+        // AUTHENTICATION_EMPTY //未填写认证信息
+        if (this.state.signStatus == "AUTHENTICATION_SUCCESS") {
+            return (
+                <View style={styles.navBox}>
+                    <Text style={styles.topText}>{this.state.userInfo.doctorName}-{this.state.titleName}</Text>
+                    <Text style={styles.bottomText}>{this.state.hospitalName} {this.state.branchName}</Text>
+                </View>
+            )
+        } else if (this.state.signStatus == "AUTHENTICATION_PROGRESS") {
+            return (
+                <View style={styles.navBox}>
+                    <Text style={styles.topText}>认证中</Text>
+                    <TouchableOpacity
+                        style={styles.authenticationBtn}
+                        activeOpacity={.8}
+                        onPress={() => {
+                            this.props.navigation.navigate("Authentication");
+                        }}>
+                        <Text style={styles.bottomText}>认证中</Text>
+                        <Image
+                            style={styles.arrowRightImg}
+                            source={require('../images/arrow_right_white.png')}
+                        />
+                    </TouchableOpacity>
+                </View>
+            )
+        } else {
+            return (
+                <View style={styles.navBox}>
+                    <Text style={styles.topText}>认证失败</Text>
+                    <TouchableOpacity
+                        style={styles.authenticationBtn}
+                        activeOpacity={.8}
+                        onPress={() => {
+                            this.props.navigation.navigate("Approve");
+                        }}>
+                        <Text style={styles.bottomText}>去认证</Text>
+                        <Image
+                            style={styles.arrowRightImg}
+                            source={require('../images/arrow_right_white.png')}
+                        />
+                    </TouchableOpacity>
+                </View>
+            )
+        }
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
@@ -45,22 +243,10 @@ export default class My extends Component {
                     <View style={styles.navContent}>
                         <Image
                             style={styles.doctorImg}
-                            source={require('../images/default_doc_img.png')}
+                            source={this.state.userInfo && this.state.userInfo.headImg ? { uri: this.state.userInfo.headImg } : require('../images/default_doc_img.png')}
                             defaultSource={require('../images/default_doc_img.png')}// 默认图片
                         />
-                        <View style={styles.navBox}>
-                            <Text style={styles.topText}>188****0533</Text>
-                            <TouchableOpacity
-                                style={styles.authenticationBtn}
-                                activeOpacity={.8}
-                                onPress={() => { }}>
-                                <Text style={styles.bottomText}>未认证</Text>
-                                <Image
-                                    style={styles.arrowRightImg}
-                                    source={require('../images/arrow_right_white.png')}
-                                />
-                            </TouchableOpacity>
-                        </View>
+                        {this.navHTML()}
                     </View>
                 </LinearGradient>
                 <View style={styles.content}>

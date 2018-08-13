@@ -15,6 +15,7 @@
     "react-native-linear-gradient": "^2.4.0",
     "react-native-shadow": "^1.2.2",
     "react-native-smscode-count-down": "^0.1.14",
+    "react-native-sqlite-storage": "^3.3.6",
     "react-native-svg": "^6.5.2",
     "react-navigation": "^2.11.2",
     "seer-react-native-image-zoom-viewer": "^2.0.0",

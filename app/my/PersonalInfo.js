@@ -5,6 +5,10 @@ import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import Nav from "../common/Nav";// 导航组件
 import ErrorPrompt from "../common/ErrorPrompt";
+import SQLite from '../common/SQLite';
+import { sql } from "../netWork/Sql";
+var sqLite = new SQLite();
+var db;
 export default class PersonalInfo extends Component {
     static navigationOptions = {
         header: null,
@@ -18,17 +22,7 @@ export default class PersonalInfo extends Component {
             ErrorPromptText: '',
             ErrorPromptImg: '',
 
-            doctorName: "王海鹏",
-            doctorSex: "男",
-            doctorAddress: "黑龙江省肇东市民权北路3号花开富贵小区6号楼3单元401室",
-            doctorCardNumber: "232303197708150031",
-            hospitalName: "北京大学医院",
-            branchName: "泌尿外科",
-            titleName: "主任医师",
-            headImg: "http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKZFQN36ialGnrTpfPn6cKuwaics5ZUuicIibz2C7FpM2obH12yXgOt4Osicl1eNl6LcmrR7z5TDhzuibSg/132",
-            doctorResume: "宋勇，重点从事尿控及女性泌尿外科工作，并于2010年赴美国IOWA大学泌尿外科学习尿控及女性泌尿外科。现独立开展女性尿失禁吊带手术、复杂女性尿瘘手术、人工尿道括约肌手术、男性尿失禁吊带手术、骶神经电刺激手术等。对膀胱过度活动症、神经源性膀胱、特发性排尿困难、复杂性尿道狭窄、前列腺增生等疾病的诊治方面具有丰富经验。",
-            doctorStrong: "排尿功能障碍疾病诊治，如膀胱过度活动症、间质性膀胱炎、神经源性膀胱、尿道狭窄、尿瘘、前列腺增生等疾病引起的尿频、尿急、尿失禁及排尿困难等。泌尿系统肿瘤诊治。",
-            lableInquiry: "000"
+            userInfo: {},//用户信息
         }
     }
     getInitalState() {
@@ -37,15 +31,69 @@ export default class PersonalInfo extends Component {
     componentWillMount() {
         // 2仅调用一次在 render 前
     }
-    componentDidMount() {
+    upDateUser(obj) {
+        db = sqLite.open();
+        db.transaction((tx) => {
+            let sql = "UPDATE user SET doctorName = ?,doctorSex=?,doctorAddress=?,doctorCardNumber=?,hospitalId=?,branchId=?,titleId=?,headImg=?,doctorResume=?,doctorStrong=? WHERE id = ?";
+            tx.executeSql(sql, [obj.doctorName, obj.doctorSex, obj.doctorAddress, obj.doctorCardNumber, obj.hospitalId, obj.branchId, obj.titleId, obj.headImg, obj.doctorResume, obj.doctorStrong, global.Token], () => {
+
+            }, (err) => {
+                console.log(err);
+            });
+        }, (error) => {
+            console.log(error);
+        });
+    }
+    // 根据 id 查 对应的名字
+    idToName() {
+        db = sqLite.open();
+        db.transaction((tx) => {
+            tx.executeSql("select * from hospital where id = ?", [this.state.userInfo.hospitalId], (tx, results) => {
+                var len = results.rows.length;
+                this.setState({
+                    hospitalName: results.rows.item(0).hospitalName
+                })
+                let sql = "UPDATE user SET hospitalName = ? WHERE id = ?";
+                tx.executeSql(sql, [results.rows.item(0).hospitalName, global.Token], () => {
+
+                }, (err) => {
+                    console.log(err);
+                });
+            })
+            tx.executeSql("select * from branch where id = ?", [this.state.userInfo.branchId], (tx, results) => {
+                var len = results.rows.length;
+                this.setState({
+                    branchName: results.rows.item(0).branchName
+                })
+                let sql = "UPDATE user SET branchName = ? WHERE id = ?";
+                tx.executeSql(sql, [results.rows.item(0).branchName, global.Token], () => {
+
+                }, (err) => {
+                    console.log(err);
+                });
+            })
+            tx.executeSql("select * from title where id = ?", [this.state.userInfo.titleId], (tx, results) => {
+                var len = results.rows.length;
+                this.setState({
+                    titleName: results.rows.item(0).titleName
+                })
+                let sql = "UPDATE user SET titleName = ? WHERE id = ?";
+                tx.executeSql(sql, [results.rows.item(0).titleName, global.Token], () => {
+
+                }, (err) => {
+                    console.log(err);
+                });
+            })
+        })
+    }
+    getDoctorDetail() {
         // 获取个人信息数据-start
-        return false;
         this.setState({
             isLoading: true,
             ErrorPromptFlag: true,
             ErrorPromptText: '加载中...',
             ErrorPromptImg: require('../images/loading.png'),
-        })
+        });
         fetch(requestUrl.getDoctorDetail, {
             method: 'GET',
             headers: {
@@ -59,18 +107,10 @@ export default class PersonalInfo extends Component {
                     this.setState({
                         isLoading: false,
                         ErrorPromptFlag: false,
-                        doctorName: "王海鹏",
-                        doctorSex: "男",
-                        doctorAddress: "黑龙江省肇东市民权北路3号花开富贵小区6号楼3单元401室",
-                        doctorCardNumber: "232303197708150031",
-                        hospitalName: "北京大学医院",
-                        branchName: "泌尿外科",
-                        titleName: "主任医师",
-                        headImg: "http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKZFQN36ialGnrTpfPn6cKuwaics5ZUuicIibz2C7FpM2obH12yXgOt4Osicl1eNl6LcmrR7z5TDhzuibSg/132",
-                        doctorResume: "宋勇，重点从事尿控及女性泌尿外科工作，并于2010年赴美国IOWA大学泌尿外科学习尿控及女性泌尿外科。现独立开展女性尿失禁吊带手术、复杂女性尿瘘手术、人工尿道括约肌手术、男性尿失禁吊带手术、骶神经电刺激手术等。对膀胱过度活动症、神经源性膀胱、特发性排尿困难、复杂性尿道狭窄、前列腺增生等疾病的诊治方面具有丰富经验。",
-                        doctorStrong: "排尿功能障碍疾病诊治，如膀胱过度活动症、间质性膀胱炎、神经源性膀胱、尿道狭窄、尿瘘、前列腺增生等疾病引起的尿频、尿急、尿失禁及排尿困难等。泌尿系统肿瘤诊治。",
-                        lableInquiry: "000"
+                        userInfo: responseData.result,
                     })
+                    this.idToName();
+                    this.upDateUser(responseData.result);
                 } else if (responseData == 40004) {
                     this.setState({
                         isLoading: false,
@@ -115,7 +155,23 @@ export default class PersonalInfo extends Component {
             .catch((error) => {
                 console.log('error', error);
             });
-        // 获取个人信息数据-end
+        // 获取个人信息数据 - end
+    }
+    componentDidMount() {
+        db = sqLite.open();
+        db.transaction((tx) => {
+            tx.executeSql("select * from user", [], (tx, results) => {
+                this.setState({
+                    signStatus: results.rows.item(0).signStatus,
+                    userInfo: results.rows.item(0)
+                })
+                if (!results.rows.item(0).doctorName) {
+                    this.getDoctorDetail();
+                }
+            })
+        }, (error) => {
+            console.log(error);
+        });
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
@@ -143,17 +199,17 @@ export default class PersonalInfo extends Component {
                             <View style={styles.itemBox}>
                                 <Image
                                     style={styles.headImg}
-                                    source={this.state.headImg ? { uri: this.state.headImg } : require('../images/default_doc_img.png')} />
+                                    source={this.state.headImg ? { uri: this.state.userInfo.headImg } : require('../images/default_doc_img.png')} />
                                 <Image source={require('../images/arrow_right_grey.png')} />
                             </View>
                         </TouchableOpacity>
                         <View style={styles.itemContent}>
                             <Text style={styles.itemTitle}>姓名</Text>
-                            <Text style={styles.itemValue}>{this.state.doctorName}</Text>
+                            <Text style={styles.itemValue}>{this.state.userInfo.doctorName}</Text>
                         </View>
                         <View style={styles.itemContent}>
                             <Text style={styles.itemTitle}>性别</Text>
-                            <Text style={styles.itemValue}>{this.state.doctorSex}</Text>
+                            <Text style={styles.itemValue}>{this.state.userInfo.doctorSex}</Text>
                         </View>
                     </View>
                     <View style={styles.content}>
@@ -166,15 +222,15 @@ export default class PersonalInfo extends Component {
                         </View>
                         <View style={styles.itemContent}>
                             <Text style={styles.itemTitle}>职称</Text>
-                            <Text style={styles.itemValue}>{this.state.titleName}</Text>
+                            <Text style={styles.itemValue}>{this.state.userInfo.titleName}</Text>
                         </View>
                         <View style={styles.itemContent}>
                             <Text style={styles.itemTitle}>所在医院</Text>
-                            <Text style={styles.itemValue}>{this.state.hospitalName}</Text>
+                            <Text style={styles.itemValue}>{this.state.userInfo.hospitalName}</Text>
                         </View>
                         <View style={styles.itemContent}>
                             <Text style={styles.itemTitle}>科室</Text>
-                            <Text style={styles.itemValue}>{this.state.branchName}</Text>
+                            <Text style={styles.itemValue}>{this.state.userInfo.branchName}</Text>
                         </View>
                     </View>
                     <View style={styles.content}>
@@ -200,14 +256,14 @@ export default class PersonalInfo extends Component {
                             <Image source={require('../images/arrow_right_grey.png')} />
                         </TouchableOpacity>
                         <View style={styles.labelContent}>
-                            <TouchableOpacity
+                            {/* <TouchableOpacity
                                 style={styles.labelBtn}
                                 activeOpacity={.8}
                                 onPress={() => { }}>
                                 <View style={[styles.labelItem, { backgroundColor: global.Colors.color749ece }]}>
                                     <Text style={[styles.labelText, { color: global.Colors.text666, }]}>图文</Text>
                                 </View>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                             <TouchableOpacity
                                 style={styles.labelBtn}
                                 activeOpacity={.8}

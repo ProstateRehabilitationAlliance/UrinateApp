@@ -1,5 +1,8 @@
 const IP = "http://192.168.0.222";//
 export let requestUrl = {
+    "idCardFrontUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IDCard_up.jpg',// 身份证示例图片
+    "doctorCardFrontUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IDCard_up.jpg',// 医生执业证示例图片
+    "workCardUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IDCard_up.jpg',// 手持身份证示例图片
     "IP": IP,
     // 登录注册
     "register": IP + "/api-user/doctor/register",// 注册接口
@@ -20,7 +23,7 @@ export let requestUrl = {
     // 认证相关
     "addAuthentication": IP + "/api-user/doctor/sign/add",// 提交认证信息
     "getAuthentication": IP + "/api-user/doctor/sign/get",// 查询认证信息
-    "updateAuthentication": IP + "/doctor/sign/update",// 认证失败重新提交资料
+    "updateAuthentication": IP + "/api-user/doctor/sign/update",// 认证失败重新提交资料
     "getSignStatus": IP + "/api-user/doctor/sign/getSignStatus",// 认证状态查询
     "getIdCardInfo": IP + "/api-user/doctor/detail/getIdCardInfo",// 查询身份证信息
 
@@ -31,11 +34,11 @@ export let requestUrl = {
     "getHospitalJson": IP + "/api-stata/cache/static/getHospitalJson",// 查询医院信息
 
     // 个人中心
-    "getDoctorDetail": IP + "/doctor/detail/getDoctorDetail",// 医生查询个人信息
-    "updateDoctorDetail": IP + "/doctor/detail/updateDoctorDetail",// 医生修改个人信息
+    "getDoctorDetail": IP + "/api-user/doctor/detail/getDoctorDetail",// 医生查询个人信息
+    "updateDoctorDetail": IP + "/api-user/doctor/detail/updateDoctorDetail",// 医生修改个人信息
     "findDoctorList": IP + "/api-user/doctor/detail/findDoctorList",// 条件查询医生列表
     "getDoctorDetailById": IP + "/api-user/doctor/detail/getDoctorDetailById",// 其他用户查询医生信息
-    
+
     "addFeedback": IP + "/api-stata/feedback/add",// 添加反馈意见
 
     // "login": IP + "login",// 注册接口
