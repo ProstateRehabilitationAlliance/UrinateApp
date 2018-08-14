@@ -4,6 +4,7 @@ import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";// 按钮组件
+import ErrorPrompt from "../common/ErrorPrompt";
 import Nav from "../common/Nav";// 导航组件
 export default class Setting extends Component {
     static navigationOptions = {
@@ -13,6 +14,12 @@ export default class Setting extends Component {
         super(props);
         this.state = {
             isLoading: false,
+
+            ErrorPromptFlag: false,
+            ErrorPromptText: '',
+            ErrorPromptUrl: '',
+
+            tel: '',
         }
     }
     getInitalState() {
@@ -22,7 +29,74 @@ export default class Setting extends Component {
         // 2仅调用一次在 render 前
     }
     componentDidMount() {
-        // 4获取数据 在 render 后
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: "加载中...",
+            ErrorPromptUrl: require('../images/loading.png'),
+        })
+        fetch(requestUrl.getUsername, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        tel: responseData.result,
+                        isLoading: false,
+                        ErrorPromptFlag: false,
+                        ErrorPromptText: "加载中...",
+                        ErrorPromptUrl: require('../images/loading.png'),
+                    })
+                } else if (responseData.code == 40001) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: "登录超时",
+                        ErrorPromptUrl: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                        this.props.navigation.navigate("SingIn");
+                    }, global.TimingCount)
+                } else if (responseData.code == 50000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: "服务器繁忙",
+                        ErrorPromptUrl: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: "服务器繁忙",
+                        ErrorPromptUrl: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
@@ -37,11 +111,13 @@ export default class Setting extends Component {
                             style={[styles.itemBtn, { borderBottomColor: global.Colors.text999, borderBottomWidth: global.Pixel }]}
                         >
                             <Text style={styles.itemTitle}>当前账号</Text>
-                            <Text style={styles.itemValue}>5119803123</Text>
+                            <Text style={styles.itemValue}>{this.state.tel}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={.8}
-                            onPress={() => { }}
+                            onPress={() => {
+                                navigate("UpdatePassword")
+                            }}
                             style={styles.itemBtn}
                         >
                             <Text style={styles.itemTitle}>修改密码</Text>
@@ -70,6 +146,7 @@ export default class Setting extends Component {
                         <Button text={"退出登录"} click={this.loginOut.bind(this)} style={{ borderRadius: global.px2dp(3) }} />
                     </View>
                 </ScrollView>
+                {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View>
         );
     }
@@ -78,7 +155,53 @@ export default class Setting extends Component {
     }
     // 退出登录
     loginOut() {
-        global.Alert.alert('1')
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: "加载中...",
+            ErrorPromptUrl: require('../images/loading.png'),
+        })
+        fetch(requestUrl.logOut, {
+            method: 'POST',
+            headers: {
+                // 'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: "退出成功",
+                        ErrorPromptUrl: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                        this.props.navigation.navigate("SignIn")
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: "退出登录失败",
+                        ErrorPromptUrl: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
 }
 

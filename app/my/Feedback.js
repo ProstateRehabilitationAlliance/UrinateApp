@@ -47,11 +47,9 @@ export default class Feedback extends Component {
                         placeholderTextColor={global.Colors.placeholder}
                         multiline={true}
                         onChangeText={(text) => {
-                            if (text !== this.state.text) {
-                                this.setState({
-                                    text: text,
-                                })
-                            }
+                            this.setState({
+                                text: text,
+                            })
                         }}
                         defaultValue={this.state.text}
                         onContentSizeChange={this.onContentSizeChange.bind(this)}
@@ -125,6 +123,7 @@ export default class Feedback extends Component {
                             this.setState({
                                 ErrorPromptFlag: false,
                             })
+                            this.props.navigation.goBack();
                         }, global.TimingCount)
                     } else {
                         this.setState({

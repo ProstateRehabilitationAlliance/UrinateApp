@@ -6,7 +6,7 @@ import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";
 import Nav from "../common/Nav";// 导航组件
-export default class Protocol extends Component {
+export default class UpdatePassword extends Component {
     static navigationOptions = {
         header: null,
     };
@@ -18,6 +18,10 @@ export default class Protocol extends Component {
             ErrorPromptFlag: false,
             ErrorPromptText: '',
             ErrorPromptImg: '',
+
+            oldPasswordReg: true,//旧密码是否符合规则
+            newPasswordReg: true,//新密码是否符合规则
+            confirmPasswordReg: true,//确认密码是否符合规则
 
             oldPassword: '',// 旧密码
             newPassword: '',// 新密码
@@ -34,22 +38,7 @@ export default class Protocol extends Component {
         // 4获取数据 在 render 后
     }
     render() {
-        // 3 渲染 render
-        // 变量声明
         const { navigate, goBack } = this.props.navigation;
-
-        {/* <View style={styles.container} >
-                    <Text> 我的</Text>
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={{ uri: 'https://img1.360buyimg.com/da/jfs/t23440/198/1552616732/96159/b2b38b62/5b62c871N7bc2b6fd.jpg' }}
-                        defaultSource={require('../images/radio_yes.png')}// 默认图片
-                    />
-                    <TouchableOpacity activeOpacity={.8}
-                        onPress={() => this.click()}>
-                        <Text>点击</Text>
-                    </TouchableOpacity>
-                </View> */}
         return (
             <View style={styles.container}>
                 <Nav isLoading={this.state.isLoading} title={"设置密码"} leftClick={this.goBack.bind(this)} />
@@ -120,18 +109,206 @@ export default class Protocol extends Component {
     goBack() {
         this.props.navigation.goBack();
     }
-    oldPasswordFocus() { }
-    oldPasswordBlur() { }
-    newPasswordFocus() { }
-    newPasswordBlur() { }
-    confirmPasswordFocus() { }
-    confirmPasswordBlur() { }
-    submit() {
-        if (!this.state.text) {
+    oldPasswordFocus() {
+        this.setState({
+            oldPasswordReg: true,
+        })
+    }
+    oldPasswordBlur() {
+        if (!this.state.oldPassword) {
             this.setState({
                 ErrorPromptFlag: true,
-                ErrorPromptText: '请输入内容',
+                ErrorPromptText: '请输入旧密码',
                 ErrorPromptImg: require('../images/error.png'),
+                oldPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (!regExp.Reg_PassWord.test(this.state.oldPassword)) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '旧密码不符合规则',
+                ErrorPromptImg: require('../images/error.png'),
+                oldPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        }
+    }
+    newPasswordFocus() {
+        this.setState({
+            newPasswordReg: true,
+        })
+    }
+    newPasswordBlur() {
+        if (!this.state.newPassword) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '请输入新密码',
+                ErrorPromptImg: require('../images/error.png'),
+                newPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (!regExp.Reg_PassWord.test(this.state.newPassword)) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '新密码不符合规则',
+                ErrorPromptImg: require('../images/error.png'),
+                newPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        }
+    }
+    confirmPasswordFocus() {
+        this.setState({
+            confirmPasswordReg: true,
+        })
+    }
+    confirmPasswordBlur() {
+        if (!this.state.confirmPassword) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '请输入确认密码',
+                ErrorPromptImg: require('../images/error.png'),
+                confirmPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (!regExp.Reg_PassWord.test(this.state.confirmPassword)) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '确认密码不符合规则',
+                ErrorPromptImg: require('../images/error.png'),
+                confirmPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (this.state.newPassword != this.state.confirmPassword) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '两次密码不一致',
+                ErrorPromptImg: require('../images/error.png'),
+                confirmPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        }
+    }
+    submit() {
+        if (!this.state.newPassword) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '请输入新密码',
+                ErrorPromptImg: require('../images/error.png'),
+                newPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (!regExp.Reg_PassWord.test(this.state.newPassword)) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '新密码不符合规则',
+                ErrorPromptImg: require('../images/error.png'),
+                newPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (!this.state.newPassword) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '请输入新密码',
+                ErrorPromptImg: require('../images/error.png'),
+                newPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (!regExp.Reg_PassWord.test(this.state.newPassword)) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '新密码不符合规则',
+                ErrorPromptImg: require('../images/error.png'),
+                newPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (!this.state.confirmPassword) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '请输入确认密码',
+                ErrorPromptImg: require('../images/error.png'),
+                confirmPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (!regExp.Reg_PassWord.test(this.state.confirmPassword)) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '确认密码不符合规则',
+                ErrorPromptImg: require('../images/error.png'),
+                confirmPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (this.state.newPassword != this.state.confirmPassword) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '两次密码不一致',
+                ErrorPromptImg: require('../images/error.png'),
+                confirmPasswordReg: false,
             })
             clearTimeout(this.timer)
             this.timer = setTimeout(() => {
@@ -147,8 +324,9 @@ export default class Protocol extends Component {
                 ErrorPromptImg: require('../images/loading.png'),
             })
             let formData = new FormData();
-            formData.append("feedbackText", this.state.text);
-            fetch(requestUrl.addFeedback, {
+            formData.append("oldPassword", this.state.oldPassword);
+            formData.append("newPassword", this.state.newPassword);
+            fetch(requestUrl.updatePassword, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -170,12 +348,52 @@ export default class Protocol extends Component {
                             this.setState({
                                 ErrorPromptFlag: false,
                             })
+                            this.props.navigation.goBack();
+                        }, global.TimingCount)
+                    } else if (responseData.code == 51001) {
+                        this.setState({
+                            isLoading: false,
+                            ErrorPromptFlag: true,
+                            ErrorPromptText: '新密码格式错误',
+                            ErrorPromptImg: require('../images/error.png'),
+                        })
+                        clearTimeout(this.timer)
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPromptFlag: false,
+                            })
+                        }, global.TimingCount)
+                    } else if (responseData.code == 51002) {
+                        this.setState({
+                            isLoading: false,
+                            ErrorPromptFlag: true,
+                            ErrorPromptText: '旧密码不正确',
+                            ErrorPromptImg: require('../images/error.png'),
+                        })
+                        clearTimeout(this.timer)
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPromptFlag: false,
+                            })
+                        }, global.TimingCount)
+                    } else if (responseData.code == 51003) {
+                        this.setState({
+                            isLoading: false,
+                            ErrorPromptFlag: true,
+                            ErrorPromptText: '新密码与旧密码一致',
+                            ErrorPromptImg: require('../images/error.png'),
+                        })
+                        clearTimeout(this.timer)
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPromptFlag: false,
+                            })
                         }, global.TimingCount)
                     } else {
                         this.setState({
                             isLoading: false,
                             ErrorPromptFlag: true,
-                            ErrorPromptText: '提交失败，请重试',
+                            ErrorPromptText: '修改密码失败',
                             ErrorPromptImg: require('../images/error.png'),
                         })
                         clearTimeout(this.timer)

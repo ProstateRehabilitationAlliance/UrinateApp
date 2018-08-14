@@ -14,6 +14,8 @@ export let requestUrl = {
     "passwordReset": IP + "/api-user/doctor/passwordReset",// 重置 登陆密码
     "getUsername": IP + "/api-user/doctor/getUsername",// 获取用户登陆手机号
     "updatePassword": IP + "/api-user/doctor/updatePassword",// 根据旧密码修改密码
+    "logOut": IP + "/api-user/doctor/logOut",// 退出登陆
+
 
     // 文件上传
     "uploadAuthentication": IP + "/api-third/cos/upload",// 上传认证图片接口
@@ -41,7 +43,6 @@ export let requestUrl = {
 
     "addFeedback": IP + "/api-stata/feedback/add",// 添加反馈意见
 
-    // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
 };
