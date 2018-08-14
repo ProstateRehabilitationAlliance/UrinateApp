@@ -5,6 +5,7 @@ import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import LinearGradient from 'react-native-linear-gradient';
 import { BoxShadow } from 'react-native-shadow';
+import BasicData from "../common/BasicData";
 import SQLite from '../common/SQLite';
 import { sql } from "../netWork/Sql";
 var sqLite = new SQLite();
@@ -15,11 +16,7 @@ export default class Home extends Component {
         this.state = {
             isLoading: false,
 
-            signStatus: '', // 认证状态
-            // AUTHENTICATION_PROGRESS,//认证中
-            // AUTHENTICATION_SUCCESS,//认证成功
-            // AUTHENTICATION_FAILED, //认证失败
-            // AUTHENTICATION_EMPTY //未填写认证信息
+            userInfo: {},
 
         }
     }
@@ -29,96 +26,24 @@ export default class Home extends Component {
     componentWillMount() {
         // 2仅调用一次在 render 前
     }
-    // 认证状态插入数据表
-    insertUser(signStatus) {
-        db = sqLite.open();
-        db.transaction((tx) => {
-            tx.executeSql("select * from user", [], (tx, results) => {
-                var len = results.rows.length;
-                if (len <= 0) {
-                    let sql = "INSERT INTO user(id,doctorName,doctorSex,doctorAddress,doctorCardNumber,hospitalId,hospitalName,branchId,branchName,titleId,titleName,headImg,doctorResume,doctorStrong,signStatus)" + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-                    tx.executeSql(sql, [global.Token, '', '', '', '', '', '', '', '', '', '', '', '', '', signStatus], () => {
 
-                    }, (err) => {
-                        console.log(err);
-                    });
-                } else {
-                    let sql = "UPDATE user SET signStatus = ? WHERE id = ?";
-                    tx.executeSql(sql, [signStatus, global.Token], () => {
-
-                    }, (err) => {
-                        console.log(err);
-                    });
-                }
-            })
-        }, (error) => {
-            console.log(error);
-        });
-    }
     componentDidMount() {
-        // 获取认证状态 判断登录状态
-        fetch(requestUrl.getSignStatus, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                "token": global.Token,
-            },
-        }).then((response) => response.json())
-            .then((responseData) => {
-                console.log('responseData', responseData);
-                // AUTHENTICATION_PROGRESS,//认证中
-                // AUTHENTICATION_SUCCESS,//认证成功
-                // AUTHENTICATION_FAILED, //认证失败
-                // AUTHENTICATION_EMPTY //未填写认证信息
-                if (responseData.code == 20000) {
-                    // 认证成功
-                    this.setState({
-                        signStatus: "AUTHENTICATION_SUCCESS",
-                        authenticationFlag: true,
-                    })
-                    this.insertUser("AUTHENTICATION_SUCCESS");
-                } else if (responseData.code == 40001) {
-                    // 未登录
-                    this.props.navigation.navigate("SignIn");
-                } else if (responseData.code == 40002) {
-                    // 认证中
-                    this.setState({
-                        signStatus: "AUTHENTICATION_PROGRESS",
-                    })
-                    this.insertUser("AUTHENTICATION_PROGRESS");
-                } else if (responseData.code == 40003) {
-                    // 认证信息审核失败
-                    this.setState({
-                        signStatus: "AUTHENTICATION_FAILED",
-                    })
-                    this.insertUser("AUTHENTICATION_FAILED");
-                } else if (responseData.code == 40004) {
-                    // 认证信息未填写
-                    this.setState({
-                        signStatus: "AUTHENTICATION_EMPTY",
-                    })
-                    this.insertUser("AUTHENTICATION_EMPTY");
-                } else if (responseData.code == 50000) {
-
-                } else {
-
-                }
-            })
-            .catch((error) => {
-                console.log('error', error);
-            });
+        this.refs.BasicData.getLocalDoctorDetail();
+        if (this.state.userInfo.signStatus != "AUTHENTICATION_SUCCESS") {
+            this.refs.BasicData.upDateSignState('');
+        }
     }
     scrollText() {
-        if (this.state.signStatus == "AUTHENTICATION_SUCCESS") {
-            return (<Text style={styles.scrollText}>"医院 + 科室"</Text>)
+        if (this.state.userInfo.signStatus == "AUTHENTICATION_SUCCESS") {
+            return (<Text style={styles.scrollText}>{this.state.userInfo.hospitalName}{this.state.userInfo.branchName}</Text>)
         } else {
             return (<Text style={styles.scrollText}>你好！欢迎来到栗子医学</Text>)
         }
     }
     headTextHtml() {
-        if (this.state.signStatus == "AUTHENTICATION_SUCCESS") {
-            return (<Text style={styles.headText}>"医生名"医生工作站</Text>)
-        } else if (this.state.signStatus == "AUTHENTICATION_EMPTY") {
+        if (this.state.userInfo.signStatus == "AUTHENTICATION_SUCCESS") {
+            return (<Text style={styles.headText}>{this.state.userInfo.doctorName}医生工作站</Text>)
+        } else if (this.state.userInfo.signStatus == "AUTHENTICATION_EMPTY") {
             return (
                 <TouchableOpacity
                     activeOpacity={.8}
@@ -129,7 +54,7 @@ export default class Home extends Component {
                     <Text style={styles.headText}>你暂时还未认证，请先 <Text style={{ color: global.Colors.color347fc2 }}>去认证</Text></Text>
                 </TouchableOpacity>
             )
-        } else if (this.state.signStatus == "AUTHENTICATION_FAILED") {
+        } else if (this.state.userInfo.signStatus == "AUTHENTICATION_FAILED") {
             return (
                 <TouchableOpacity
                     activeOpacity={.8}
@@ -168,6 +93,16 @@ export default class Home extends Component {
                 alwaysBounceVertical={true}// ios不满一屏时弹性
                 bounces={false}// ios弹性
             >
+                <BasicData
+                    style={{ position: 'absolute', zIndex: 10001 }}
+                    ref="BasicData"
+                    userInfo={(data) => {
+                        console.log(data)
+                        this.setState({
+                            userInfo: data,
+                        })
+                    }}
+                />
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏

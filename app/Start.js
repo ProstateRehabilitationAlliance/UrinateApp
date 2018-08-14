@@ -28,7 +28,7 @@ export default class Start extends Component {
         db = sqLite.open();
         //建表
         sqLite.dropTable(sql.dropUser);
-        sqLite.dropTable(sql.dropBranch);
+        // sqLite.dropTable(sql.dropBranch);
         sqLite.createTable();
         Storage.getItem('token', (data) => {
             if (data) {

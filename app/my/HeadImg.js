@@ -5,6 +5,7 @@ import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";
+import BasicData from "../common/BasicData";
 import Nav from "../common/Nav";// 导航组件
 import ImagePicker from 'react-native-image-picker';
 const photoOptions = {
@@ -38,6 +39,7 @@ export default class HeadImg extends Component {
 
             headImg: '',
             headImgUrl: '',
+            oldHeadImgUrl: '',
         }
     }
     getInitalState() {
@@ -47,24 +49,32 @@ export default class HeadImg extends Component {
         // 2仅调用一次在 render 前
     }
     componentDidMount() {
-        // 4获取数据 在 render 后
+        this.refs.BasicData.getLocalDoctorDetail();
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container}>
+                <BasicData
+                    ref="BasicData"
+                    userInfo={(data) => {
+                        this.setState({
+                            headImgUrl: data.headImg,
+                            oldHeadImgUrl: data.headImg,
+                        })
+                    }}
+                />
                 <Nav
                     isLoading={this.state.isLoading}
                     title={"更换头像"}
-                    leftClick={this.goBack.bind(this)} />
+                    leftClick={this.goBack.bind(this)}
+                    rightClick={this.openMycamera.bind(this)}
+                    dom={<Image source={require('../images/head_btn.png')} />}
+                />
                 <ScrollView>
-                    <TouchableOpacity
-                        style={styles.upImgBtn}
-                        activeOpacity={.8}
-                        onPress={() => { this.openMycamera() }}>
-                        <Image style={styles.upImg} source={require('../images/head_btn.png')} />
-                        <Text style={styles.upImgText}>点击上传头像</Text>
-                    </TouchableOpacity>
+                    <View style={styles.upImgBtn}>
+                        <Image style={styles.upImg} source={this.state.headImgUrl ? { uri: this.state.headImgUrl } : require('../images/default_hear_img.png')} />
+                    </View>
                     <View style={styles.btnBox}>
                         <Button text={'保 存'} click={this.submit.bind(this)} />
                     </View>
@@ -89,6 +99,7 @@ export default class HeadImg extends Component {
             }
         })
     }
+
     uploadHeadImg(response) {
         let formData = new FormData();
         formData.append("file", {
@@ -96,7 +107,7 @@ export default class HeadImg extends Component {
             type: 'image/jpeg',
             name: response.fileName
         });
-        formData.append("recordType", 'doctor-sign');
+        formData.append("recordType", 'user-head');
         fetch(requestUrl.uploadHeadImg, {
             method: 'POST',
             headers: {
@@ -145,6 +156,18 @@ export default class HeadImg extends Component {
                     ErrorPromptFlag: false,
                 })
             }, global.TimingCount)
+        } else if (this.state.headImgUrl == this.state.oldHeadImgUrl) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '请修改头像',
+                ErrorPromptImg: require('../images/error.png'),
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
         } else {
             this.setState({
                 isLoading: true,
@@ -154,8 +177,8 @@ export default class HeadImg extends Component {
             })
             // 修改医生信息接口
             let formData = new FormData();
-            formData.append("feedbackText", this.state.text);
-            fetch(requestUrl.addFeedback, {
+            formData.append("headImg", this.state.headImgUrl);
+            fetch(requestUrl.updateDoctorDetail, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -172,11 +195,13 @@ export default class HeadImg extends Component {
                             ErrorPromptText: '提交成功',
                             ErrorPromptImg: require('../images/succeed.png'),
                         })
+                        this.refs.BasicData.deleteUser();
                         clearTimeout(this.timer)
                         this.timer = setTimeout(() => {
                             this.setState({
                                 ErrorPromptFlag: false,
                             })
+                            this.props.navigation.goBack();
                         }, global.TimingCount)
                     } else {
                         this.setState({
@@ -213,10 +238,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    upImgText: {
-        fontSize: global.px2dp(18),
-        color: global.Colors.text333,
-        marginTop: global.px2dp(21),
+    upImg: {
+        width: global.SCREEN_WIDTH,
+        height: global.px2dp(245),
     },
     btnBox: {
         marginTop: global.px2dp(33),

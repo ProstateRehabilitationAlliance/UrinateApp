@@ -6,6 +6,7 @@ import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";
 import Nav from "../common/Nav";
 import UpFile from "../common/UpFile";
+import BasicData from "../common/BasicData";
 import ErrorPrompt from "../common/ErrorPrompt";
 import SubmitPrompt from "../common/SubmitPrompt";
 import SQLite from '../common/SQLite';
@@ -28,6 +29,8 @@ export default class Approve extends Component {
             ErrorPrompt: false,// 提示框 是否显示
             ErrorText: '',// 提示框文字
             ErrorImg: '',// 提示框图片
+
+            userInfo: {},
 
             hospitalData: [],// 医院数据
             hospitalMask: new Animated.Value(0),
@@ -62,210 +65,11 @@ export default class Approve extends Component {
     componentWillMount() {
         // 2仅调用一次在 render 前
     }
-    // 医院数据插入
-    insertHospital() {
-        // 循环插入数据
-        db.transaction((tx) => {
-            for (let key in this.state.hospitalData) {
-                let id = key;
-                let hospitalName = this.state.hospitalData[key];
-                let sql = "INSERT INTO hospital(id,hospitalName)" +
-                    "values(?,?)";
-                tx.executeSql(sql, [id, hospitalName], () => {
-
-                }, (err) => {
-                    console.log(err);
-                });
-            }
-        }, (error) => {
-            console.log(error);
-        });
-    }
-    // 科室数据插入
-    insertSection() {
-        // 循环插入数据
-        db.transaction((tx) => {
-            for (let key in this.state.branchData) {
-                let id = key;
-                let branchName = this.state.branchData[key];
-                let sql = "INSERT INTO branch(id,branchName)" +
-                    "values(?,?)";
-                tx.executeSql(sql, [id, branchName], () => {
-
-                }, (err) => {
-                    console.log(err);
-                });
-            }
-        }, (error) => {
-            console.log(error);
-        });
-    }
-    // 职称数据插入
-    insertTitle() {
-        // 循环插入数据
-        db.transaction((tx) => {
-            for (let key in this.state.titleData) {
-                let id = key;
-                let titleName = this.state.titleData[key];
-                let sql = "INSERT INTO title(id,titleName)" +
-                    "values(?,?)";
-                tx.executeSql(sql, [id, titleName], () => {
-
-                }, (err) => {
-                    console.log(err);
-                });
-            }
-        }, (error) => {
-            console.log(error);
-        });
-    }
     componentDidMount() {
-        db = sqLite.open();
-        db.transaction((tx) => {
-            // 查医院数据列表
-            tx.executeSql("select * from hospital", [], (tx, results) => {
-                var len = results.rows.length;
-                if (len <= 0) {
-                    // 获取医院数据 - start
-                    fetch(requestUrl.getHospitalJson, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                            "token": global.Token,
-                        },
-                    }).then((response) => response.json())
-                        .then((responseData) => {
-                            console.log('responseData', responseData);
-                            if (responseData.code == 20000) {
-                                this.setState({
-                                    hospitalData: responseData.result,
-                                })
-                                this.insertHospital();
-                            } else {
-                                this.setState({
-                                    ErrorPrompt: true,// 提示框 是否显示
-                                    ErrorText: '医院数据获取失败，请重试',// 提示框文字
-                                    ErrorImg: require('../images/error.png'),// 提示框图片
-                                })
-                            }
-                        })
-                        .catch((error) => {
-                            console.log('error', error);
-                        });
-                    // 获取医院数据 - end
-                } else {
-                    var tempJson = {};
-                    for (let i = 0; i < len; i++) {
-                        var u = results.rows.item(i);
-                        tempJson[u.id] = u.hospitalName
-                    }
-                    this.setState({
-                        hospitalData: tempJson
-                    })
-                }
-            });
-            // 查科室数据列表
-            tx.executeSql("select * from branch", [], (tx, results) => {
-                var len = results.rows.length;
-                if (len <= 0) {
-                    // 科室数据 - start
-                    fetch(requestUrl.getBranchServiceJson, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                            "token": global.Token,
-                        },
-                    }).then((response) => response.json())
-                        .then((responseData) => {
-                            console.log('responseData', responseData);
-                            if (responseData.code == 20000) {
-                                this.setState({
-                                    branchData: responseData.result,
-                                })
-                                this.insertSection();
-                            } else {
-                                this.setState({
-                                    ErrorPrompt: true,// 提示框 是否显示
-                                    ErrorText: '科室数据获取失败，请重试',// 提示框文字
-                                    ErrorImg: require('../images/error.png'),// 提示框图片
-                                })
-                            }
-                        })
-                        .catch((error) => {
-                            console.log('error', error);
-                        });
-                    // 科室数据 - end
-                } else {
-                    var tempJson = {};
-                    for (let i = 0; i < len; i++) {
-                        var u = results.rows.item(i);
-                        tempJson[u.id] = u.branchName
-                    }
-                    this.setState({
-                        branchData: tempJson
-                    })
-                }
-            });
-            // 查职称数据列表
-            tx.executeSql("select * from title", [], (tx, results) => {
-                var len = results.rows.length;
-                if (len <= 0) {
-                    // 职称数据 - start
-                    fetch(requestUrl.getDoctorTitleJson, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                            "token": global.Token,
-                        },
-                    }).then((response) => response.json())
-                        .then((responseData) => {
-                            console.log('responseData', responseData);
-                            if (responseData.code == 20000) {
-                                this.setState({
-                                    titleData: responseData.result,
-                                })
-                                this.insertTitle();
-                            } else {
-                                this.setState({
-                                    ErrorPrompt: true,// 提示框 是否显示
-                                    ErrorText: '职称数据获取失败，请重试',// 提示框文字
-                                    ErrorImg: require('../images/error.png'),// 提示框图片
-                                })
-                            }
-                        })
-                        .catch((error) => {
-                            console.log('error', error);
-                        });
-                    // 职称数据 - end
-                } else {
-                    var tempJson = {};
-                    for (let i = 0; i < len; i++) {
-                        var u = results.rows.item(i);
-                        tempJson[u.id] = u.titleName
-                    }
-                    this.setState({
-                        titleData: tempJson
-                    })
-                }
-            });
-            tx.executeSql("select * from user", [], (tx, results) => {
-                // 判断是未认证 还是 认证失败
-                if (results.rows.item(0).signStatus && results.rows.item(0).signStatus == "AUTHENTICATION_FAILED") {
-                    // 认证失败
-                    this.setState({
-                        signFlag: false,
-                    })
-                    this.getAuthentication();
-                } else {
-                    // 未认证
-                    this.setState({
-                        signFlag: true,
-                    })
-                }
-            })
-        }, (error) => {//打印异常信息
-            console.log(error);
-        });
+        this.refs.BasicData.getHospitalData();
+        this.refs.BasicData.getBranchData();
+        this.refs.BasicData.getTitleData();
+        this.refs.BasicData.getLocalDoctorDetail();
     }
     // 获取认证信息
     getAuthentication() {
@@ -280,6 +84,7 @@ export default class Approve extends Component {
                 console.log('responseData', responseData);
                 if (responseData.code == 20000) {
                     this.setState({
+                        signFlag: false,
                         hospitalId: responseData.result.hospitalId,// 医院id
                         branchId: responseData.result.branchId,// 科室id
                         titleId: responseData.result.titleId,// 职称id
@@ -328,73 +133,36 @@ export default class Approve extends Component {
         })
     }
     render() {
-        // 3 渲染 render
-        // 医院html - start
-        var hospitalHtml = [];
-        for (const key in this.state.hospitalData) {
-            hospitalHtml.push(
-                <TouchableOpacity
-                    activeOpacity={.8}
-                    onPress={() => {
-                        this.setState({
-                            hospitalMaskFlag: !this.state.hospitalMaskFlag,
-                            hospitalName: this.state.hospitalData[key],
-                            hospitalId: key
-                        })
-                    }}
-                    style={styles.optionBtn}
-                    key={key}
-                >
-                    <Text style={styles.optionText}>{this.state.hospitalData[key]}</Text>
-                </TouchableOpacity>
-            )
-        }
-        // 医院html - end
-        // 科室html - start
-        var branchHtml = [];
-        for (const key in this.state.branchData) {
-            branchHtml.push(
-                <TouchableOpacity
-                    activeOpacity={.8}
-                    onPress={() => {
-                        this.setState({
-                            branchMaskFlag: !this.state.branchMaskFlag,
-                            branchName: this.state.branchData[key],
-                            branchId: key
-                        })
-                    }}
-                    style={styles.optionBtn}
-                    key={key}
-                >
-                    <Text style={styles.optionText}>{this.state.branchData[key]}</Text>
-                </TouchableOpacity>
-            )
-        }
-        // 科室html - end
-        // 职称html - start
-        var titleHtml = [];
-        for (const key in this.state.titleData) {
-            titleHtml.push(
-                <TouchableOpacity
-                    activeOpacity={.8}
-                    onPress={() => {
-                        this.setState({
-                            titleMaskFlag: !this.state.titleMaskFlag,
-                            titleName: this.state.titleData[key],
-                            titleId: key
-                        })
-                    }}
-                    style={styles.optionBtn}
-                    key={key}
-                >
-                    <Text style={styles.optionText}>{this.state.titleData[key]}</Text>
-                </TouchableOpacity>
-            )
-        }
-        // 职称html - end
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container}>
+                <BasicData
+                    ref='BasicData'
+                    hospitalData={(data) => {
+                        this.setState({
+                            hospitalData: data
+                        })
+                    }}
+                    branchData={(data) => {
+                        this.setState({
+                            branchData: data
+                        })
+                    }}
+                    titleData={(data) => {
+                        this.setState({
+                            titleData: data
+                        })
+                    }}
+                    userInfo={(data) => {
+                        console.log(data)
+                        this.setState({
+                            userInfo: data
+                        })
+                        if (data.signStatus == "AUTHENTICATION_FAILED") {
+                            this.getAuthentication();
+                        }
+                    }}
+                />
                 <Nav
                     isLoading={this.state.isLoading}
                     title="认证信息"
@@ -748,11 +516,13 @@ export default class Approve extends Component {
                     >
                         <View style={styles.maskContent}>
                             <Text style={styles.maskTitle}>医院选择</Text>
-                            <ScrollView>
-                                {hospitalHtml}
-                            </ScrollView>
-
-
+                            <FlatList
+                                style={{}}
+                                data={this.state.hospitalData}
+                                initialNumToRender={20}
+                                keyExtractor={item => item.id}
+                                renderItem={({ item }) => this.hsopitalRenderItem(item)}
+                            />
                         </View>
                     </TouchableOpacity>
                 </TouchableOpacity> : null}
@@ -773,9 +543,13 @@ export default class Approve extends Component {
                     >
                         <View style={styles.maskContent}>
                             <Text style={styles.maskTitle}>科室选择</Text>
-                            <ScrollView>
-                                {branchHtml}
-                            </ScrollView>
+                            <FlatList
+                                style={{}}
+                                data={this.state.branchData}
+                                initialNumToRender={20}
+                                keyExtractor={item => item.id}
+                                renderItem={({ item }) => this.branchRenderItem(item)}
+                            />
                         </View>
                     </TouchableOpacity>
                 </TouchableOpacity> : null}
@@ -795,10 +569,14 @@ export default class Approve extends Component {
                         onPress={() => { return false }}
                     >
                         <View style={styles.maskContent}>
-                            <Text style={styles.maskTitle}>科室选择</Text>
-                            <ScrollView>
-                                {titleHtml}
-                            </ScrollView>
+                            <Text style={styles.maskTitle}>职称选择</Text>
+                            <FlatList
+                                style={{}}
+                                data={this.state.titleData}
+                                initialNumToRender={20}
+                                keyExtractor={item => item.id}
+                                renderItem={({ item }) => this.titleRenderItem(item)}
+                            />
                         </View>
                     </TouchableOpacity>
                 </TouchableOpacity> : null}
@@ -811,6 +589,60 @@ export default class Approve extends Component {
                 {this.state.ErrorPrompt ? <ErrorPrompt text={this.state.ErrorText} imgUrl={this.state.ErrorImg} /> : null}
             </View>
         );
+    }
+    hsopitalRenderItem = (item) => {
+        return (
+            <TouchableOpacity
+                activeOpacity={.8}
+                onPress={() => {
+                    this.setState({
+                        hospitalMaskFlag: !this.state.hospitalMaskFlag,
+                        hospitalName: item.hospitalName,
+                        hospitalId: item.id,
+                    })
+                }}
+                style={styles.optionBtn}
+                key={item.id}
+            >
+                <Text style={styles.optionText}>{item.hospitalName}</Text>
+            </TouchableOpacity>
+        )
+    }
+    branchRenderItem = (item) => {
+        return (
+            <TouchableOpacity
+                activeOpacity={.8}
+                onPress={() => {
+                    this.setState({
+                        branchMaskFlag: !this.state.branchMaskFlag,
+                        branchName: item.branchName,
+                        branchId: item.id,
+                    })
+                }}
+                style={styles.optionBtn}
+                key={item.id}
+            >
+                <Text style={styles.optionText}>{item.branchName}</Text>
+            </TouchableOpacity>
+        )
+    }
+    titleRenderItem = (item) => {
+        return (
+            <TouchableOpacity
+                activeOpacity={.8}
+                onPress={() => {
+                    this.setState({
+                        titleMaskFlag: !this.state.titleMaskFlag,
+                        titleName: item.titleName,
+                        titleId: item.id,
+                    })
+                }}
+                style={styles.optionBtn}
+                key={item.id}
+            >
+                <Text style={styles.optionText}>{item.titleName}</Text>
+            </TouchableOpacity>
+        )
     }
     // 提示框确定按钮
     confirmYesClick() {

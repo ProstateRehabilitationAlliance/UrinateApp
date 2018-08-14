@@ -41,6 +41,7 @@ import Authentication from "./my/Authentication";// 查看认证信息
 import Protocol from "./my/Protocol";// 协议
 import Setting from "./my/Setting";// 设置
 import Feedback from "./my/Feedback";// 反馈
+import UpdatePassword from "./my/UpdatePassword";// 修改密码
 import About from "./my/About";// 关于
 
 import LookImg from "./common/LookImg";// 查看大图
@@ -200,6 +201,9 @@ export default createStackNavigator(
         },
         Feedback: {
             screen: Feedback,// 反馈
+        },
+        UpdatePassword: {
+            screen: UpdatePassword,// 修改密码
         },
         About: {
             screen: About,// 关于

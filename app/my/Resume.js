@@ -4,6 +4,7 @@ import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import Nav from "../common/Nav";// 导航组件
+import BasicData from "../common/BasicData";
 import ErrorPrompt from "../common/ErrorPrompt";
 import SQLite from '../common/SQLite';
 import { sql } from "../netWork/Sql";
@@ -34,20 +35,22 @@ export default class GoodAt extends Component {
         // 2仅调用一次在 render 前
     }
     componentDidMount() {
-        db = sqLite.open();
-        db.transaction((tx) => {
-            tx.executeSql("select * from user where id = ?", [global.token], (tx, results) => {
-                this.setState({
-                    oldText: results.rows.item(0).doctorResume,
-                })
-            })
-        })
+        this.refs.BasicData.getLocalDoctorDetail();
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
 
         return (
             <View style={styles.container}>
+                <BasicData
+                    ref="BasicData"
+                    userInfo={(data) => {
+                        this.setState({
+                            newText: data.doctorResume,
+                            oldText: data.doctorResume,
+                        })
+                    }}
+                />
                 <Nav
                     isLoading={this.state.isLoading}
                     title={"个人简介"}
@@ -68,7 +71,7 @@ export default class GoodAt extends Component {
                                 newText: text,
                             })
                         }}
-                        defaultValue={this.state.oldText}
+                        defaultValue={this.state.newText}
                         onContentSizeChange={this.onContentSizeChange.bind(this)}
                         underlineColorAndroid={'transparent'}
                         onBlur={this.blurReg.bind(this)}
@@ -141,7 +144,7 @@ export default class GoodAt extends Component {
                             ErrorPromptText: '提交成功',
                             ErrorPromptImg: require('../images/succeed.png'),
                         })
-                        sqLite.deleteData(sql.deleteUser);
+                        this.refs.BasicData.deleteUser();
                         clearTimeout(this.timer)
                         this.timer = setTimeout(() => {
                             this.setState({

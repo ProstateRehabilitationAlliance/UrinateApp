@@ -5,6 +5,7 @@ import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import Nav from "../common/Nav";// 导航组件
 import ErrorPrompt from "../common/ErrorPrompt";
+import BasicData from "../common/BasicData";
 import SQLite from '../common/SQLite';
 import { sql } from "../netWork/Sql";
 var sqLite = new SQLite();
@@ -31,152 +32,21 @@ export default class PersonalInfo extends Component {
     componentWillMount() {
         // 2仅调用一次在 render 前
     }
-    upDateUser(obj) {
-        db = sqLite.open();
-        db.transaction((tx) => {
-            let sql = "UPDATE user SET doctorName = ?,doctorSex=?,doctorAddress=?,doctorCardNumber=?,hospitalId=?,branchId=?,titleId=?,headImg=?,doctorResume=?,doctorStrong=? WHERE id = ?";
-            tx.executeSql(sql, [obj.doctorName, obj.doctorSex, obj.doctorAddress, obj.doctorCardNumber, obj.hospitalId, obj.branchId, obj.titleId, obj.headImg, obj.doctorResume, obj.doctorStrong, global.Token], () => {
-
-            }, (err) => {
-                console.log(err);
-            });
-        }, (error) => {
-            console.log(error);
-        });
-    }
-    // 根据 id 查 对应的名字
-    idToName() {
-        db = sqLite.open();
-        db.transaction((tx) => {
-            tx.executeSql("select * from hospital where id = ?", [this.state.userInfo.hospitalId], (tx, results) => {
-                var len = results.rows.length;
-                this.setState({
-                    hospitalName: results.rows.item(0).hospitalName
-                })
-                let sql = "UPDATE user SET hospitalName = ? WHERE id = ?";
-                tx.executeSql(sql, [results.rows.item(0).hospitalName, global.Token], () => {
-
-                }, (err) => {
-                    console.log(err);
-                });
-            })
-            tx.executeSql("select * from branch where id = ?", [this.state.userInfo.branchId], (tx, results) => {
-                var len = results.rows.length;
-                this.setState({
-                    branchName: results.rows.item(0).branchName
-                })
-                let sql = "UPDATE user SET branchName = ? WHERE id = ?";
-                tx.executeSql(sql, [results.rows.item(0).branchName, global.Token], () => {
-
-                }, (err) => {
-                    console.log(err);
-                });
-            })
-            tx.executeSql("select * from title where id = ?", [this.state.userInfo.titleId], (tx, results) => {
-                var len = results.rows.length;
-                this.setState({
-                    titleName: results.rows.item(0).titleName
-                })
-                let sql = "UPDATE user SET titleName = ? WHERE id = ?";
-                tx.executeSql(sql, [results.rows.item(0).titleName, global.Token], () => {
-
-                }, (err) => {
-                    console.log(err);
-                });
-            })
-        })
-    }
-    getDoctorDetail() {
-        // 获取个人信息数据-start
-        this.setState({
-            isLoading: true,
-            ErrorPromptFlag: true,
-            ErrorPromptText: '加载中...',
-            ErrorPromptImg: require('../images/loading.png'),
-        });
-        fetch(requestUrl.getDoctorDetail, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                "token": global.Token,
-            },
-        }).then((response) => response.json())
-            .then((responseData) => {
-                console.log('responseData', responseData);
-                if (responseData.code == 20000) {
-                    this.setState({
-                        isLoading: false,
-                        ErrorPromptFlag: false,
-                        userInfo: responseData.result,
-                    })
-                    this.idToName();
-                    this.upDateUser(responseData.result);
-                } else if (responseData == 40004) {
-                    this.setState({
-                        isLoading: false,
-                        ErrorPromptFlag: true,
-                        ErrorPromptText: '您还未认证',
-                        ErrorPromptImg: require('../images/error.png'),
-                    })
-                    clearTimeout(this.timer)
-                    this.timer = setTimeout(() => {
-                        this.setState({
-                            ErrorPromptFlag: false,
-                        })
-                    }, global.TimingCount)
-                } else if (responseData == 50000) {
-                    this.setState({
-                        isLoading: false,
-                        ErrorPromptFlag: true,
-                        ErrorPromptText: '服务器繁忙',
-                        ErrorPromptImg: require('../images/error.png'),
-                    })
-                    clearTimeout(this.timer)
-                    this.timer = setTimeout(() => {
-                        this.setState({
-                            ErrorPromptFlag: false,
-                        })
-                    }, global.TimingCount)
-                } else {
-                    this.setState({
-                        isLoading: false,
-                        ErrorPromptFlag: true,
-                        ErrorPromptText: '服务器繁忙',
-                        ErrorPromptImg: require('../images/error.png'),
-                    })
-                    clearTimeout(this.timer)
-                    this.timer = setTimeout(() => {
-                        this.setState({
-                            ErrorPromptFlag: false,
-                        })
-                    }, global.TimingCount)
-                }
-            })
-            .catch((error) => {
-                console.log('error', error);
-            });
-        // 获取个人信息数据 - end
-    }
     componentDidMount() {
-        db = sqLite.open();
-        db.transaction((tx) => {
-            tx.executeSql("select * from user", [], (tx, results) => {
-                this.setState({
-                    signStatus: results.rows.item(0).signStatus,
-                    userInfo: results.rows.item(0)
-                })
-                if (!results.rows.item(0).doctorName) {
-                    this.getDoctorDetail();
-                }
-            })
-        }, (error) => {
-            console.log(error);
-        });
+        this.refs.BasicData.getLocalDoctorDetail();
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container}>
+                <BasicData
+                    ref="BasicData"
+                    userInfo={(data) => {
+                        this.setState({
+                            userInfo: data,
+                        })
+                    }}
+                />
                 <Nav isLoading={this.state.isLoading} title={"个人信息"} leftClick={this.goBack.bind(this)} />
                 <ScrollView
                     style={styles.scrollView}
@@ -199,7 +69,7 @@ export default class PersonalInfo extends Component {
                             <View style={styles.itemBox}>
                                 <Image
                                     style={styles.headImg}
-                                    source={this.state.headImg ? { uri: this.state.userInfo.headImg } : require('../images/default_doc_img.png')} />
+                                    source={this.state.userInfo.headImg ? { uri: this.state.userInfo.headImg } : require('../images/default_doc_img.png')} />
                                 <Image source={require('../images/arrow_right_grey.png')} />
                             </View>
                         </TouchableOpacity>

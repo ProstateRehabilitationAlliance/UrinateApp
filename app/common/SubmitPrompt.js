@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0,
         left: 0,
+        zIndex: 10001,
         width: global.SCREEN_WIDTH,
         height: global.SCREEN_HEIGHT,
         backgroundColor: 'rgba(0,0,0,.5)',
