@@ -39,9 +39,14 @@ export let requestUrl = {
     "getDoctorDetail": IP + "/api-user/doctor/detail/getDoctorDetail",// 医生查询个人信息
     "updateDoctorDetail": IP + "/api-user/doctor/detail/updateDoctorDetail",// 医生修改个人信息
     "findDoctorList": IP + "/api-user/doctor/detail/findDoctorList",// 条件查询医生列表
-    "getDoctorDetailById": IP + "/api-user/doctor/detail/getDoctorDetailById",// 其他用户查询医生信息
-
     "addFeedback": IP + "/api-stata/feedback/add",// 添加反馈意见
+
+    // 通讯录
+    "getDoctorDetailById": IP + "/api-user/doctor/detail/getDoctorDetailById",// 其他用户查询医生信息
+    "focus": IP + "/api-user/fansStar/focus",// 关注接口
+    "unFocus": IP + "/api-user/fansStar/unFocus",// 取消关注
+    "findStar": IP + "/api-user/doctor/detail/findStar",// 查询关注的医生
+
 
     // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口

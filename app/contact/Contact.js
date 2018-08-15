@@ -12,37 +12,29 @@ export default class Contact extends Component {
         super(props);
         this.state = {
             isLoading: false,
+            isRefresh: false,
 
             ErrorPromptFlag: false,
             ErrorPromptText: '',
             ErrorPromptImg: '',
 
-            doctorArr: [{
-                "id": "3197b68a898e11e8a09b68cc6e5c9c74",
-                "doctorName": "王海鹏",
-                "titleId": "67e854ad48b64d92bfd7c10d417c44f9",
-                "hospitalId": "2b018d7a485111e8b001d017c2d24457",
-                "headImg": "http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKZFQN36ialGnrTpfPn6cKuwaics5ZUuicIibz2C7FpM2obH12yXgOt4Osicl1eNl6LcmrR7z5TDhzuibSg/132"
-            }, {
-                "id": "5ab9ee678bbd11e8a09b68cc6e5c9c74",
-                "doctorName": "吴松松",
-                "titleId": "67e854ad48b64d92bfd7c10d417c44f9",
-                "hospitalId": "2b018d7a485111e8b001d017c2d24457",
-                "headImg": null
-            },],// 医生数组
+            pageSize: 10,// 每页数量
+            pageNo: 1,// 页码
+
+            doctorArr: [],// 医生数组
+            dataFlag: true,// 是否有下一页
         }
     }
     getInitalState() {
         // 1初始化state
     }
     componentWillMount() {
-        // 2仅调用一次在 render 前
+
     }
     componentDidMount() {
-        // 4获取数据 在 render 后
+        this.findStar(this.state.pageNo);
     }
     render() {
-
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container} >
@@ -75,48 +67,53 @@ export default class Contact extends Component {
                         </View>
                     </TouchableOpacity>
                 </LinearGradient>
-                <ScrollView style={styles.scrollView}>
-                    <FlatList
-                        style={styles.flatListStyle}
-                        data={this.state.doctorArr}
-                        initialNumToRender={10}
-                        keyExtractor={item => item.id}
-                        // ListFooterComponent={() => {
-                        // 尾部组件
-                        // }}
-                        renderItem={({ item }) => this.doctorRenderItem(item)}
-                        // 分隔线
-                        ItemSeparatorComponent={() => {
-                            return (
-                                <View style={{
-                                    height: global.Pixel,
-                                    backgroundColor: global.Colors.text999,
-                                }}></View>
-                            )
-                        }}
-                        // onRefresh={() => { }}//头部刷新组件
-                        // refreshing={this.state.isRefresh}//加载图标
-                        // onEndReached={() => this.onEndReached()} // 加载更多
-                        // onEndReachedThreshold={.1}// 加载更多触发时机
-                        ListEmptyComponent={() => {
-                            // 无数据时显示的内容
-                            return (
-                                <View style={styles.noDataBox}>
-                                    <Image source={require('../images/no_concern.png')} />
-                                    <Text style={styles.noDataText}>您还没有关注过医生，快去关注吧</Text>
-                                    <TouchableOpacity
-                                        style={styles.addConcernBtn}
-                                        activeOpacity={.8}
-                                        onPress={() => { navigate("DoctorSearch"); }}>
-                                        <View style={styles.addConcernBox}>
-                                            <Text style={styles.addConcernText}>去关注</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            )
-                        }}
-                    />
-                </ScrollView>
+                <FlatList
+                    style={styles.flatListStyle}
+                    data={this.state.doctorArr}
+                    initialNumToRender={10}
+                    keyExtractor={item => item.id}
+                    // ListFooterComponent={() => {
+                    // 尾部组件
+                    // }}
+                    renderItem={({ item }) => this.doctorRenderItem(item)}
+                    // 分隔线
+                    // ItemSeparatorComponent={() => {
+                    //     return (
+                    //         <View style={{
+                    //             height: global.Pixel,
+                    //             backgroundColor: global.Colors.text999,
+                    //         }}></View>
+                    //     )
+                    // }}
+                    onRefresh={() => {
+                        this.setState({
+                            pageNo: 1,
+                            doctorArr: [],
+                        })
+                        this.findStar(1);
+                    }}//头部刷新组件
+                    refreshing={this.state.isRefresh}//加载图标
+                    onEndReached={() => this.onEndReached()} // 加载更多
+                    onEndReachedThreshold={.1}// 加载更多触发时机
+                    ListEmptyComponent={() => {
+                        // 无数据时显示的内容
+                        return (
+                            <View style={styles.noDataBox}>
+                                <Image source={require('../images/no_concern.png')} />
+                                <Text style={styles.noDataText}>您还没有关注过医生，快去关注吧</Text>
+                                <TouchableOpacity
+                                    style={styles.addConcernBtn}
+                                    activeOpacity={.8}
+                                    onPress={() => { navigate("DoctorSearch"); }}>
+                                    <View style={styles.addConcernBox}>
+                                        <Text style={styles.addConcernText}>去关注</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        )
+                    }}
+                />
+                {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View >
         );
     }
@@ -136,7 +133,7 @@ export default class Contact extends Component {
         return (
             <TouchableOpacity
                 onPress={() => {
-                    navigate('DoctorDetails');
+                    navigate('DoctorDetails', { doctorId: item.id });
                 }}
                 activeOpacity={.8}
                 key={item.id}
@@ -149,27 +146,142 @@ export default class Contact extends Component {
                             source={item.headImg ? { uri: item.headImg } : require('../images/default_doc_img.png')} />
                         <View style={styles.infoBox}>
                             <Text style={styles.infoName}>{item.doctorName}</Text>
-                            {/* <Text style={styles.infoTitle}>{item.titleId}</Text>
-                        <Text style={styles.infoHospital}>{item.hospitalId}</Text> */}
-                            <Text style={styles.infoTitle}>职称</Text>
-                            <Text style={styles.infoHospital}>北京航天总医院</Text>
+                            <Text style={styles.infoTitle}>{item.titleName}</Text>
+                            <Text style={styles.infoHospital}>{item.hospitalName}</Text>
                         </View>
                         <TouchableOpacity
                             activeOpacity={.8}
-                            onPress={() => { }}
+                            onPress={() => {
+                                this.unFocus(item.id);
+                            }}
                             style={styles.concernBtn}
                         >
-                            <View style={styles.concernBox}>
+                            <View style={styles.noConcernBox}>
                                 <Image
                                     style={styles.concernImg}
-                                    source={require('../images/attention_no.png')} />
-                                <Text style={styles.concernText}>未关注</Text>
+                                    source={require('../images/attention_yes.png')} />
+                                <Text style={styles.noConcernText}>已关注</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
                 </BoxShadow>
             </TouchableOpacity>
         )
+    }
+
+    // 加载更多
+    onEndReached() {
+        // 判断是否还有数据 
+        if (this.state.dataFlag) {
+            this.findStar(this.state.pageNo * 1 + 1 + '');
+            this.setState({ pageNo: this.state.pageNo * 1 + 1 + '' });
+        }
+    }
+    // 加载数据
+    findStar(pageNo) {
+        console.log(pageNo)
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '加载中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        })
+        fetch(requestUrl.findStar + '?pageSize=' + this.state.pageSize + '&pageNo=' + pageNo, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    if (responseData.result.length >= this.state.pageSize) {
+                        let temp = this.state.doctorArr;
+                        temp = temp.concat(responseData.result);
+                        this.setState({
+                            isLoading: false,
+                            ErrorPromptFlag: false,
+                            doctorArr: temp,
+                            dataFlag: true,
+                        })
+                    } else {
+                        let temp = this.state.doctorArr;
+                        temp = temp.concat(responseData.result);
+                        this.setState({
+                            isLoading: false,
+                            ErrorPromptFlag: false,
+                            doctorArr: temp,
+                            dataFlag: false,
+                        })
+                    }
+                } else if (responseData.code == 40001) {
+                    this.props.navigation.navigate('SignIn')
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: false,
+                        doctorArr: [],
+                        dataFlag: false,
+                    })
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
+    // 取消关注
+    unFocus(doctorId) {
+        let formData = new FormData();
+        formData.append("doctorId", doctorId);
+        fetch(requestUrl.unFocus, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+            body: formData,
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    let tempDoctorArr = this.state.doctorArr;
+                    for (var i = 0; i < tempDoctorArr.length; i++) {
+                        if (tempDoctorArr[i].id == doctorId) {
+                            tempDoctorArr.splice(i, 1);
+                        }
+                    }
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '取消关注成功',
+                        ErrorPromptImg: require('../images/succeed.png'),
+                        doctorArr: tempDoctorArr,
+                    })
+                    clearTimeout(this.timer);
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '取消关注失败',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer);
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
 }
 
@@ -210,9 +322,6 @@ const styles = StyleSheet.create({
     searchBtnText: {
         color: global.Colors.color,
         fontSize: global.px2dp(14),
-    },
-    scrollView: {
-
     },
     flatListStyle: {
         paddingLeft: global.px2dp(15),
@@ -261,13 +370,22 @@ const styles = StyleSheet.create({
         color: global.Colors.text555,
         lineHeight: global.px2dp(20),
     },
-    concernBtn: {
-
-    },
     concernBox: {
         width: global.px2dp(64),
         height: global.px2dp(29),
         borderColor: global.Colors.color,
+        borderWidth: global.Pixel,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        borderRadius: global.px2dp(5),
+        marginRight: global.px2dp(15),
+        marginLeft: global.px2dp(15),
+    },
+    noConcernBox: {
+        width: global.px2dp(64),
+        height: global.px2dp(29),
+        borderColor: global.Colors.colorccc,
         borderWidth: global.Pixel,
         flexDirection: 'row',
         alignItems: 'center',
@@ -282,6 +400,10 @@ const styles = StyleSheet.create({
     concernText: {
         fontSize: global.px2dp(12),
         color: global.Colors.color,
+    },
+    noConcernText: {
+        fontSize: global.px2dp(12),
+        color: global.Colors.text666,
     },
     // 列表 item - end
 
