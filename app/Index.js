@@ -33,6 +33,7 @@ import DoctorDetails from "./contact/DoctorDetails";// 医生详情
 
 import StudyTab from "./study/Study";// 直播课
 import MyTab from "./my/My";// 个人中心
+import Followee from "./my/Followee";// 关注的医生列表页
 import PersonalInfo from "./my/PersonalInfo";// 查看个人信息
 import HeadImg from "./my/HeadImg";// 头像
 import Resume from "./my/Resume";// 简介
@@ -42,6 +43,7 @@ import Protocol from "./my/Protocol";// 协议
 import Setting from "./my/Setting";// 设置
 import Feedback from "./my/Feedback";// 反馈
 import UpdatePassword from "./my/UpdatePassword";// 修改密码
+import SafetyCheckout from "./my/SafetyCheckout";// 安全校验
 import About from "./my/About";// 关于
 
 import LookImg from "./common/LookImg";// 查看大图
@@ -178,6 +180,9 @@ export default createStackNavigator(
         My: {
             screen: MyTab,// 个人中心
         },
+        Followee: {
+            screen: Followee,// 关注的医生
+        },
         PersonalInfo: {
             screen: PersonalInfo,// 个人信息查看
         },
@@ -204,6 +209,9 @@ export default createStackNavigator(
         },
         UpdatePassword: {
             screen: UpdatePassword,// 修改密码
+        },
+        SafetyCheckout: {
+            screen: SafetyCheckout,// 安全校验
         },
         About: {
             screen: About,// 关于

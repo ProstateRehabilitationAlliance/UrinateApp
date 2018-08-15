@@ -60,7 +60,7 @@ export default class UpdatePassword extends Component {
                             <TouchableOpacity
                                 activeOpacity={.8}
                                 onPress={() => {
-                                    navigate("ForgetPassword");
+                                    navigate("SafetyCheckout");
                                 }}
                                 style={styles.forgetBtn}
                             >

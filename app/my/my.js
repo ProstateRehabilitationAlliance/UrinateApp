@@ -160,7 +160,7 @@ export default class My extends Component {
                         style={[styles.navigateBtn, { borderBottomWidth: global.Pixel }]}
                         activeOpacity={.8}
                         onPress={() => {
-                            // navigate();
+                            navigate("Followee");
                         }}>
                         <View style={styles.navigateBox}>
                             <Image

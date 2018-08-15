@@ -21,13 +21,8 @@ export default class DoctorDetails extends Component {
             ErrorPromptText: '',
             ErrorPromptImg: '',
 
-            goodAtFlag: false,
-            goodAtWidth: 0,// 擅长盒子 宽
-            goodAtHeight: 0,// 擅长盒子 高
-
-            resumeFlag: false,//简介
-            resumeWidth: 0,//简介盒子 宽
-            resumeHeight: 0,//
+            resumeFlag: false,
+            gootAtFlag: false,
 
             userInfo: {},
         }
@@ -94,29 +89,17 @@ export default class DoctorDetails extends Component {
             y: 0,
             style: styles.boxShadow,
         }
-        const goodAtShadowOpt = {
-            width: this.state.goodAtWidth,
-            height: this.state.goodAtHeight,
+        const flodOpt = {
+            width: global.px2dp(345),
+            height: global.px2dp(32),
             color: "#000",
-            border: 7,
+            border: 12,
             radius: global.px2dp(6),
             opacity: .1,
             x: 0,
             y: 0,
-            style: styles.boxShadow,
+            style: styles.flodShadow,
         }
-        const resumeShadowOpt = {
-            width: this.state.resumeWidth,
-            height: this.state.resumeHeight,
-            color: "#000",
-            border: 7,
-            radius: global.px2dp(6),
-            opacity: .1,
-            x: 0,
-            y: 0,
-            style: styles.boxShadow,
-        }
-
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container}>
@@ -149,8 +132,6 @@ export default class DoctorDetails extends Component {
                     </View>
                 </LinearGradient>
                 <ScrollView
-                    // alwaysBounceVertical={true}// ios不满一屏时弹性
-                    // bounces={true}// ios弹性
                     style={styles.scrollView}>
                     <BoxShadow
                         setting={shadowOpt}>
@@ -243,66 +224,59 @@ export default class DoctorDetails extends Component {
                             </View>
                         </View>
                     </BoxShadow>
-                    {this.state.goodAtFlag ? <BoxShadow
-                        setting={goodAtShadowOpt}>
-                        <View style={styles.content}>
-                            <View style={styles.titleBox}>
-                                <Image
-                                    style={styles.titleImg}
-                                    source={require('../images/good_at.png')} />
-                                <Text style={styles.titleText}>擅长</Text>
-                            </View>
-                            <Text style={styles.Value}>{this.state.userInfo.doctorStrong}</Text>
+                    <View style={[styles.content, this.state.gootAtFlag ? null : { maxHeight: global.px2dp(145), }]}>
+                        <View style={styles.titleBox}>
+                            <Image
+                                style={styles.titleImg}
+                                source={require('../images/good_at.png')} />
+                            <Text style={styles.titleText}>擅长</Text>
                         </View>
-                    </BoxShadow> : <View
-                        onLayout={({ nativeEvent: e }) => {
-                            this.setState({
-                                goodAtFlag: true,
-                                goodAtHeight: e.layout.height,
-                                goodAtWidth: e.layout.width,
-                            })
-                        }}
-                        style={styles.content}>
-                            <View style={styles.titleBox}>
-                                <Image
-                                    style={styles.titleImg}
-                                    source={require('../images/good_at.png')} />
-                                <Text style={styles.titleText}>擅长</Text>
-                            </View>
-                            <Text style={styles.Value}>{this.state.userInfo.doctorStrong}</Text>
-                        </View>}
-
-                    {this.state.resumeFlag ?
-                        <BoxShadow setting={resumeShadowOpt}>
-                            <View style={styles.content}>
-                                <View style={styles.titleBox}>
-                                    <Image
-                                        style={styles.titleImg}
-                                        source={require('../images/resume.png')} />
-                                    <Text style={styles.titleText}>简介</Text>
-                                </View>
-                                <Text style={styles.Value}>{this.state.userInfo.doctorResume}</Text>
-                            </View>
-                        </BoxShadow>
-                        :
-                        <View
-                            onLayout={({ nativeEvent: e }) => {
+                        <Text style={styles.Value}>{this.state.userInfo.doctorStrong}</Text>
+                        <TouchableOpacity
+                            style={[styles.foldBtn, this.state.gootAtFlag ? null : { position: 'absolute' }]}
+                            onPress={() => {
                                 this.setState({
-                                    resumeFlag: true,
-                                    resumeHeight: e.layout.height,
-                                    resumeWidth: e.layout.width,
+                                    gootAtFlag: !this.state.gootAtFlag
                                 })
                             }}
-                            style={styles.content}>
-                            <View style={styles.titleBox}>
-                                <Image
-                                    style={styles.titleImg}
-                                    source={require('../images/resume.png')} />
-                                <Text style={styles.titleText}>简介</Text>
-                            </View>
-                            <Text style={styles.Value}>{this.state.userInfo.doctorResume}</Text>
+                            activeOpacity={1}
+                        >
+                            <BoxShadow
+                                setting={flodOpt}>
+                                <View style={styles.foldBox}>
+                                    <Text style={styles.foldText}>查看全部</Text>
+                                    <Image source={require('../images/fold.png')} style={styles.foldImg} />
+                                </View>
+                            </BoxShadow>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={[styles.content, this.state.resumeFlag ? null : { maxHeight: global.px2dp(145), }]}>
+                        <View style={styles.titleBox}>
+                            <Image
+                                style={styles.titleImg}
+                                source={require('../images/resume.png')} />
+                            <Text style={styles.titleText}>简介</Text>
                         </View>
-                    }
+                        <Text style={styles.Value}>{this.state.userInfo.doctorResume}</Text>
+                        <TouchableOpacity
+                            style={[styles.foldBtn, this.state.resumeFlag ? null : { position: 'absolute' }]}
+                            onPress={() => {
+                                this.setState({
+                                    resumeFlag: !this.state.resumeFlag
+                                })
+                            }}
+                            activeOpacity={1}
+                        >
+                            <BoxShadow
+                                setting={flodOpt}>
+                                <View style={styles.foldBox}>
+                                    <Text style={styles.foldText}>查看全部</Text>
+                                    <Image source={require('../images/fold.png')} style={styles.foldImg} />
+                                </View>
+                            </BoxShadow>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ height: global.px2dp(15) }}></View>
                     {/* <View style={styles.btnBox}>
                         <Button text={'申请转给他'} click={this.submit.bind(this)} style={{ borderRadius: global.px2dp(4) }} />
                     </View> */}
@@ -672,10 +646,17 @@ const styles = StyleSheet.create({
     // 基本信息 - end
 
     content: {
+        position: 'relative',
         width: global.px2dp(345),
         backgroundColor: global.Colors.textfff,
         borderRadius: global.px2dp(6),
-        paddingBottom: global.px2dp(13),
+        marginLeft: global.px2dp(15),
+        marginTop: global.px2dp(15),
+        marginRight: global.px2dp(15),
+        borderWidth: global.Pixel,
+        borderColor: global.Colors.colorccc,
+        shadowRadius: 7,
+        overflow: 'hidden',
     },
     titleBox: {
         height: global.px2dp(33),
@@ -696,6 +677,31 @@ const styles = StyleSheet.create({
         lineHeight: global.px2dp(20),
         marginRight: global.px2dp(21),
         marginLeft: global.px2dp(33),
-    }
+        paddingBottom: global.px2dp(13),
+    },
+    // 折叠部分 -start
+    foldBtn: {
+        bottom: - global.Pixel,
+        left: 0,
+    },
+    foldBox: {
+        width: global.px2dp(344),
+        height: global.px2dp(32),
+        backgroundColor: global.Colors.textfff,
+        width: global.px2dp(344),
+        height: global.px2dp(32),
+        borderBottomLeftRadius: global.px2dp(6),
+        borderBottomRightRadius: global.px2dp(6),
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    foldText: {
+        fontSize: global.px2dp(12),
+        color: global.Colors.color,
+        marginRight: global.px2dp(7),
+    },
+    // 折叠部分 - end
+
 });
 
