@@ -224,6 +224,7 @@ export default class Home extends Component {
     }
 
     componentDidMount() {
+        Storage.removeItem("userInfo", () => { })
         Storage.getItem("userInfo", (data) => {
             if (data) {
                 console.log(data)

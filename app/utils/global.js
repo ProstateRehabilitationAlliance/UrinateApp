@@ -24,7 +24,7 @@ export let global = {
     Colors: Colors,// 常用颜色
     px2dp: Px2dp,// 屏幕适配
     Alert: Alert,// 弹出框
-    StatusBarHeight: Platform.OS === 'ios' ? (isIphoneX() ? 44 : 20) : StatusBar.currentHeight,//状态栏高度
+    StatusBarHeight: Platform.OS === 'ios' ? (isIphoneX() ? 44 : 20) : 0,//状态栏高度
     NavHeight: Platform.OS === 'ios' ? (isIphoneX() ? 88 : 64) : 44,// 导航高度
     TabBar: isIphoneX() ? 34 : 0,// tabBar 高度
     IPhoneX: isIphoneX(),// 判断iPhoneX

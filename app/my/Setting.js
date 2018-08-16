@@ -6,6 +6,7 @@ import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";
 import Nav from "../common/Nav";// 导航组件
+import { Storage } from "../utils/AsyncStorage";
 export default class Setting extends Component {
     static navigationOptions = {
         header: null,
@@ -177,6 +178,7 @@ export default class Setting extends Component {
                         ErrorPromptText: "退出成功",
                         ErrorPromptUrl: require('../images/error.png'),
                     })
+                    Storage.removeItem("userInfo", () => { })
                     clearTimeout(this.timer)
                     this.timer = setTimeout(() => {
                         this.setState({
