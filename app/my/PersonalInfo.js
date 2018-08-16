@@ -5,11 +5,7 @@ import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import Nav from "../common/Nav";// 导航组件
 import ErrorPrompt from "../common/ErrorPrompt";
-import BasicData from "../common/BasicData";
-import SQLite from '../common/SQLite';
-import { sql } from "../netWork/Sql";
-var sqLite = new SQLite();
-var db;
+import { Storage } from '../utils/AsyncStorage';
 export default class PersonalInfo extends Component {
     static navigationOptions = {
         header: null,
@@ -33,20 +29,88 @@ export default class PersonalInfo extends Component {
         // 2仅调用一次在 render 前
     }
     componentDidMount() {
-        this.refs.BasicData.getLocalDoctorDetail();
+        Storage.getItem("userInfo", (data) => {
+            if (data) {
+                this.setState({
+                    userInfo: data,
+                })
+            } else {
+                this.setState({
+                    isLoading: true,
+                    ErrorPromptFlag: true,
+                    ErrorPromptText: '加载中...',
+                    ErrorPromptImg: require('../images/loading.png'),
+                });
+                this.getDoctorDetail();
+            }
+        })
+    }
+    // 获取个人信息
+    getDoctorDetail() {
+        fetch(requestUrl.getDoctorDetail, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: false,
+                        userInfo: responseData.result,
+                    });
+                } else if (responseData == 40004) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '您还未认证',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                } else if (responseData == 50000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '服务器繁忙',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '服务器繁忙',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container}>
-                <BasicData
-                    ref="BasicData"
-                    userInfo={(data) => {
-                        this.setState({
-                            userInfo: data,
-                        })
-                    }}
-                />
                 <Nav isLoading={this.state.isLoading} title={"个人信息"} leftClick={this.goBack.bind(this)} />
                 <ScrollView
                     style={styles.scrollView}

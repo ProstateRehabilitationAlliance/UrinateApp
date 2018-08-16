@@ -4,10 +4,6 @@ import { regExp } from './netWork/RegExp';// 正则
 import { requestUrl } from './netWork/Url';// IP地址
 import { global } from './utils/Global';// 常量
 import { Storage } from "./utils/AsyncStorage";
-import SQLite from './common/SQLite';
-import { sql } from "./netWork/Sql";
-var sqLite = new SQLite();
-var db;
 export default class Start extends Component {
     static navigationOptions = {
         header: null,
@@ -25,15 +21,9 @@ export default class Start extends Component {
         // 2仅调用一次在 render 前
     }
     componentDidMount() {
-        db = sqLite.open();
-        //建表
-        sqLite.dropTable(sql.dropUser);
-        // sqLite.dropTable(sql.dropBranch);
-        sqLite.createTable();
         Storage.getItem('token', (data) => {
             if (data) {
                 global.Token = data;
-                db = sqLite.open();
                 // 获取认证状态 判断登录状态
                 fetch(requestUrl.getSignStatus, {
                     method: 'GET',
@@ -61,21 +51,7 @@ export default class Start extends Component {
         })
     }
     render() {
-        // 3 渲染 render
-        // 变量声明
         const { navigate, goBack } = this.props.navigation;
-        {/* <View style={styles.container} >
-                    <Text> 我的</Text>
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={{ uri: 'https://img1.360buyimg.com/da/jfs/t23440/198/1552616732/96159/b2b38b62/5b62c871N7bc2b6fd.jpg' }}
-                        defaultSource={require('../images/radio_yes.png')}// 默认图片
-                    />
-                    <TouchableOpacity activeOpacity={.8}
-                        onPress={() => this.click()}>
-                        <Text>点击</Text>
-                    </TouchableOpacity>
-                </View> */}
         return (
             <ScrollView style={styles.container}>
                 <StatusBar

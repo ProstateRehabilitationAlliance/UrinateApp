@@ -6,9 +6,6 @@ import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";
 import Nav from "../common/Nav";
 import ErrorPrompt from "../common/ErrorPrompt";
-import SQLite from '../common/SQLite';
-var sqLite = new SQLite();
-var db;
 export default class Authentication extends Component {
     static navigationOptions = {
         header: null,
@@ -26,6 +23,8 @@ export default class Authentication extends Component {
             doctorSex: "",
             doctorCardNumber: "",
 
+            approveStatus: '',// 认证状态
+
             hospitalId: '',//医院ID
             hospitalName: '',//医院ID
             branchId: '',//科室Id
@@ -42,30 +41,65 @@ export default class Authentication extends Component {
     }
     componentWillMount() {
         // 2仅调用一次在 render 前
-    }
-    // 根据 id 查 对应的名字
-    idToName() {
-        db = sqLite.open();
-        db.transaction((tx) => {
-            tx.executeSql("select * from hospital where id = ?", [this.state.hospitalId], (tx, results) => {
-                var len = results.rows.length;
-                this.setState({
-                    hospitalName: results.rows.item(0).hospitalName
-                })
-            })
-            tx.executeSql("select * from branch where id = ?", [this.state.branchId], (tx, results) => {
-                var len = results.rows.length;
-                this.setState({
-                    branchName: results.rows.item(0).branchName
-                })
-            })
-            tx.executeSql("select * from title where id = ?", [this.state.titleId], (tx, results) => {
-                var len = results.rows.length;
-                this.setState({
-                    titleName: results.rows.item(0).titleName
-                })
-            })
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '加载中...',
+            ErrorPromptImg: require('../images/loading.png'),
         })
+        this.getSignStates()
+    }
+    // 获取后台认证状态
+    getSignStates() {
+        fetch(requestUrl.getSignStatus, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    // 认证成功
+                    this.setState({
+                        approveStatus: 'AUTHENTICATION_SUCCESS',
+                    });
+                    this.getIdCardInfo();
+                    this.getAuthentication();
+                } else if (responseData.code == 40002) {
+                    // 认证中
+                    this.setState({
+                        approveStatus: 'AUTHENTICATION_PROGRESS',
+                        ErrorPromptFlag: false,
+                        isLoading: false,
+                    })
+                } else if (responseData.code == 40003) {
+                    // 认证信息审核失败
+                    this.setState({
+                        approveStatus: 'AUTHENTICATION_FAILED',
+                        ErrorPromptFlag: false,
+                        isLoading: false,
+                    })
+                    this.getAuthentication();
+                } else if (responseData.code == 40004) {
+                    // 认证信息未填写
+                    this.setState({
+                        approveStatus: 'AUTHENTICATION_EMPTY',
+                        ErrorPromptFlag: false,
+                        isLoading: false,
+                    })
+                } else {
+                    this.setState({
+                        approveStatus: 'AUTHENTICATION_EMPTY',
+                        ErrorPromptFlag: false,
+                        isLoading: false,
+                    })
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
     getIdCardInfo() {
         // 查询身份证信息-start
@@ -81,6 +115,8 @@ export default class Authentication extends Component {
                 if (responseData.code == 20000) {
                     // 查询成功
                     this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: false,
                         doctorName: responseData.result.doctorName,
                         doctorSex: responseData.result.doctorSex,
                         doctorCardNumber: responseData.result.doctorCardNumber
@@ -94,6 +130,7 @@ export default class Authentication extends Component {
                 } else if (responseData.code == 50000) {
                     // 系统异常
                     this.setState({
+                        isLoading: false,
                         ErrorPromptFlag: true,
                         ErrorPromptText: '服务器繁忙',
                         ErrorPromptImg: require('../images/error.png'),
@@ -106,6 +143,7 @@ export default class Authentication extends Component {
                     }, global.TimingCount)
                 } else {
                     this.setState({
+                        isLoading: false,
                         ErrorPromptFlag: true,
                         ErrorPromptText: '服务器繁忙',
                         ErrorPromptImg: require('../images/error.png'),
@@ -123,7 +161,7 @@ export default class Authentication extends Component {
             });
         // 查询身份证信息-end
     }
-    componentDidMount() {
+    getAuthentication() {
         // 查询认证信息-start
         fetch(requestUrl.getAuthentication, {
             method: 'GET',
@@ -137,14 +175,15 @@ export default class Authentication extends Component {
                 if (responseData.code == 20000) {
                     this.setState({
                         hospitalId: responseData.result.hospitalId,
+                        hospitalName: responseData.result.hospitalName,
                         branchId: responseData.result.branchId,
+                        branchName: responseData.result.branchName,
                         titleId: responseData.result.titleId,
+                        titleName: responseData.result.titleName,
                         idCardFrontUrl: responseData.result.idCardFront,
                         doctorCardFrontUrl: responseData.result.doctorCardFront,
                         workCardUrl: responseData.result.workCard,
                     })
-                    this.idToName();
-                    this.getIdCardInfo();
                 } else if (responseData.code == 40001) {
                     // 登录超时
 
@@ -178,8 +217,8 @@ export default class Authentication extends Component {
                 console.log('error', error);
             });
         // 查询认证信息-end
-
-
+    }
+    componentDidMount() {
 
     }
     render() {

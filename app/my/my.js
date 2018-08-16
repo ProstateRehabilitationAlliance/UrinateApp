@@ -3,45 +3,170 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView,
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
+import { Storage } from '../utils/AsyncStorage';
 import LinearGradient from 'react-native-linear-gradient';
-import BasicData from "../common/BasicData";
-import SQLite from '../common/SQLite';
-import { sql } from "../netWork/Sql";
-var sqLite = new SQLite();
-var db;
+import ErrorPrompt from "../common/ErrorPrompt";
+
 export default class My extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isLoading: false,
+            ErrorPromptFlag: false,
+            ErrorPromptText: '',
+            ErrorPromptImg: '',
+
             userInfo: {},
-            titleName: '',//职称名字
+            signStatus: '',
         }
     }
     getInitalState() {
         // 1初始化state
     }
     componentWillMount() {
-        // 2仅调用一次在 render 前
+        Storage.getItem("userInfo", (data) => {
+            if (data) {
+                this.setState({
+                    userInfo: data,
+                    signStatus: 'AUTHENTICATION_SUCCESS',
+                })
+            } else {
+                this.setState({
+                    isLoading: true,
+                    ErrorPromptFlag: true,
+                    ErrorPromptText: '加载中...',
+                    ErrorPromptImg: require('../images/loading.png'),
+                });
+                this.getSignStates();
+            }
+        })
     }
 
-    componentDidMount() {
-        // 过去个人信息
-        this.refs.BasicData.getLocalDoctorDetail();
+    // 获取后台认证状态
+    getSignStates() {
+        fetch(requestUrl.getSignStatus, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    // 认证成功
+                    this.setState({
+                        signStatus: 'AUTHENTICATION_SUCCESS'
+                    })
+                    this.getDoctorDetail();
+                } else if (responseData.code == 40002) {
+                    // 认证中
+                    this.setState({
+                        signStatus: 'AUTHENTICATION_PROGRESS',
+                        ErrorPromptFlag: false,
+                        isLoading: false,
+                    })
+                } else if (responseData.code == 40003) {
+                    // 认证信息审核失败
+                    this.setState({
+                        signStatus: 'AUTHENTICATION_FAILED',
+                        ErrorPromptFlag: false,
+                        isLoading: false,
+                    })
+                } else if (responseData.code == 40004) {
+                    // 认证信息未填写
+                    this.setState({
+                        signStatus: 'AUTHENTICATION_EMPTY',
+                        ErrorPromptFlag: false,
+                        isLoading: false,
+                    })
+                } else {
+                    this.setState({
+                        signStatus: 'AUTHENTICATION_EMPTY',
+                        ErrorPromptFlag: false,
+                        isLoading: false,
+                    })
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
+    // 获取个人信息
+    getDoctorDetail() {
+        fetch(requestUrl.getDoctorDetail, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: false,
+                        userInfo: responseData.result,
+                    });
+                } else if (responseData == 40004) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '您还未认证',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                } else if (responseData == 50000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '服务器繁忙',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '服务器繁忙',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
     navHTML() {
         // AUTHENTICATION_PROGRESS,//认证中
         // AUTHENTICATION_SUCCESS,//认证成功
         // AUTHENTICATION_FAILED, //认证失败
         // AUTHENTICATION_EMPTY //未填写认证信息
-        if (this.state.userInfo.signStatus == "AUTHENTICATION_SUCCESS") {
+        if (this.state.signStatus == "AUTHENTICATION_SUCCESS") {
             return (
                 <View style={styles.navBox}>
                     <Text style={styles.topText}>{this.state.userInfo.doctorName}-{this.state.userInfo.titleName}</Text>
                     <Text style={styles.bottomText}>{this.state.userInfo.hospitalName} {this.state.userInfo.branchName}</Text>
                 </View>
             )
-        } else if (this.state.userInfo.signStatus == "AUTHENTICATION_PROGRESS") {
+        } else if (this.state.signStatus == "AUTHENTICATION_PROGRESS") {
             return (
                 <View style={styles.navBox}>
                     <Text style={styles.topText}>认证中</Text>
@@ -59,7 +184,7 @@ export default class My extends Component {
                     </TouchableOpacity>
                 </View>
             )
-        } else if (this.state.userInfo.signStatus == "AUTHENTICATION_EMPTY") {
+        } else if (this.state.signStatus == "AUTHENTICATION_EMPTY") {
             return (
                 <View style={styles.navBox}>
                     <Text style={styles.topText}>未认证</Text>
@@ -112,13 +237,6 @@ export default class My extends Component {
                     showHideTransition="fade"//IOS状态栏改变时动画 fade:默认 slide
                     networkActivityIndicatorVisible={this.state.isLoading}//IOS设定网络活动指示器(就是那个菊花)是否显示在状态栏。
                     statusBarStyle={"default"}//ios:白底黑字  android:黑底白字
-                />
-                <BasicData ref="BasicData"
-                    userInfo={(data) => {
-                        this.setState({
-                            userInfo: data,
-                        })
-                    }}
                 />
                 <LinearGradient
                     start={{ x: 0, y: 1 }}
@@ -288,6 +406,7 @@ export default class My extends Component {
                     </TouchableOpacity>
                 </View>
                 <View style={{ height: global.px2dp(20) }}></View>
+                {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </ScrollView>
         );
     }

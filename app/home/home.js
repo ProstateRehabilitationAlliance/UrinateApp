@@ -4,44 +4,173 @@ import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import LinearGradient from 'react-native-linear-gradient';
+import ErrorPrompt from "../common/ErrorPrompt";
 import { BoxShadow } from 'react-native-shadow';
-import BasicData from "../common/BasicData";
-import SQLite from '../common/SQLite';
-import { sql } from "../netWork/Sql";
-var sqLite = new SQLite();
-var db;
+import { Storage } from "../utils/AsyncStorage";
+
 export default class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isLoading: false,
 
+            ErrorPromptFlag: false,
+            ErrorPromptText: '',
+            ErrorPromptImg: '',
+
             userInfo: {},
+            signStatus: '',// 认证状态
+            QRCodeContentFlag: false,
 
         }
     }
-    getInitalState() {
-        // 1初始化state
-    }
     componentWillMount() {
-        // 2仅调用一次在 render 前
+
+    }
+    // 获取后台认证状态
+    getSignStates() {
+        fetch(requestUrl.getSignStatus, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    // 认证成功
+                    this.setState({
+                        signStatus: 'AUTHENTICATION_SUCCESS'
+                    })
+                    this.getDoctorDetail();
+                } else if (responseData.code == 40002) {
+                    // 认证中
+                    this.setState({
+                        signStatus: 'AUTHENTICATION_PROGRESS',
+                        ErrorPromptFlag: false,
+                        isLoading: false,
+                    })
+                } else if (responseData.code == 40003) {
+                    // 认证信息审核失败
+                    this.setState({
+                        signStatus: 'AUTHENTICATION_FAILED',
+                        ErrorPromptFlag: false,
+                        isLoading: false,
+                    })
+                } else if (responseData.code == 40004) {
+                    // 认证信息未填写
+                    this.setState({
+                        signStatus: 'AUTHENTICATION_EMPTY',
+                        ErrorPromptFlag: false,
+                        isLoading: false,
+                    })
+                } else {
+                    this.setState({
+                        signStatus: 'AUTHENTICATION_EMPTY',
+                        ErrorPromptFlag: false,
+                        isLoading: false,
+                    })
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
+    // 获取个人信息
+    getDoctorDetail() {
+        fetch(requestUrl.getDoctorDetail, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: false,
+                        userInfo: responseData.result,
+                    });
+                    Storage.setItem("userInfo", responseData.result, (data) => {
+                        console.log(data)
+                    });
+                } else if (responseData == 40004) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '您还未认证',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                } else if (responseData == 50000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '服务器繁忙',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '服务器繁忙',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
 
     componentDidMount() {
-        this.refs.BasicData.getLocalDoctorDetail();
-        if (this.state.userInfo.signStatus != "AUTHENTICATION_SUCCESS") {
-            this.refs.BasicData.upDateSignState('');
-        }
+        Storage.getItem("userInfo", (data) => {
+            if (data) {
+                console.log(data)
+                this.setState({
+                    userInfo: data,
+                    signStatus: 'AUTHENTICATION_SUCCESS',
+                })
+            } else {
+                this.setState({
+                    isLoading: true,
+                    ErrorPromptFlag: true,
+                    ErrorPromptText: '加载中...',
+                    ErrorPromptImg: require('../images/loading.png'),
+                });
+                this.getSignStates();
+            }
+        })
     }
     scrollText() {
-        if (this.state.userInfo.signStatus == "AUTHENTICATION_SUCCESS") {
+        if (this.state.signStatus == "AUTHENTICATION_SUCCESS") {
             return (<Text style={styles.scrollText}>{this.state.userInfo.hospitalName}{this.state.userInfo.branchName}</Text>)
         } else {
             return (<Text style={styles.scrollText}>你好！欢迎来到栗子医学</Text>)
         }
     }
     headTextHtml() {
-        if (this.state.userInfo.signStatus == "AUTHENTICATION_SUCCESS") {
+        if (this.state.signStatus == "AUTHENTICATION_SUCCESS") {
             return (<Text style={styles.headText}>{this.state.userInfo.doctorName}医生工作站</Text>)
         } else if (this.state.userInfo.signStatus == "AUTHENTICATION_EMPTY") {
             return (
@@ -54,7 +183,7 @@ export default class Home extends Component {
                     <Text style={styles.headText}>你暂时还未认证，请先 <Text style={{ color: global.Colors.color347fc2 }}>去认证</Text></Text>
                 </TouchableOpacity>
             )
-        } else if (this.state.userInfo.signStatus == "AUTHENTICATION_FAILED") {
+        } else if (this.state.signStatus == "AUTHENTICATION_FAILED") {
             return (
                 <TouchableOpacity
                     activeOpacity={.8}
@@ -65,10 +194,8 @@ export default class Home extends Component {
                     <Text style={styles.headText}>认证失败，请重新认证 <Text style={{ color: global.Colors.color347fc2 }}>去认证</Text></Text>
                 </TouchableOpacity>
             )
-        } else {
-            return (
-                <Text style={styles.headText}>认证信息审核中...</Text>
-            )
+        } else if (this.state.signStatus == "AUTHENTICATION_PROGRESS") {
+            return (<Text style={styles.headText}>认证信息审核中...</Text>)
         }
     }
 
@@ -86,23 +213,13 @@ export default class Home extends Component {
             style: styles.boxShadow,
         }
         const { navigate, goBack } = this.props.navigation;
-
+        console.log('-------------')
         return (
             <ScrollView
                 style={styles.container}
                 alwaysBounceVertical={true}// ios不满一屏时弹性
                 bounces={false}// ios弹性
             >
-                <BasicData
-                    style={{ position: 'absolute', zIndex: 10001 }}
-                    ref="BasicData"
-                    userInfo={(data) => {
-                        console.log(data)
-                        this.setState({
-                            userInfo: data,
-                        })
-                    }}
-                />
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏
@@ -128,7 +245,11 @@ export default class Home extends Component {
                         <TouchableOpacity
                             style={styles.QRCodeBtn}
                             activeOpacity={.8}
-                            onPress={() => { }}>
+                            onPress={() => {
+                                this.setState({
+                                    QRCodeContentFlag: !this.state.QRCodeContentFlag
+                                })
+                            }}>
                             <Image
                                 source={require('../images/qr_code_btn.png')}
                             />
@@ -219,6 +340,73 @@ export default class Home extends Component {
                 <View style={styles.bannerContent}>
                     <Image style={styles.bannerImg} source={require('../images/banner.png')} />
                 </View>
+                {this.state.QRCodeContentFlag ?
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={() => {
+                            this.setState({
+                                QRCodeContentFlag: !this.state.QRCodeContentFlag
+                            })
+                        }}
+                        style={styles.QRCodeMask}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            onPress={() => { }}
+                        >
+                            <View style={styles.QRCodeContent}>
+                                <View style={styles.QRTitleBox}>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        style={styles.closeBtn}
+                                        onPress={() => {
+                                            this.setState({
+                                                QRCodeContentFlag: !this.state.QRCodeContentFlag
+                                            })
+                                        }}
+                                    >
+                                        <Text style={styles.closeText}>返回</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <Image
+                                    style={styles.QCHeadImg}
+                                    source={this.state.userInfo.headImg ? { uri: this.state.userInfo.headImg } : require('../images/default_doc_img.png')} />
+                                <Text style={styles.QCDoctorName}>{this.state.userInfo.doctorName}</Text>
+                                <Text style={styles.QCDoctorTitle}>{this.state.userInfo.titleName}</Text>
+                                <LinearGradient
+                                    start={{ x: 0, y: 1 }}
+                                    end={{ x: 1, y: 1 }}
+                                    colors={['#fff', '#999', '#fff']}
+                                    style={{
+                                        width: global.px2dp(225),
+                                        height: global.Pixel,
+                                        // height: global.px2dp(5),
+                                        marginTop: global.px2dp(8),
+                                        marginBottom: global.px2dp(8),
+                                        backgroundColor: 'red',
+                                    }}>
+                                </LinearGradient>
+
+                                <View style={styles.countContent}>
+                                    <View style={styles.countItem}>
+                                        <Text>555</Text>
+                                        <Text>访问量</Text>
+                                    </View>
+                                    <View style={styles.countLine}></View>
+                                    <View style={styles.countItem}>
+                                        <Text>555</Text>
+                                        <Text>访问量</Text>
+                                    </View>
+                                </View>
+                                <View style={styles.QRImgBox}>
+                                    {/* <Image /> */}
+                                </View>
+                                <Text style={styles.QRText}>微信扫一扫</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </TouchableOpacity>
+                    : null}
+                {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </ScrollView>
         );
     }
@@ -271,7 +459,7 @@ const styles = StyleSheet.create({
         backgroundColor: global.Colors.textfff,
         borderRadius: global.px2dp(5),
         // shadowColor: '#000',
-        // shadowOffset: { width: 0, height: 0 },
+        // shadowOffset: {width: 0, height: 0 },
         // shadowRadius: 6,
         // shadowOpacity: .2,
     },
@@ -383,7 +571,7 @@ const styles = StyleSheet.create({
         fontSize: global.px2dp(10),
         color: global.Colors.textfff,
     },
-    // 三大模块 - end 
+    // 三大模块 - end
     // 大标题-start
     headContent: {
         flexDirection: 'row',
@@ -431,5 +619,89 @@ const styles = StyleSheet.create({
     bannerImg: {
         width: global.px2dp(346),
     },
+    // 二维码 box - start
+    QRCodeMask: {
+        position: 'absolute',
+        width: global.SCREEN_WIDTH,
+        height: global.SCREEN_HEIGHT,
+        backgroundColor: 'rgba(0,0,0,.6)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    QRCodeContent: {
+        overflow: 'hidden',
+        alignItems: 'center',
+        width: global.px2dp(273),
+        height: global.px2dp(376),
+        borderRadius: global.px2dp(5),
+        backgroundColor: global.Colors.textfff,
+    },
+    QRTitleBox: {
+        width: global.px2dp(273),
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+        height: global.px2dp(50),
+        backgroundColor: global.Colors.color,
+    },
+    closeBtn: {
+    },
+    closeText: {
+        fontSize: global.px2dp(14),
+        lineHeight: global.px2dp(50),
+        color: global.Colors.textfff,
+        paddingRight: global.px2dp(17),
+        paddingLeft: global.px2dp(17),
+    },
+    QCHeadImg: {
+        width: global.px2dp(70),
+        height: global.px2dp(70),
+        borderColor: global.Colors.textfff,
+        borderWidth: global.Pixel,
+        borderRadius: global.px2dp(35),
+        marginTop: - global.px2dp(35),
+        marginBottom: global.px2dp(7),
+    },
+    QCDoctorName: {
+        fontSize: global.px2dp(17),
+        color: global.Colors.text333,
+        lineHeight: global.px2dp(23),
+    },
+    QCDoctorTitle: {
+        fontSize: global.px2dp(15),
+        color: global.Colors.text333,
+        lineHeight: global.px2dp(22),
+    },
+    countContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: global.px2dp(190),
+        height: global.px2dp(36),
+    },
+    countItem: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    countLine: {
+        height: global.px2dp(17),
+        width: global.Pixel,
+        backgroundColor: global.Colors.colorccc,
+    },
+    QRImgBox: {
+        width: global.px2dp(150),
+        height: global.px2dp(150),
+        borderWidth: global.Pixel,
+        borderColor: global.Colors.text999,
+        borderRadius: global.px2dp(5),
+        padding: global.px2dp(3),
+        marginTop: global.px2dp(8)
+    },
+    QRText: {
+        fontSize: global.px2dp(13),
+        color: global.Colors.text999,
+        lineHeight: global.px2dp(32),
+    }
+    // 二维码 box - end
 });
 

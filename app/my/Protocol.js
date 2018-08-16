@@ -25,33 +25,8 @@ export default class Protocol extends Component {
         // 4获取数据 在 render 后
     }
     render() {
-        // 3 渲染 render
-        // 变量声明
-        // const { navigate, goBack } = this.props.navigation;
-        {/* <View style={styles.container} >
-                    <Text> 我的</Text>
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={{ uri: 'https://img1.360buyimg.com/da/jfs/t23440/198/1552616732/96159/b2b38b62/5b62c871N7bc2b6fd.jpg' }}
-                        defaultSource={require('../images/radio_yes.png')}// 默认图片
-                    />
-                    <TouchableOpacity activeOpacity={.8}
-                        onPress={() => this.click()}>
-                        <Text>点击</Text>
-                    </TouchableOpacity>
-                </View> */}
         return (
             <View style={styles.container}>
-                <StatusBar
-                    animated={true}//是否动画
-                    hidden={false}//是否隐藏
-                    backgroundColor={'#000'}//android 设置状态栏背景颜色
-                    translucent={false}//android 设置状态栏是否为透明
-                    showHideTransition="fade"//IOS状态栏改变时动画 fade:默认 slide
-                    networkActivityIndicatorVisible={this.state.isLoading}//IOS设定网络活动指示器(就是那个菊花)是否显示在状态栏。
-                    statusBarStyle={"default"}//状态栏样式 default	默认（IOS为白底黑字、Android为黑底白字）
-                    barStyle={"light-content"}// 状态栏文本的颜色。
-                />
                 <Nav title={"协议"} leftClick={this.goBack.bind(this)} />
                 <ScrollView
                     style={styles.content}
@@ -75,7 +50,7 @@ export default class Protocol extends Component {
         this.props.navigation.goBack();
     }
     submit() {
-        global.Alert.alert('完成')
+        this.props.navigation.goBack();
     }
 }
 

@@ -143,6 +143,9 @@ export default createStackNavigator(
         },
         SignIn: {
             screen: SignIn,//登录
+            navigationOptions: {
+                // gesturesEnabled: false,
+            }
         },
         SignCodeIn: {
             screen: SignCodeIn,//验证码登录
@@ -157,6 +160,7 @@ export default createStackNavigator(
             screen: MainView,//工作台
             navigationOptions: {
                 header: null,
+                // gesturesEnabled: false,
             }
         },
         Order: {
