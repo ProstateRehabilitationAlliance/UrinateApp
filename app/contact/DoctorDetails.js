@@ -25,6 +25,9 @@ export default class DoctorDetails extends Component {
             gootAtFlag: false,
 
             userInfo: {},
+            picturePrice: 0,
+            phonePrice: 0,
+            videoPrice: 0,
         }
     }
     getInitalState() {
@@ -75,6 +78,57 @@ export default class DoctorDetails extends Component {
                 .catch((error) => {
                     console.log('error', error);
                 });
+            fetch(requestUrl.queryListByDoctor + '?doctorId=' + doctorId, {
+                method: 'GET',
+                headers: {
+                    // 'Content-Type': 'multipart/form-data',
+                    "token": global.Token,
+                },
+            }).then((response) => response.json())
+                .then((responseData) => {
+                    console.log('responseData', responseData);
+                    if (responseData.code == 20000) {
+                        var tempArr = responseData.result;
+                        for (var i = 0; i < tempArr.length; i++) {
+                            if (tempArr[i].goodsType == "GOODS_INQUIRY_PICTURE") {
+                                this.setState({
+                                    picturePrice: tempArr[i].goodsPrice
+                                })
+                            } else if (tempArr[i].goodsType == "GOODS_INQUIRY_PHONE") {
+                                this.setState({
+                                    phonePrice: tempArr[i].goodsPrice
+                                })
+                            } else if (tempArr[i].goodsType == "GOODS_INQUIRY_VIDEO") {
+                                this.setState({
+                                    videoPrice: tempArr[i].goodsPrice
+                                })
+                            }
+                        }
+                        this.setState({
+                            isLoading: false,
+                            ErrorPromptFlag: false,
+                        })
+                    } else if (responseData.code == 40001) {
+                        this.props.navigation.navigate('SignIn');
+                    } else {
+                        this.setState({
+                            isLoading: false,
+                            ErrorPromptFlag: true,
+                            ErrorPromptText: '查询失败',
+                            ErrorPromptImg: require('../images/error.png'),
+                        })
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                isLoading: false,
+                                ErrorPromptFlag: false,
+                            })
+                        }, global.TimingCount)
+                    }
+                })
+                .catch((error) => {
+                    console.log('error', error);
+                });
         }
     }
     render() {
@@ -101,6 +155,7 @@ export default class DoctorDetails extends Component {
             style: styles.flodShadow,
         }
         const { navigate, goBack } = this.props.navigation;
+        console.log(StatusBar)
         return (
             <View style={styles.container}>
                 <StatusBar
@@ -192,28 +247,28 @@ export default class DoctorDetails extends Component {
                                 </View>
                             </View>
                             <View style={styles.diagnoseWayBox}>
-                                <View style={styles.diagnoseWayBtn}>
+                                <View style={styles.diagnoseWayItem}>
                                     <Image
                                         style={styles.diagnoseWayImg}
                                         source={require('../images/inquiry_img.png')} />
                                     <Text style={styles.diagnoseWayTitle}>图文咨询</Text>
-                                    <Text style={styles.diagnoseWayPic}>{this.state.userInfo.picturePrice == 0 ? "暂未开通" : this.state.userInfo.picturePrice + '/次'}</Text>
+                                    <Text style={styles.diagnoseWayPic}>{this.state.picturePrice == 0 ? "暂未开通" : this.state.picturePrice + '/次'}</Text>
                                 </View>
-                                <View style={styles.diagnoseWayBtn}>
+                                <View style={styles.diagnoseWayItem}>
                                     <Image
                                         style={styles.diagnoseWayImg}
                                         source={require('../images/inquiry_tel.png')} />
                                     <Text style={styles.diagnoseWayTitle}>电话咨询</Text>
-                                    <Text style={styles.diagnoseWayPic}>{this.state.userInfo.phonePrice
-                                        == 0 ? "暂未开通" : this.state.userInfo.phonePrice
+                                    <Text style={styles.diagnoseWayPic}>{this.state.phonePrice
+                                        == 0 ? "暂未开通" : this.state.phonePrice
                                         + '/次'}</Text>
                                 </View>
-                                <View style={styles.diagnoseWayBtn}>
+                                <View style={styles.diagnoseWayItem}>
                                     <Image
                                         style={styles.diagnoseWayImg}
                                         source={require('../images/inquiry_video.png')} />
                                     <Text style={styles.diagnoseWayTitle}>视频咨询</Text>
-                                    <Text style={styles.diagnoseWayPic}>{this.state.userInfo.videoPrice == 0 ? "暂未开通" : this.state.userInfo.videoPrice + '/次'}</Text>
+                                    <Text style={styles.diagnoseWayPic}>{this.state.videoPrice == 0 ? "暂未开通" : this.state.videoPrice + '/次'}</Text>
                                 </View>
                                 {/* <TouchableOpacity
                                     style={styles.diagnoseWayBtn}
@@ -476,7 +531,7 @@ const styles = StyleSheet.create({
         top: global.NavHeight,
         left: 0,
         width: global.SCREEN_WIDTH,
-        height: global.SCREEN_HEIGHT - global.NavHeight,
+        height: global.IOS ? global.SCREEN_HEIGHT - global.NavHeight : global.SCREEN_HEIGHT - global.NavHeight - StatusBar.currentHeight,
     },
     navContent: {
         position: 'relative',
@@ -625,7 +680,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-around',
     },
-    diagnoseWayBtn: {
+    diagnoseWayItem: {
         flex: 1,
         alignItems: 'center',
     },

@@ -7,6 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ErrorPrompt from "../common/ErrorPrompt";
 import { BoxShadow } from 'react-native-shadow';
 import { Storage } from "../utils/AsyncStorage";
+import QRCode from 'react-native-qrcode';
 
 export default class Home extends Component {
     constructor(props) {
@@ -22,11 +23,12 @@ export default class Home extends Component {
             signStatus: '',// 认证状态
             QRCodeContentFlag: false,
 
+            maskContentFlag: false,
+            goodsPrice: 30,
+
         }
     }
-    componentWillMount() {
 
-    }
     // 获取后台认证状态
     getSignStates() {
         fetch(requestUrl.getSignStatus, {
@@ -43,6 +45,7 @@ export default class Home extends Component {
                     this.setState({
                         signStatus: 'AUTHENTICATION_SUCCESS'
                     })
+                    this.queryCount();
                     this.getDoctorDetail();
                 } else if (responseData.code == 40002) {
                     // 认证中
@@ -142,6 +145,83 @@ export default class Home extends Component {
                 console.log('error', error);
             });
     }
+    queryCount() {
+        fetch(requestUrl.queryCount, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    if (responseData.result == 0) {
+                        this.setState({
+                            maskContentFlag: !this.state.maskContentFlag,
+                        })
+                    }
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
+    // 设置金额
+    addGoods() {
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '提交中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        })
+        let formData = new FormData();
+        formData.append("goodsPrice", this.state.goodsPrice);
+        formData.append("goodsType", "GOODS_INQUIRY_PICTURE");
+        fetch(requestUrl.addGoods, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+            body: formData,
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '提交成功',
+                        ErrorPromptImg: require('../images/succeed.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                            maskContentFlag: !this.state.maskContentFlag,
+                        })
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '提交失败，请重试',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                            maskContentFlag: !this.state.maskContentFlag,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
 
     componentDidMount() {
         Storage.getItem("userInfo", (data) => {
@@ -151,6 +231,7 @@ export default class Home extends Component {
                     userInfo: data,
                     signStatus: 'AUTHENTICATION_SUCCESS',
                 })
+                this.queryCount();
             } else {
                 this.setState({
                     isLoading: true,
@@ -213,7 +294,6 @@ export default class Home extends Component {
             style: styles.boxShadow,
         }
         const { navigate, goBack } = this.props.navigation;
-        console.log('-------------')
         return (
             <ScrollView
                 style={styles.container}
@@ -348,7 +428,7 @@ export default class Home extends Component {
                                 QRCodeContentFlag: !this.state.QRCodeContentFlag
                             })
                         }}
-                        style={styles.QRCodeMask}
+                        style={styles.maskContent}
                     >
                         <TouchableOpacity
                             activeOpacity={1}
@@ -399,13 +479,132 @@ export default class Home extends Component {
                                     </View>
                                 </View>
                                 <View style={styles.QRImgBox}>
-                                    {/* <Image /> */}
+                                    <QRCode
+                                        value={global.Token}
+                                        size={141}
+                                        bgColor='#000'
+                                        fgColor='white' />
                                 </View>
                                 <Text style={styles.QRText}>微信扫一扫</Text>
                             </View>
                         </TouchableOpacity>
                     </TouchableOpacity>
                     : null}
+                {this.state.maskContentFlag ? <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => {
+                        this.setState({
+                            maskContentFlag: !this.state.maskContentFlag
+                        })
+                    }}
+                    style={styles.maskContent}
+                >
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={() => { }}
+                    >
+                        <View style={styles.amountContent}>
+                            <View style={styles.amountTitleBox}>
+                                <Text style={styles.amountTitleText}>请选择你的服务金额</Text>
+                            </View>
+                            <View style={styles.amountCenterBox}>
+                                <TouchableOpacity
+                                    activeOpacity={.8}
+                                    onPress={() => {
+                                        this.setState({
+                                            goodsPrice: 30,
+                                        })
+                                    }}
+                                    style={styles.amountItem}
+                                >
+                                    <View style={[styles.amountBox, this.state.goodsPrice == 30 ? { backgroundColor: global.Colors.color } : null]}>
+                                        <Text style={[styles.picText, this.state.goodsPrice == 30 ? { color: global.Colors.textfff } : null]}>30元</Text>
+                                        <Text style={[styles.descText, this.state.goodsPrice == 30 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    activeOpacity={.8}
+                                    onPress={() => {
+                                        this.setState({
+                                            goodsPrice: 60,
+                                        })
+                                    }}
+                                    style={styles.amountItem}
+                                >
+                                    <View style={[styles.amountBox, this.state.goodsPrice == 60 ? { backgroundColor: global.Colors.color } : null]}>
+                                        <Text style={[styles.picText, this.state.goodsPrice == 60 ? { color: global.Colors.textfff } : null]}>60元</Text>
+                                        <Text style={[styles.descText, this.state.goodsPrice == 60 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    activeOpacity={.8}
+                                    onPress={() => {
+                                        this.setState({
+                                            goodsPrice: 80,
+                                        })
+                                    }}
+                                    style={styles.amountItem}
+                                >
+                                    <View style={[styles.amountBox, this.state.goodsPrice == 80 ? { backgroundColor: global.Colors.color } : null]}>
+                                        <Text style={[styles.picText, this.state.goodsPrice == 80 ? { color: global.Colors.textfff } : null]}>80元</Text>
+                                        <Text style={[styles.descText, this.state.goodsPrice == 80 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    activeOpacity={.8}
+                                    onPress={() => {
+                                        this.setState({
+                                            goodsPrice: 100,
+                                        })
+                                    }}
+                                    style={styles.amountItem}
+                                >
+                                    <View style={[styles.amountBox, this.state.goodsPrice == 100 ? { backgroundColor: global.Colors.color } : null]}>
+                                        <Text style={[styles.picText, this.state.goodsPrice == 100 ? { color: global.Colors.textfff } : null]}>100元</Text>
+                                        <Text style={[styles.descText, this.state.goodsPrice == 100 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    activeOpacity={.8}
+                                    onPress={() => {
+                                        this.setState({
+                                            goodsPrice: 120,
+                                        })
+                                    }}
+                                    style={styles.amountItem}
+                                >
+                                    <View style={[styles.amountBox, this.state.goodsPrice == 120 ? { backgroundColor: global.Colors.color } : null]}>
+                                        <Text style={[styles.picText, this.state.goodsPrice == 120 ? { color: global.Colors.textfff } : null]}>120元</Text>
+                                        <Text style={[styles.descText, this.state.goodsPrice == 120 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
+                                    </View>
+                                </TouchableOpacity>
+
+                            </View>
+                            <View style={styles.amountBtnBox}>
+                                <TouchableOpacity
+                                    activeOpacity={.8}
+                                    onPress={() => {
+                                        this.setState({
+                                            maskContentFlag: !this.state.maskContentFlag,
+                                        })
+                                    }}
+                                    style={[styles.amountBtn, styles.noBtn]}
+                                >
+                                    <Text style={[styles.btnText, styles.noBtnText]}>取消</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    activeOpacity={.8}
+                                    onPress={() => {
+                                        this.addGoods();
+                                    }}
+                                    style={[styles.amountBtn, styles.yesBtn]}
+                                >
+                                    <Text style={[styles.btnText, styles.yesBtnText]}>确认</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                </TouchableOpacity> : null}
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </ScrollView>
         );
@@ -620,7 +819,7 @@ const styles = StyleSheet.create({
         width: global.px2dp(346),
     },
     // 二维码 box - start
-    QRCodeMask: {
+    maskContent: {
         position: 'absolute',
         width: global.SCREEN_WIDTH,
         height: global.SCREEN_HEIGHT,
@@ -701,7 +900,85 @@ const styles = StyleSheet.create({
         fontSize: global.px2dp(13),
         color: global.Colors.text999,
         lineHeight: global.px2dp(32),
-    }
+    },
     // 二维码 box - end
+
+    // 金额选择 -start
+    amountContent: {
+        position: 'relative',
+        justifyContent: 'space-between',
+        width: global.px2dp(340),
+        height: global.px2dp(250),
+        backgroundColor: global.Colors.textfff,
+        borderRadius: global.px2dp(5),
+        overflow: 'hidden',
+    },
+    amountTitleBox: {
+        height: global.px2dp(48),
+        justifyContent: 'center',
+        paddingLeft: global.px2dp(15),
+        backgroundColor: global.Colors.bgColor,
+    },
+    amountTitleText: {
+        fontSize: global.px2dp(17),
+        color: global.Colors.text333,
+    },
+    amountCenterBox: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        paddingLeft: global.px2dp(10),
+    },
+    amountItem: {
+
+    },
+    amountBox: {
+        width: global.px2dp(89),
+        height: global.px2dp(42),
+        borderWidth: global.Pixel,
+        borderColor: global.Colors.color,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: global.px2dp(10),
+        marginBottom: global.px2dp(10),
+        marginRight: global.px2dp(10),
+        marginLeft: global.px2dp(10),
+        borderRadius: global.px2dp(3),
+    },
+    picText: {
+        fontSize: global.px2dp(16),
+        color: global.Colors.color,
+    },
+    descText: {
+        fontSize: global.px2dp(9),
+        color: "#6492c8",
+    },
+    amountBtnBox: {
+        borderTopWidth: global.Pixel,
+        borderTopColor: global.Colors.colorccc,
+        height: global.px2dp(47),
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    amountBtn: {
+        height: global.px2dp(47),
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    noBtn: {
+        borderRightWidth: global.Pixel,
+        borderRightColor: global.Colors.colorccc,
+    },
+    btnText: {
+        fontSize: global.px2dp(17),
+    },
+    noBtnText: {
+        color: global.Colors.text666,
+    },
+    yesBtnText: {
+        color: global.Colors.color,
+    },
+    // 金额选择 - end
 });
 

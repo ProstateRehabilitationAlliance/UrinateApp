@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView, } from 'react-native';
+import { StyleSheet, Text, Platform, Image, StatusBar, ScrollView, } from 'react-native';
 import { regExp } from './netWork/RegExp';// 正则
 import { requestUrl } from './netWork/Url';// IP地址
 import { global } from './utils/Global';// 常量
@@ -13,12 +13,6 @@ export default class Start extends Component {
         this.state = {
             isLoading: false,
         }
-    }
-    getInitalState() {
-        // 1初始化state
-    }
-    componentWillMount() {
-        // 2仅调用一次在 render 前
     }
     componentDidMount() {
         Storage.getItem('token', (data) => {

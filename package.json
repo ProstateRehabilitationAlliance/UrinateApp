@@ -13,6 +13,7 @@
     "react-native-image-picker": "^0.26.10",
     "react-native-iphone-x-helper": "^1.0.3",
     "react-native-linear-gradient": "^2.4.0",
+    "react-native-qrcode": "^0.2.7",
     "react-native-shadow": "^1.2.2",
     "react-native-smscode-count-down": "^0.1.14",
     "react-native-sqlite-storage": "^3.3.6",

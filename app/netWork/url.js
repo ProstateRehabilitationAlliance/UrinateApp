@@ -40,6 +40,11 @@ export let requestUrl = {
     "updateDoctorDetail": IP + "/api-user/doctor/detail/updateDoctorDetail",// 医生修改个人信息
     "findDoctorList": IP + "/api-user/doctor/detail/findDoctorList",// 条件查询医生列表
     "addFeedback": IP + "/api-stata/feedback/add",// 添加反馈意见
+    "queryCount": IP + "/api-goods/goods/inquiry/queryCount",// 医生问诊服务数量查询
+    "queryListByToken": IP + "/api-goods/goods/inquiry/queryListByToken",// 根据token查询问诊服务列表
+    "queryListByDoctor": IP + "/api-goods/goods/inquiry/queryListByDoctor",// 根医生ID查询问诊服务列表
+    "addGoods": IP + "/api-goods/goods/inquiry/add",// 添加服务
+
 
     // 通讯录
     "getDoctorDetailById": IP + "/api-user/doctor/detail/getDoctorDetailById",// 其他用户查询医生信息
