@@ -33,6 +33,12 @@ import DoctorDetails from "./contact/DoctorDetails";// 医生详情
 
 import StudyTab from "./study/Study";// 直播课
 import MyTab from "./my/My";// 个人中心
+import Earnings from "./my/Earnings";// 收益
+import CashManagement from "./my/CashManagement";// 提现管理
+import EarningsDetails from "./my/EarningsDetails";// 收益明细
+import WithdrawDeposit from "./my/WithdrawDeposit";// 提现
+import UpdatePayPassword from "./my/UpdatePayPassword";// 修改支付密码
+import ForgetPayPassword from "./my/ForgetPayPassword";// 忘记支付密码
 import Followee from "./my/Followee";// 关注的医生列表页
 import PersonalInfo from "./my/PersonalInfo";// 查看个人信息
 import HeadImg from "./my/HeadImg";// 头像
@@ -184,6 +190,24 @@ export default createStackNavigator(
         My: {
             screen: MyTab,// 个人中心
         },
+        Earnings: {
+            screen: Earnings,// 收益
+        },
+        WithdrawDeposit: {
+            screen: WithdrawDeposit,// 提现
+        },
+        EarningsDetails: {
+            screen: EarningsDetails,// 收益明细/流水
+        },
+        CashManagement: {
+            screen: CashManagement,// 提现管理
+        },
+        UpdatePayPassword: {
+            screen: UpdatePayPassword,// 修改支付密码
+        },
+        ForgetPayPassword: {
+            screen: ForgetPayPassword,// 重置支付密码
+        },
         Followee: {
             screen: Followee,// 关注的医生
         },
@@ -224,6 +248,6 @@ export default createStackNavigator(
             screen: LookImg,// 查看大图
         },
     }, {
-        initialRouteName: "Start",
+        initialRouteName: "Earnings",
     }
 );

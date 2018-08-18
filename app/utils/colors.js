@@ -11,6 +11,7 @@ export default {
     text888: "#888888",
     text999: "#999999",
     textfff: "#ffffff",
+    text6492c8: "#6492c8",
     colorccc: "#cccccc",
     colorfff: "#ffffff",
     color347fc2: "#347fc2",
