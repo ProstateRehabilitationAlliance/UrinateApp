@@ -25,6 +25,10 @@ import ForgetPassword from "./sign/ForgetPassword";// 忘记密码
 import Approve from "./approve/Approve";// 认证页面
 
 import IndexTab from "./home/Home";// 工作台
+import Patients from "./home/Patients";// 患者列表
+import PatientsDetails from "./home/PatientsDetails";// 患者详情
+import AssessmentDetails from "./home/AssessmentDetails";// 评估详情
+import ReadDetails from "./home/ReadDetails";// 解读详情
 import Order from "./home/Order";// 订单
 import OrderDetails from "./home/OrderDetails";// 订单详情
 import ContactTab from "./contact/Contact";// 通讯录
@@ -169,6 +173,18 @@ export default createStackNavigator(
                 gesturesEnabled: false,
             }
         },
+        Patients: {
+            screen: Patients,//患者列表
+        },
+        PatientsDetails: {
+            screen: PatientsDetails,//患者详情
+        },
+        AssessmentDetails: {
+            screen: AssessmentDetails,//评估详情
+        },
+        ReadDetails: {
+            screen: ReadDetails,//评估详情
+        },
         Order: {
             screen: Order,//订单
         },
@@ -248,6 +264,6 @@ export default createStackNavigator(
             screen: LookImg,// 查看大图
         },
     }, {
-        initialRouteName: "Earnings",
+        initialRouteName: "Start",
     }
 );

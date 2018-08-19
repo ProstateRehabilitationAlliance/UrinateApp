@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView, } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView, TextInput } from 'react-native';
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
@@ -18,6 +18,12 @@ export default class OrderDetails extends Component {
             ErrorPromptFlag: false,
             ErrorPromptText: '',
             ErrorPromptImg: '',
+
+            labelText: '',
+
+            maskFlag: false,
+
+            maskLabelFlag: true,
         }
     }
     getInitalState() {
@@ -31,18 +37,6 @@ export default class OrderDetails extends Component {
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
-        {/* <View style={styles.container} >
-                    <Text> 我的</Text>
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={{ uri: 'https://img1.360buyimg.com/da/jfs/t23440/198/1552616732/96159/b2b38b62/5b62c871N7bc2b6fd.jpg' }}
-                        defaultSource={require('../images/radio_yes.png')}// 默认图片
-                    />
-                    <TouchableOpacity activeOpacity={.8}
-                        onPress={() => this.click()}>
-                        <Text>点击</Text>
-                    </TouchableOpacity>
-                </View> */}
         return (
             <View style={styles.container}>
                 <StatusBar
@@ -55,25 +49,25 @@ export default class OrderDetails extends Component {
                     statusBarStyle={"default"}//状态栏样式 default	默认（IOS为白底黑字、Android为黑底白字）
                     barStyle={"light-content"}// 状态栏文本的颜色。
                 />
-                <ScrollView>
-                    <LinearGradient
-                        start={{ x: 0, y: 1 }}
-                        end={{ x: 1, y: 1 }}
-                        // locations={[0, 1]}
-                        colors={global.LinearGradient}
-                        style={styles.linearGradient}>
-                        <View style={styles.navContent}>
-                            <TouchableOpacity
-                                style={styles.goBack}
-                                activeOpacity={.8}
-                                onPress={() => { goBack(); }}>
-                                <Image
-                                    source={require('../images/arrow_left_white.png')}
-                                />
-                            </TouchableOpacity>
-                            <Text style={styles.navTitle}>订单详情</Text>
-                        </View>
-                    </LinearGradient>
+                <LinearGradient
+                    start={{ x: 0, y: 1 }}
+                    end={{ x: 1, y: 1 }}
+                    // locations={[0, 1]}
+                    colors={global.LinearGradient}
+                    style={styles.linearGradient}>
+                    <View style={styles.navContent}>
+                        <TouchableOpacity
+                            style={styles.goBack}
+                            activeOpacity={.8}
+                            onPress={() => { goBack(); }}>
+                            <Image
+                                source={require('../images/arrow_left_white.png')}
+                            />
+                        </TouchableOpacity>
+                        <Text style={styles.navTitle}>订单详情</Text>
+                    </View>
+                </LinearGradient>
+                <ScrollView style={styles.scrollView}>
                     {/* 基本信息 - start */}
                     <View style={styles.infoContent}>
                         <View style={styles.infoTopBox}>
@@ -164,10 +158,131 @@ export default class OrderDetails extends Component {
                             </TouchableOpacity>
                         </View>
                     </View>
+                    <View style={{ height: global.px2dp(15) }}></View>
                 </ScrollView>
+                {this.state.maskFlag ?
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={() => { }}
+                        style={styles.maskContent}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            onPress={() => { }}
+                        >
+                            <View style={styles.affirmContent}>
+                                <View style={styles.affirmBox}>
+                                    <Text style={styles.affirmText}>确定删除此次账户？</Text>
+                                </View>
+                                <View style={styles.btnBox}>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => { }}
+                                        style={[styles.btnClick, { borderRightColor: global.Colors.text999, borderRightWidth: global.Pixel }]}
+                                    >
+                                        <Text style={styles.noBtnText}>否</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => { }}
+                                        style={styles.btnClick}
+                                    >
+                                        <Text style={styles.yesBtnText}>是</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </TouchableOpacity>
+                    : null}
+                {this.state.maskLabelFlag ?
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        style={styles.maskLabel}
+                        onPress={() => {
+                            this.setState({
+                                maskLabelFlag: !this.state.maskLabelFlag
+                            })
+                        }}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            onPress={() => { }}
+                        >
+                            <View style={styles.maskLabelContent}>
+                                <View style={styles.labelTitleBox}>
+                                    <Text style={styles.labelTitleText}>请为该患者添加标签</Text>
+                                </View>
+                                <View style={styles.labelContent}>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => { }}
+                                        style={styles.labelBtn}
+                                    >
+                                        <View style={styles.labelBox}>
+                                            <Text style={styles.labelText}>腺增生</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => { }}
+                                        style={styles.labelBtn}
+                                    >
+                                        <View style={styles.labelBox}>
+                                            <Text style={styles.labelText}>前列腺增生</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => { }}
+                                        style={styles.labelBtn}
+                                    >
+                                        <View style={styles.labelBox}>
+                                            <Text style={styles.labelText}>前列腺增生</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                                <Text style={styles.separateText}>自定义</Text>
+                                <TextInput
+                                    style={[styles.textareaStyle, {
+                                        minHeight: 100,
+                                    }]}
+                                    placeholder={'请输入用户标签...'}
+                                    placeholderTextColor={global.Colors.placeholder}
+                                    multiline={true}
+                                    onChangeText={(text) => {
+                                        this.setState({
+                                            labelText: text,
+                                        })
+                                    }}
+                                    onContentSizeChange={this.onContentSizeChange.bind(this)}
+                                    underlineColorAndroid={'transparent'}
+                                    onBlur={this.blurReg.bind(this)}
+                                    keyboardType={'default'}
+                                />
+                                <TouchableOpacity
+                                    onPress={() => { }}
+                                    activeOpacity={.8}
+                                    style={styles.addLabelBtn}
+                                >
+                                    <View style={styles.addLabelBox}>
+                                        <Text style={styles.addLabelText}>保存</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </TouchableOpacity>
+                    </TouchableOpacity>
+                    : null}
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View >
         );
+    }
+    blurReg() {
+
+    }
+    onContentSizeChange(event) {
+        this.setState({
+            textareaHeight: event.nativeEvent.contentSize.height,
+        })
     }
     goBack() {
         this.props.navigation.goBack();
@@ -241,12 +356,18 @@ export default class OrderDetails extends Component {
 
 const styles = StyleSheet.create({
     container: {
+        position: 'relative',
         flex: 1,
         backgroundColor: global.Colors.bgColor,
     },
     // 导航部分 - start
     linearGradient: {
         height: global.px2dp(126),
+    },
+    scrollView: {
+        position: 'absolute',
+        top: global.NavHeight,
+        height: global.SCREEN_HEIGHT - global.NavHeight,
     },
     navContent: {
         position: 'relative',
@@ -273,7 +394,7 @@ const styles = StyleSheet.create({
     // 基本信息 - start
     infoContent: {
         backgroundColor: global.Colors.textfff,
-        marginTop: global.NavHeight - global.px2dp(126) + global.px2dp(10),
+        // marginTop: global.NavHeight - global.px2dp(126) + global.px2dp(10),
         marginLeft: global.px2dp(15),
         marginRight: global.px2dp(15),
         borderRadius: global.px2dp(5),
@@ -390,6 +511,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingLeft: global.px2dp(15),
         paddingRight: global.px2dp(15),
+        borderTopWidth: global.Pixel,
+        borderTopColor: global.Colors.colorccc,
     },
     yesBtn: {
 
@@ -423,5 +546,142 @@ const styles = StyleSheet.create({
         fontSize: global.px2dp(13),
         color: global.Colors.text888,
     },
+
+    // 确认删除
+    maskContent: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        backgroundColor: 'rgba(0, 0, 0, .6)',
+        width: global.SCREEN_WIDTH,
+        height: global.SCREEN_HEIGHT,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    affirmContent: {
+        width: global.px2dp(285),
+        height: global.px2dp(126),
+        borderRadius: global.px2dp(3),
+        backgroundColor: global.Colors.textfff,
+    },
+    affirmBox: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    affirmText: {
+        fontSize: global.px2dp(17),
+        color: global.Colors.text333,
+    },
+    btnBox: {
+        height: global.px2dp(44),
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderTopWidth: global.Pixel,
+        borderTopColor: global.Colors.text999,
+    },
+    btnClick: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    noBtnText: {
+        fontSize: global.px2dp(17),
+        color: global.Colors.text666,
+    },
+    yesBtnText: {
+        fontSize: global.px2dp(17),
+        color: global.Colors.color,
+    },
+
+    // 添加标签 部分 - start
+    maskLabel: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: global.SCREEN_WIDTH,
+        height: global.SCREEN_HEIGHT,
+        backgroundColor: 'rgba(0,0,0,.6)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    maskLabelContent: {
+        width: global.px2dp(345),
+        height: global.px2dp(375),
+        backgroundColor: global.Colors.textfff,
+        borderRadius: global.px2dp(3),
+    },
+    labelTitleBox: {
+        paddingLeft: global.px2dp(10),
+        height: global.px2dp(45),
+        justifyContent: 'center',
+        backgroundColor: global.Colors.bgColor,
+        borderBottomColor: global.Colors.colorccc,
+        borderBottomWidth: global.Pixel,
+    },
+    labelTitleText: {
+        fontSize: global.px2dp(16),
+        color: global.Colors.text333,
+    },
+    labelContent: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        paddingLeft: global.px2dp(18),
+        paddingRight: global.px2dp(18),
+        paddingBottom: global.px2dp(9),
+        paddingTop: global.px2dp(5),
+    },
+    labelBox: {
+        marginRight: global.px2dp(12),
+        marginTop: global.px2dp(12),
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingLeft: global.px2dp(15),
+        paddingRight: global.px2dp(15),
+        borderRadius: global.px2dp(6),
+        backgroundColor: global.Colors.color,
+    },
+    labelText: {
+        fontSize: global.px2dp(),
+        lineHeight: global.px2dp(32),
+        color: global.Colors.textfff,
+    },
+    separateText: {
+        fontSize: global.px2dp(15),
+        color: global.Colors.text333,
+        lineHeight: global.px2dp(42),
+        paddingLeft: global.px2dp(15),
+        paddingRight: global.px2dp(15),
+    },
+    textareaStyle: {
+        marginLeft: global.px2dp(15),
+        marginRight: global.px2dp(15),
+        backgroundColor: global.Colors.bgColor,
+        paddingLeft: global.px2dp(8),
+        paddingRight: global.px2dp(8),
+        paddingTop: global.px2dp(8),
+        paddingBottom: global.px2dp(8),
+        fontSize: global.px2dp(13),
+        lineHeight: global.px2dp(20),
+    },
+    addLabelBtn: {
+
+    },
+    addLabelBox: {
+        width: global.px2dp(250),
+        height: global.px2dp(42),
+        borderRadius: global.px2dp(5),
+        backgroundColor: global.Colors.color,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: global.px2dp(21),
+        marginLeft: global.px2dp(48),
+    },
+    addLabelText: {
+        fontSize: global.px2dp(16),
+        color: global.Colors.textfff,
+    }
+
+    // 添加标签 部分 - end
 });
 
