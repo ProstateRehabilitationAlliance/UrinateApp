@@ -52,7 +52,24 @@ export let requestUrl = {
     "unFocus": IP + "/api-user/fansStar/unFocus",// 取消关注
     "findStar": IP + "/api-user/doctor/detail/findStar",// 查询关注的医生
 
+    // 问诊
+    "inquiryOrder": [
+        IP + "/api-order/order/inquiry/getAllOrderList",//查询全部订单列表
+        IP + "/api-order/order/inquiry/getAnsweredOrderList",// 查询待回复订单列表
+        IP + "/api-order/order/inquiry/getAcceptedOrderList",// 查询待接受订单列表
+        IP + "/api-order/order/inquiry/getBeRejectedOrderList",// 查询已拒绝订单列表
+        IP + "/api-order/order/inquiry/getIsDoneOrderList",// 查询已完成订单列表
+    ],// 问诊订单列表
+    "getOrder": IP + "/api-order/order/inquiry/getOrder",// 订单详情
+    "getBaseInfoById": IP + "/api-record/patient/getBaseInfoById",// 跟据患者ID查询患者基本信息
+    "getByGroupNumber": IP + "/api-archive/medical/report/getByGroupNumber",// 根据档案编号 查询 文件档案路径
+    "getByArchive": IP + "/api-assessmen/record/inquiry/getByArchive",// 查询 问诊 回复
+    "addDraft": IP + "/api-assessmen/record/inquiry/addDraft",// 添加问诊回复草稿
+    "addFinal": IP + "/api-assessmen/record/inquiry/addFinal",// 添加问诊最终回复
+    "rejectedOrder": IP + "/api-order/order/inquiry/rejectedOrder",// 拒绝问诊订单
+    "acceptedOrder": IP + "/api-order/order/inquiry/acceptedOrder",// 接受问诊订单
 
+    // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
 };

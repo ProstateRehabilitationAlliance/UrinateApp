@@ -373,7 +373,9 @@ export default class Home extends Component {
                             <TouchableOpacity
                                 style={styles.moduleBtn}
                                 activeOpacity={.8}
-                                onPress={() => { }}>
+                                onPress={() => {
+                                    navigate("Order");
+                                }}>
                                 <Image
                                     style={styles.moduleImg}
                                     source={require('../images/inquiry.png')}

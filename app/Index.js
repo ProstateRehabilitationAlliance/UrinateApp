@@ -30,7 +30,11 @@ import PatientsDetails from "./home/PatientsDetails";// 患者详情
 import AssessmentDetails from "./home/AssessmentDetails";// 评估详情
 import ReadDetails from "./home/ReadDetails";// 解读详情
 import Order from "./home/Order";// 订单
-import OrderDetails from "./home/OrderDetails";// 订单详情
+import OrderDetails from "./home/OrderDetails";// 订单详情-待回复
+import OrderReception from "./home/OrderReception";// 订单详情-待接收
+import OrderDecline from "./home/OrderDecline";// 订单详情-已拒绝
+import OrderEnd from "./home/OrderEnd";// 订单详情-已完成
+
 import ContactTab from "./contact/Contact";// 通讯录
 import DoctorSearch from "./contact/DoctorSearch";// 通讯录搜索页
 import DoctorDetails from "./contact/DoctorDetails";// 医生详情
@@ -189,7 +193,16 @@ export default createStackNavigator(
             screen: Order,//订单
         },
         OrderDetails: {
-            screen: OrderDetails,//订单详情
+            screen: OrderDetails,//订单详情 待回复
+        },
+        OrderReception: {
+            screen: OrderReception,//订单 待接收
+        },
+        OrderDecline: {
+            screen: OrderDecline,//订单 已拒绝
+        },
+        OrderEnd: {
+            screen: OrderEnd,//订单 已完成
         },
         ContactTab: {
             screen: ContactTab,//通讯录

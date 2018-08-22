@@ -7,7 +7,7 @@ import LinearGradient from "react-native-linear-gradient";//
 import ErrorPrompt from "../common/ErrorPrompt";
 import { BoxShadow } from 'react-native-shadow';
 
-export default class OrderDetails extends Component {
+export default class OrderReception extends Component {
     static navigationOptions = {
         header: null,
     };
@@ -28,8 +28,6 @@ export default class OrderDetails extends Component {
             orderInfo: null,// 订单信息
             patientInfo: null,// 患者信息
             orderImgArr: [],// 订单图片
-            draftInfo: {},// 草稿信息
-            replyText: '',// 回复信息
         }
     }
     getInitalState() {
@@ -120,29 +118,6 @@ export default class OrderDetails extends Component {
                             }).catch((error) => {
                                 console.log('error', error);
                             });
-                        // 查询草稿信息
-                        fetch(requestUrl.getByArchive + '?archive=' + patientArchive, {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'multipart/form-data',
-                                "token": global.Token,
-                            },
-                        }).then((response) => response.json())
-                            .then((responseData) => {
-                                console.log('responseData', responseData);
-                                if (responseData.code == 20000) {
-                                    this.setState({
-                                        draftInfo: responseData.result,
-                                        replyText: responseData.result.inquiryAnswer,
-                                    })
-                                } else {
-                                    this.setState({
-                                        draftInfo: {},
-                                    })
-                                }
-                            }).catch((error) => {
-                                console.log('error', error);
-                            });
                     } else {
                         this.setState({
                             isLoading: false,
@@ -215,38 +190,9 @@ export default class OrderDetails extends Component {
                 marginBottom: global.px2dp(8),
             },
         }
-        const importShadow = {
-            width: global.px2dp(345),
-            height: global.px2dp(302),
-            color: "#000",
-            border: 8,
-            radius: 0,
-            opacity: .1,
-            x: 0,
-            y: 0,
-            style: {
-                marginTop: global.px2dp(8),
-                marginRight: global.px2dp(15),
-                marginLeft: global.px2dp(15),
-                marginBottom: global.px2dp(8),
-            },
-        }
         const rowShadow = {
             width: global.px2dp(345),
             height: global.px2dp(43),
-            color: "#000",
-            border: 8,
-            radius: 0,
-            opacity: .1,
-            x: 0,
-            y: 0,
-            style: {
-
-            },
-        }
-        const btnShadow = {
-            width: global.px2dp(345),
-            height: global.px2dp(53),
             color: "#000",
             border: 8,
             radius: 0,
@@ -296,15 +242,6 @@ export default class OrderDetails extends Component {
                                 <View style={styles.infoTextBox}>
                                     <Text style={styles.infoText}>{this.state.patientInfo ? this.state.patientInfo.patientName : "患者名"} {this.state.patientInfo ? this.state.patientInfo.patientSex : null} {this.state.patientInfo ? this.state.patientInfo.patientAge : null}岁</Text>
                                 </View>
-                                <TouchableOpacity
-                                    activeOpacity={.8}
-                                    onPress={() => { }}
-                                    style={styles.yesBtn}
-                                >
-                                    <View style={styles.yesBox}>
-                                        <Text style={styles.yesText}>申请转诊</Text>
-                                    </View>
-                                </TouchableOpacity>
                             </View>
                             <View style={styles.infoBottomBox}>
                                 {this.state.patientInfo && this.state.patientInfo.patientTel ? <Text style={styles.infoValue}>手机号 :{this.state.patientInfo.patientTel}</Text> : null}
@@ -332,19 +269,6 @@ export default class OrderDetails extends Component {
                                 setting={rowShadow}>
                                 <View style={styles.lastItem}>
                                     <Text style={styles.picText}>￥{this.state.orderInfo ? this.state.orderInfo.orderPrice : null}</Text>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => {
-                                            this.setState({
-                                                maskFlag: true,
-                                            })
-                                        }}
-                                        style={styles.yesBtn}
-                                    >
-                                        <View style={styles.yesBox}>
-                                            <Text style={styles.yesText}>拒绝申请</Text>
-                                        </View>
-                                    </TouchableOpacity>
                                 </View>
                             </BoxShadow>
                         </View>
@@ -381,60 +305,32 @@ export default class OrderDetails extends Component {
                             </ScrollView>
                         </View>
                     </BoxShadow>
-                    <BoxShadow
-                        setting={importShadow}>
-                        <View style={styles.importContent}>
-                            <View style={styles.titleContent}>
-                                <View style={styles.titleLeftBox}>
-                                    <View style={styles.titleLine}></View>
-                                    <Text style={styles.titleText}>医生回复</Text>
-                                </View>
+                    <View style={styles.btnContent}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.setState({
+                                    maskFlag: !this.state.maskFlag,
+                                })
+                            }}
+                            activeOpacity={.8}
+                            style={[styles.operateBtnClick]}
+                        >
+                            <View style={[styles.operateBtnBox, { backgroundColor: global.Colors.colorccc }]}>
+                                <Text style={[styles.operateBtnText, { color: global.Colors.text666 }]}>拒绝</Text>
                             </View>
-                            <TextInput
-                                style={styles.textareaStyle}
-                                placeholder={'医生暂未回复,请点击此处进行回复'}
-                                placeholderTextColor={global.Colors.placeholder}
-                                multiline={true}
-                                onChangeText={(text) => {
-                                    this.setState({
-                                        replyText: text,
-                                    })
-                                }}
-                                defaultValue={this.state.replyText}
-                                // onContentSizeChange={this.onContentSizeChange.bind(this)}
-                                underlineColorAndroid={'transparent'}
-                                onBlur={this.blurReg.bind(this)}
-                                keyboardType={'default'}
-                            />
-                            <BoxShadow
-                                setting={btnShadow}>
-                                <View style={styles.importBtnBox}>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => {
-                                            this.addDraft();
-                                        }}
-                                        style={styles.draftBtn}
-                                    >
-                                        <View style={styles.draftBox}>
-                                            <Text style={styles.draftText}>保存为草稿</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => {
-                                            this.addFinal();
-                                        }}
-                                        style={styles.yesBtn}
-                                    >
-                                        <View style={styles.yesBox}>
-                                            <Text style={styles.yesText}>确认回复</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            </BoxShadow>
-                        </View>
-                    </BoxShadow>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.acceptedOrder();
+                            }}
+                            activeOpacity={.8}
+                            style={[styles.operateBtnClick]}
+                        >
+                            <View style={[styles.operateBtnBox, { backgroundColor: global.Colors.color }]}>
+                                <Text style={[styles.operateBtnText, { color: global.Colors.textfff }]}>同意</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                     <View style={{ height: global.px2dp(15) }}></View>
                 </ScrollView>
                 {
@@ -486,94 +382,67 @@ export default class OrderDetails extends Component {
                         </TouchableOpacity>
                         : null
                 }
-                {/* {this.state.maskLabelFlag ?
-                    <TouchableOpacity
-                        activeOpacity={1}
-                        style={styles.maskLabel}
-                        onPress={() => {
-                            this.setState({
-                                maskLabelFlag: !this.state.maskLabelFlag
-                            })
-                        }}
-                    >
-                        <TouchableOpacity
-                            activeOpacity={1}
-                            onPress={() => { }}
-                        >
-                            <View style={styles.maskLabelContent}>
-                                <View style={styles.labelTitleBox}>
-                                    <Text style={styles.labelTitleText}>请为该患者添加标签</Text>
-                                </View>
-                                <View style={styles.labelContent}>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => { }}
-                                        style={styles.labelBtn}
-                                    >
-                                        <View style={styles.labelBox}>
-                                            <Text style={styles.labelText}>腺增生</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => { }}
-                                        style={styles.labelBtn}
-                                    >
-                                        <View style={styles.labelBox}>
-                                            <Text style={styles.labelText}>前列腺增生</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => { }}
-                                        style={styles.labelBtn}
-                                    >
-                                        <View style={styles.labelBox}>
-                                            <Text style={styles.labelText}>前列腺增生</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                                <Text style={styles.separateText}>自定义</Text>
-                                <TextInput
-                                    style={[styles.textareaStyle, {
-                                        minHeight: 100,
-                                    }]}
-                                    placeholder={'请输入用户标签...'}
-                                    placeholderTextColor={global.Colors.placeholder}
-                                    multiline={true}
-                                    onChangeText={(text) => {
-                                        this.setState({
-                                            labelText: text,
-                                        })
-                                    }}
-                                    onContentSizeChange={this.onContentSizeChange.bind(this)}
-                                    underlineColorAndroid={'transparent'}
-                                    onBlur={this.blurReg.bind(this)}
-                                    keyboardType={'default'}
-                                />
-                                <TouchableOpacity
-                                    onPress={() => { }}
-                                    activeOpacity={.8}
-                                    style={styles.addLabelBtn}
-                                >
-                                    <View style={styles.addLabelBox}>
-                                        <Text style={styles.addLabelText}>保存</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                        </TouchableOpacity>
-                    </TouchableOpacity>
-                    : null} */}
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View >
         );
     }
-    blurReg() {
-
-    }
     goBack() {
         this.props.navigation.goBack();
     }
+    // 接收订单 - start
+    acceptedOrder() {
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '提交中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        })
+        let formData = new FormData();
+        formData.append("orderId", this.state.orderInfo.id);
+        fetch(requestUrl.acceptedOrder, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+            body: formData,
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '接收成功',
+                        ErrorPromptImg: require('../images/succeed.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                        this.props.navigation.goBack();
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '接收失败，请重试',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
+    // 接收订单 - end
     // 拒绝订单 - start
     rejectedOrder() {
         this.setState({
@@ -628,154 +497,6 @@ export default class OrderDetails extends Component {
             });
     }
     // 拒绝订单 - end
-    // 保存草稿 - start
-    addDraft() {
-        if (!this.state.replyText) {
-            this.setState({
-                ErrorPromptFlag: true,
-                ErrorPromptText: '请输入内容',
-                ErrorPromptImg: require('../images/error.png'),
-            })
-            clearTimeout(this.timer)
-            this.timer = setTimeout(() => {
-                this.setState({
-                    ErrorPromptFlag: false,
-                })
-            }, global.TimingCount)
-        } else {
-            this.setState({
-                isLoading: true,
-                ErrorPromptFlag: true,
-                ErrorPromptText: '提交中...',
-                ErrorPromptImg: require('../images/loading.png'),
-            })
-            let formData = new FormData();
-            this.state.draftInfo && this.state.draftInfo.id ? formData.append("inquiryRecordId", this.state.draftInfo.id) : null;// 草稿id
-            formData.append("patientId", this.state.patientInfo.id);
-            formData.append("patientArchive", this.state.orderInfo.patientArchive);
-            formData.append("inquiryDescription", this.state.orderInfo.orderDescription);
-            formData.append("inquiryAnswer", this.state.replyText);
-            fetch(requestUrl.addDraft, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    "token": global.Token,
-                },
-                body: formData,
-            }).then((response) => response.json())
-                .then((responseData) => {
-                    console.log('responseData', responseData);
-                    if (responseData.code == 20000) {
-                        let tempJSON = this.state.draftInfo;
-                        tempJSON["id"] = responseData.result;
-                        console.log(tempJSON)
-                        this.setState({
-                            draftInfo: tempJSON,
-                            isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '提交成功',
-                            ErrorPromptImg: require('../images/succeed.png'),
-                        })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
-                    } else {
-                        this.setState({
-                            isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '提交失败，请重试',
-                            ErrorPromptImg: require('../images/error.png'),
-                        })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
-                    }
-                })
-                .catch((error) => {
-                    console.log('error', error);
-                });
-        }
-    }
-    // 保存草稿 - end
-    // 确认回复 - start
-    addFinal() {
-        if (!this.state.replyText) {
-            this.setState({
-                ErrorPromptFlag: true,
-                ErrorPromptText: '请输入内容',
-                ErrorPromptImg: require('../images/error.png'),
-            })
-            clearTimeout(this.timer)
-            this.timer = setTimeout(() => {
-                this.setState({
-                    ErrorPromptFlag: false,
-                })
-            }, global.TimingCount)
-        } else {
-            this.setState({
-                isLoading: true,
-                ErrorPromptFlag: true,
-                ErrorPromptText: '提交中...',
-                ErrorPromptImg: require('../images/loading.png'),
-            })
-            let formData = new FormData();
-            this.state.draftInfo && this.state.draftInfo.id ? formData.append("inquiryRecordId", this.state.draftInfo.id) : null;// 草稿id
-            formData.append("patientId", this.state.patientInfo.id);// 患者id
-            formData.append("orderId", this.state.orderInfo.id);// 订单
-            formData.append("patientArchive", this.state.orderInfo.patientArchive);//档案号
-            formData.append("inquiryDescription", this.state.orderInfo.orderDescription);//问题描述
-            formData.append("inquiryAnswer", this.state.replyText);//回复内容
-            fetch(requestUrl.addFinal, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    "token": global.Token,
-                },
-                body: formData,
-            }).then((response) => response.json())
-                .then((responseData) => {
-                    console.log('responseData', responseData);
-                    if (responseData.code == 20000) {
-                        this.setState({
-                            isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '提交成功',
-                            ErrorPromptImg: require('../images/succeed.png'),
-                        })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                            this.props.navigation.goBack();
-                        }, global.TimingCount)
-                    } else {
-                        this.setState({
-                            isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '提交失败，请重试',
-                            ErrorPromptImg: require('../images/error.png'),
-                        })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
-                    }
-                })
-                .catch((error) => {
-                    console.log('error', error);
-                });
-        }
-    }
-    // 确认回复 - end
 }
 
 const styles = StyleSheet.create({
@@ -884,14 +605,6 @@ const styles = StyleSheet.create({
         borderRadius: global.px2dp(5),
         overflow: 'hidden',
     },
-    // 回复盒子
-    importContent: {
-        backgroundColor: global.Colors.textfff,
-        height: global.px2dp(302),
-        justifyContent: 'space-between',
-        borderRadius: global.px2dp(5),
-        overflow: 'hidden',
-    },
     problemScroll: {
         maxHeight: global.px2dp(177),
     },
@@ -935,18 +648,7 @@ const styles = StyleSheet.create({
         fontSize: global.px2dp(18),
         color: global.Colors.text333,
     },
-    hintText: {
-        fontSize: global.px2dp(13),
-        color: global.Colors.text999,
-    },
-    upFileBox: {
-        marginLeft: global.px2dp(20),
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    imgBtn: {
-        marginRight: global.px2dp(11),
-    },
+
     // title模块 - end
     lastItem: {
         height: global.px2dp(43),
@@ -957,64 +659,25 @@ const styles = StyleSheet.create({
         paddingRight: global.px2dp(15),
         backgroundColor: global.Colors.textfff,
     },
-    importBtnBox: {
-        height: global.px2dp(53),
+
+    btnContent: {
+        marginLeft: global.px2dp(15),
+        marginRight: global.px2dp(15),
+        marginTop: global.px2dp(25),
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingLeft: global.px2dp(15),
-        paddingRight: global.px2dp(15),
-        borderTopWidth: global.Pixel,
-        borderTopColor: global.Colors.colorccc,
-        backgroundColor: global.Colors.textfff,
     },
-    yesBtn: {
-
-    },
-    yesBox: {
-        width: global.px2dp(79),
-        height: global.px2dp(27),
+    operateBtnBox: {
+        width: global.px2dp(154),
+        height: global.px2dp(42),
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: global.Colors.color,
-        borderRadius: global.px2dp(13),
+        borderRadius: global.px2dp(5),
     },
-    yesText: {
-        fontSize: global.px2dp(13),
-        color: global.Colors.textfff,
+    operateBtnText: {
+        fontSize: global.px2dp(16),
     },
-    draftBtn: {
-
-    },
-    draftBox: {
-        width: global.px2dp(79),
-        height: global.px2dp(27),
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: global.Colors.textfff,
-        borderRadius: global.px2dp(13),
-        borderColor: global.Colors.text999,
-        borderWidth: global.Pixel,
-    },
-    draftText: {
-        fontSize: global.px2dp(13),
-        color: global.Colors.text888,
-    },
-    // 输入框样式 - start
-    textareaStyle: {
-        marginLeft: global.px2dp(15),
-        marginRight: global.px2dp(15),
-        marginBottom: global.px2dp(15),
-        backgroundColor: global.Colors.bgColor,
-        paddingLeft: global.px2dp(8),
-        paddingRight: global.px2dp(8),
-        paddingTop: global.px2dp(8),
-        paddingBottom: global.px2dp(8),
-        fontSize: global.px2dp(13),
-        lineHeight: global.px2dp(20),
-        height: global.px2dp(198),
-    },
-    // 输入框样式 - start
 
     // 确认删除
     maskContent: {
@@ -1063,93 +726,5 @@ const styles = StyleSheet.create({
         fontSize: global.px2dp(17),
         color: global.Colors.color,
     },
-
-    // 添加标签 部分 - start
-    // maskLabel: {
-    //     position: 'absolute',
-    //     top: 0,
-    //     left: 0,
-    //     width: global.SCREEN_WIDTH,
-    //     height: global.SCREEN_HEIGHT,
-    //     backgroundColor: 'rgba(0,0,0,.6)',
-    //     alignItems: 'center',
-    //     justifyContent: 'center',
-    // },
-    // maskLabelContent: {
-    //     width: global.px2dp(345),
-    //     height: global.px2dp(375),
-    //     backgroundColor: global.Colors.textfff,
-    //     borderRadius: global.px2dp(3),
-    // },
-    // labelTitleBox: {
-    //     paddingLeft: global.px2dp(10),
-    //     height: global.px2dp(45),
-    //     justifyContent: 'center',
-    //     backgroundColor: global.Colors.bgColor,
-    //     borderBottomColor: global.Colors.colorccc,
-    //     borderBottomWidth: global.Pixel,
-    // },
-    // labelTitleText: {
-    //     fontSize: global.px2dp(16),
-    //     color: global.Colors.text333,
-    // },
-    // labelContent: {
-    //     flexDirection: 'row',
-    //     flexWrap: 'wrap',
-    //     paddingLeft: global.px2dp(18),
-    //     paddingRight: global.px2dp(18),
-    //     paddingBottom: global.px2dp(9),
-    //     paddingTop: global.px2dp(5),
-    // },
-    // labelBox: {
-    //     marginRight: global.px2dp(12),
-    //     marginTop: global.px2dp(12),
-    //     alignItems: 'center',
-    //     justifyContent: 'center',
-    //     paddingLeft: global.px2dp(15),
-    //     paddingRight: global.px2dp(15),
-    //     borderRadius: global.px2dp(6),
-    //     backgroundColor: global.Colors.color,
-    // },
-    // labelText: {
-    //     fontSize: global.px2dp(),
-    //     lineHeight: global.px2dp(32),
-    //     color: global.Colors.textfff,
-    // },
-    // separateText: {
-    //     fontSize: global.px2dp(15),
-    //     color: global.Colors.text333,
-    //     lineHeight: global.px2dp(42),
-    //     paddingLeft: global.px2dp(15),
-    //     paddingRight: global.px2dp(15),
-    // },
-    // textareaStyle: {
-    //     marginLeft: global.px2dp(15),
-    //     marginRight: global.px2dp(15),
-    //     backgroundColor: global.Colors.bgColor,
-    //     paddingLeft: global.px2dp(8),
-    //     paddingRight: global.px2dp(8),
-    //     paddingTop: global.px2dp(8),
-    //     paddingBottom: global.px2dp(8),
-    //     fontSize: global.px2dp(13),
-    //     lineHeight: global.px2dp(20),
-    // },
-    // addLabelBtn: {
-    // },
-    // addLabelBox: {
-    //     width: global.px2dp(250),
-    //     height: global.px2dp(42),
-    //     borderRadius: global.px2dp(5),
-    //     backgroundColor: global.Colors.color,
-    //     alignItems: 'center',
-    //     justifyContent: 'center',
-    //     marginTop: global.px2dp(21),
-    //     marginLeft: global.px2dp(48),
-    // },
-    // addLabelText: {
-    //     fontSize: global.px2dp(16),
-    //     color: global.Colors.textfff,
-    // }
-    // 添加标签 部分 - end
 });
 
