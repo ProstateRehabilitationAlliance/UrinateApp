@@ -401,7 +401,9 @@ export default class Home extends Component {
                             <TouchableOpacity
                                 style={styles.moduleBtn}
                                 activeOpacity={.8}
-                                onPress={() => { }}>
+                                onPress={() => {
+                                    navigate("TurnOrder");
+                                }}>
                                 <Image
                                     style={styles.moduleImg}
                                     source={require('../images/shift_examine.png')}

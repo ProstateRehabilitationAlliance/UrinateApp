@@ -60,6 +60,13 @@ export let requestUrl = {
         IP + "/api-order/order/inquiry/getBeRejectedOrderList",// 查询已拒绝订单列表
         IP + "/api-order/order/inquiry/getIsDoneOrderList",// 查询已完成订单列表
     ],// 问诊订单列表
+    "turnOrder": [
+        IP + "/api-order/order/inquiry/getAllTurnOrderList",//查询全部转诊订单列表
+        IP + "/api-order/order/inquiry/getAnsweredTurnOrderList",// 查询待回复转诊订单列表
+        IP + "/api-order/order/inquiry/getAcceptedTurnOrderList",// 查询待接受转诊订单列表
+        IP + "/api-order/order/inquiry/getBeRejectedTurnOrderList",// 查询已拒绝转诊订单列表
+        IP + "/api-order/order/inquiry/getIsDoneTurnOrderList",// 查询已完成转诊订单列表
+    ],// 转诊订单列表
     "getOrder": IP + "/api-order/order/inquiry/getOrder",// 订单详情
     "getBaseInfoById": IP + "/api-record/patient/getBaseInfoById",// 跟据患者ID查询患者基本信息
     "getByGroupNumber": IP + "/api-archive/medical/report/getByGroupNumber",// 根据档案编号 查询 文件档案路径

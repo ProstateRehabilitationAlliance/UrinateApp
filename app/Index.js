@@ -34,6 +34,11 @@ import OrderDetails from "./home/OrderDetails";// 订单详情-待回复
 import OrderReception from "./home/OrderReception";// 订单详情-待接收
 import OrderDecline from "./home/OrderDecline";// 订单详情-已拒绝
 import OrderEnd from "./home/OrderEnd";// 订单详情-已完成
+import TurnOrder from "./home/TurnOrder";// 转诊订单
+import TurnOrderDetails from "./home/TurnOrderDetails";// 转诊订单详情-待回复
+import TurnOrderReception from "./home/TurnOrderReception";// 转诊订单详情-待接收
+import TurnOrderDecline from "./home/TurnOrderDecline";// 转诊订单详情-已拒绝
+import TurnOrderEnd from "./home/TurnOrderEnd";// 转诊订单详情-已完成
 
 import ContactTab from "./contact/Contact";// 通讯录
 import DoctorSearch from "./contact/DoctorSearch";// 通讯录搜索页
@@ -203,6 +208,21 @@ export default createStackNavigator(
         },
         OrderEnd: {
             screen: OrderEnd,//订单 已完成
+        },
+        TurnOrder: {
+            screen: TurnOrder,//转诊订单
+        },
+        TurnOrderDetails: {
+            screen: TurnOrderDetails,//转诊订单详情 待回复
+        },
+        TurnOrderReception: {
+            screen: TurnOrderReception,//转诊订单 待接收
+        },
+        TurnOrderDecline: {
+            screen: TurnOrderDecline,//转诊订单 已拒绝
+        },
+        TurnOrderEnd: {
+            screen: TurnOrderEnd,//转诊订单 已完成
         },
         ContactTab: {
             screen: ContactTab,//通讯录
