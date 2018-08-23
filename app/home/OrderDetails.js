@@ -6,6 +6,7 @@ import { global } from '../utils/Global';// 常量
 import LinearGradient from "react-native-linear-gradient";// 
 import ErrorPrompt from "../common/ErrorPrompt";
 import { BoxShadow } from 'react-native-shadow';
+import { NavigationEvents } from "react-navigation";
 
 export default class OrderDetails extends Component {
     static navigationOptions = {
@@ -23,13 +24,15 @@ export default class OrderDetails extends Component {
             labelText: '',
 
             maskFlag: false,
-            maskLabelFlag: false,
+            TurnMaskFlag: false,
+            // maskLabelFlag: false,
 
             orderInfo: null,// 订单信息
             patientInfo: null,// 患者信息
             orderImgArr: [],// 订单图片
             draftInfo: {},// 草稿信息
             replyText: '',// 回复信息
+            doctorInfo: {},
         }
     }
     getInitalState() {
@@ -259,6 +262,15 @@ export default class OrderDetails extends Component {
         }
         return (
             <View style={styles.container}>
+                <NavigationEvents
+                    onWillFocus={() => {
+                        global.doctorInfo && global.doctorInfo.id ?
+                            this.setState({
+                                doctorInfo: global.doctorInfo,
+                                TurnMaskFlag: true,
+                            }) : null
+                    }}
+                />
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏
@@ -279,7 +291,9 @@ export default class OrderDetails extends Component {
                         <TouchableOpacity
                             style={styles.goBack}
                             activeOpacity={.8}
-                            onPress={() => { goBack(); }}>
+                            onPress={() => {
+                                goBack();
+                            }}>
                             <Image
                                 source={require('../images/arrow_left_white.png')}
                             />
@@ -298,7 +312,9 @@ export default class OrderDetails extends Component {
                                 </View>
                                 <TouchableOpacity
                                     activeOpacity={.8}
-                                    onPress={() => { }}
+                                    onPress={() => {
+                                        navigate("TurnContact");
+                                    }}
                                     style={styles.yesBtn}
                                 >
                                     <View style={styles.yesBox}>
@@ -486,6 +502,58 @@ export default class OrderDetails extends Component {
                         </TouchableOpacity>
                         : null
                 }
+                {/* 转诊弹框 */}
+                {
+                    this.state.TurnMaskFlag ?
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            onPress={() => {
+                                this.setState({
+                                    TurnMaskFlag: !this.state.TurnMaskFlag,
+                                })
+                            }}
+                            style={styles.maskContent}
+                        >
+                            <TouchableOpacity
+                                activeOpacity={1}
+                                onPress={() => { }}
+                            >
+                                <View style={styles.affirmContent}>
+                                    <View style={styles.affirmBox}>
+                                        <Text style={styles.affirmText}>你确定拒绝回复{this.state.patientInfo.patientName}吗?</Text>
+                                        <Text style={styles.affirmDoctorText}>{this.state.doctorInfo.hospitalName}-{this.state.doctorInfo.doctorName}</Text>
+                                    </View>
+                                    <View style={styles.btnBox}>
+                                        <TouchableOpacity
+                                            activeOpacity={.8}
+                                            onPress={() => {
+                                                this.setState({
+                                                    TurnMaskFlag: !this.state.TurnMaskFlag,
+                                                })
+                                            }}
+                                            style={[styles.btnClick, { borderRightColor: global.Colors.text999, borderRightWidth: global.Pixel }]}
+                                        >
+                                            <Text style={styles.noBtnText}>否</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            activeOpacity={.8}
+                                            onPress={() => {
+                                                this.setState({
+                                                    TurnMaskFlag: !this.state.TurnMaskFlag,
+                                                })
+                                                this.turnOrder();
+                                            }}
+                                            style={styles.btnClick}
+                                        >
+                                            <Text style={styles.yesBtnText}>是</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        </TouchableOpacity>
+                        : null
+                }
+
                 {/* {this.state.maskLabelFlag ?
                     <TouchableOpacity
                         activeOpacity={1}
@@ -571,9 +639,65 @@ export default class OrderDetails extends Component {
     blurReg() {
 
     }
-    goBack() {
-        this.props.navigation.goBack();
+
+    // 申请转诊 - start
+    turnOrder() {
+        this.setState({
+            TurnMaskFlag: false,
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '提交中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        })
+        let formData = new FormData();
+        formData.append("orderId", this.state.orderInfo.id);
+        formData.append("doctorId", this.state.doctorInfo.id);
+        fetch(requestUrl.turnOrder, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+            body: formData,
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '申请成功',
+                        ErrorPromptImg: require('../images/succeed.png'),
+                    })
+                    global.doctorInfo = {};
+                    global.stateKey = '';
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                        this.props.navigation.goBack();
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '申请失败，请重试',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
+    // 申请转诊 - end
     // 拒绝订单 - start
     rejectedOrder() {
         this.setState({
@@ -1041,6 +1165,10 @@ const styles = StyleSheet.create({
     affirmText: {
         fontSize: global.px2dp(17),
         color: global.Colors.text333,
+    },
+    affirmDoctorText: {
+        fontSize: global.px2dp(17),
+        color: global.Colors.color,
     },
     btnBox: {
         height: global.px2dp(45),

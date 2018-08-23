@@ -30,5 +30,7 @@ export let global = {
     IPhoneX: isIphoneX(),// 判断iPhoneX
     TimingCount: 800,// 提示框显示石材
     LinearGradient: ["#59a9e8", "#2c6cb5"],
+    doctorInfo: {},
+    stateKey: '',
 };
 

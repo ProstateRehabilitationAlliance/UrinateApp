@@ -60,7 +60,7 @@ export let requestUrl = {
         IP + "/api-order/order/inquiry/getBeRejectedOrderList",// 查询已拒绝订单列表
         IP + "/api-order/order/inquiry/getIsDoneOrderList",// 查询已完成订单列表
     ],// 问诊订单列表
-    "turnOrder": [
+    "turnOrderList": [
         IP + "/api-order/order/inquiry/getAllTurnOrderList",//查询全部转诊订单列表
         IP + "/api-order/order/inquiry/getAnsweredTurnOrderList",// 查询待回复转诊订单列表
         IP + "/api-order/order/inquiry/getAcceptedTurnOrderList",// 查询待接受转诊订单列表
@@ -75,8 +75,9 @@ export let requestUrl = {
     "addFinal": IP + "/api-assessmen/record/inquiry/addFinal",// 添加问诊最终回复
     "rejectedOrder": IP + "/api-order/order/inquiry/rejectedOrder",// 拒绝问诊订单
     "acceptedOrder": IP + "/api-order/order/inquiry/acceptedOrder",// 接受问诊订单
+    "turnOrder": IP + "/api-order/order/inquiry/turnOrder",// 申请转诊
 
-    // "login": IP + "login",// 注册接口
+        
     // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
 };

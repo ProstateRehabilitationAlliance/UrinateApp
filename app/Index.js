@@ -29,6 +29,11 @@ import Patients from "./home/Patients";// 患者列表
 import PatientsDetails from "./home/PatientsDetails";// 患者详情
 import AssessmentDetails from "./home/AssessmentDetails";// 评估详情
 import ReadDetails from "./home/ReadDetails";// 解读详情
+
+import TurnContact from "./home/TurnContact";// 转诊通讯录
+import TurnDoctorSearch from "./home/TurnDoctorSearch";// 转诊通讯录搜索页
+import TurnDoctorDetails from "./home/TurnDoctorDetails";// 转诊医生详情
+
 import Order from "./home/Order";// 订单
 import OrderDetails from "./home/OrderDetails";// 订单详情-待回复
 import OrderReception from "./home/OrderReception";// 订单详情-待接收
@@ -208,6 +213,15 @@ export default createStackNavigator(
         },
         OrderEnd: {
             screen: OrderEnd,//订单 已完成
+        },
+        TurnContact: {
+            screen: TurnContact,//转诊通讯录
+        },
+        TurnDoctorSearch: {
+            screen: TurnDoctorSearch,//转诊通讯录搜索页
+        },
+        TurnDoctorDetails: {
+            screen: TurnDoctorDetails,//转诊医生详情
         },
         TurnOrder: {
             screen: TurnOrder,//转诊订单

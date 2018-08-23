@@ -314,7 +314,7 @@ export default class TurnOrder extends Component {
             ErrorPromptText: '加载中...',
             ErrorPromptImg: require('../images/loading.png'),
         })
-        fetch(requestUrl.turnOrder[screenActive] + "?pageNo=" + pageNo + "&pageSize" + this.state.pageSize, {
+        fetch(requestUrl.turnOrderList[screenActive] + "?pageNo=" + pageNo + "&pageSize" + this.state.pageSize, {
             method: 'GET',
             headers: {
                 'Content-Type': 'multipart/form-data',

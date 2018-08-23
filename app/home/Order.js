@@ -6,6 +6,7 @@ import { global } from '../utils/Global';// 常量
 import ErrorPrompt from "../common/ErrorPrompt";
 import Nav from "../common/Nav";// 导航组件
 import { BoxShadow } from 'react-native-shadow';
+import { NavigationEvents } from "react-navigation";
 export default class Order extends Component {
     static navigationOptions = {
         header: null,
@@ -34,7 +35,7 @@ export default class Order extends Component {
     }
     componentWillMount() {
         // 2仅调用一次在 render 前
-        this.getOrderList(1, this.state.screenActive);
+        // this.getOrderList(1, this.state.screenActive);
     }
     componentDidMount() {
         // 4获取数据 在 render 后
@@ -43,6 +44,15 @@ export default class Order extends Component {
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container}>
+                <NavigationEvents
+                    onWillFocus={() => {
+                        this.setState({
+                            orderArr: [],
+                            pageNo: 1,
+                        })
+                        this.getOrderList(1, this.state.screenActive);
+                    }}
+                />
                 <Nav
                     isLoading={this.state.isLoading}
                     title={"问诊订单"}
@@ -166,9 +176,7 @@ export default class Order extends Component {
                         data={this.state.orderArr}
                         initialNumToRender={10}
                         keyExtractor={item => item.id}
-                        // ListFooterComponent={() => {
-                        //     // 尾部组件
-                        // }}
+                        renderItem={({ item }) => this.orderRenderItem(item)}
                         onRefresh={() => {
                             this.setState({
                                 orderArr: [],
@@ -177,7 +185,6 @@ export default class Order extends Component {
                             this.getOrderList(1, this.state.screenActive);
                         }}//头部刷新组件
                         refreshing={this.state.isRefresh}//加载图标
-                        renderItem={({ item }) => this.orderRenderItem(item)}
                         onEndReached={() => this.onEndReached()} // 加载更多
                         onEndReachedThreshold={.1}// 加载更多触发时机
                         ListEmptyComponent={() => {
