@@ -77,7 +77,31 @@ export let requestUrl = {
     "acceptedOrder": IP + "/api-order/order/inquiry/acceptedOrder",// 接受问诊订单
     "turnOrder": IP + "/api-order/order/inquiry/turnOrder",// 申请转诊
 
-        
+    // 患者管理
+    "getLablePatientJson": IP + "/api-stata/cache/static/getLablePatientJson",// 根据token查询患者标签信息
+    "findPatientList": IP + "/api-record/patient/findPatientList",// 查询患者列表
+
+    "getPatientById": IP + "/api-record/patientAnamnesis/getPatientById",// 根据患者ID查询病历信息
+    "getPatientLabel": IP + "/api-record/patient/sticker/get",// 患者标签查询
+    "getMedicalReportList": IP + "/api-archive/medical/report/getMedicalReportList",// 根据患者id查 上传报告
+    "getOrderListByPatient": IP + "/api-order/order/inquiry/getOrderListByPatient",// 根据患者id查 问诊记录
+    "getAssessmentListByPatient": IP + "/api-assessmen/assessment/getAssessmentListByPatient",// 根据患者ID查询 评估结果列表
+    "getExaminationListByPatient": IP + "/api-assessmen/medicalExamination/getExaminationListByPatient",// 根据患者ID查询化验单解读结果列表
+    "addLabel": IP + "/api-record/patient/sticker/add",// 患者标签添加
+    "removeLabel": IP + "/api-record/patient/sticker/remove",// 患者标签删除
+    "creationLabel": IP + "/api-stata/lablePatient/add",// 医生添加 自定义标签
+    "deleteLabel": IP + "/api-stata/lablePatient/remove",// 医生删除 自定义标签
+    "turnPatient": IP + "/api-record/userPatient/turnPatient",// 转诊 患者
+
+    // 评估详情
+    "nihAnswer": IP + "/api-assessmen/patientNihCpsiScore/getById",// 前列腺炎 nih 的答案
+    "nihTopic": IP + "/api-stata/nihCpsi/getAll",// 前列腺炎 nih 的题目
+
+    "ipssAnswer": IP + "/api-assessmen/patientIpssScore/getById",// 前列腺 ipss 增生答案
+    "ipssTopic": IP + "/api-stata/ipss/getAll",// 前列腺 ipss 增生题目
+    
+    // "login": IP + "login",// 注册接口
+    // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
 };

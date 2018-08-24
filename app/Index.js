@@ -197,7 +197,7 @@ export default createStackNavigator(
             screen: AssessmentDetails,//评估详情
         },
         ReadDetails: {
-            screen: ReadDetails,//评估详情
+            screen: ReadDetails,//解读详情
         },
         Order: {
             screen: Order,//订单

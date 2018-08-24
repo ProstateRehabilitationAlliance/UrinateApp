@@ -17,31 +17,118 @@ export default class AssessmentDetails extends Component {
             ErrorPromptFlag: false,
             ErrorPromptText: '',
             ErrorPromptImg: '',
+
+            answer: [],// 答案数组
         }
     }
     getInitalState() {
         // 1初始化state
     }
     componentWillMount() {
-        // 2仅调用一次在 render 前
+        if (this.props.navigation.state.params) {
+            let scoreId = this.props.navigation.state.params.id;
+            let scoreType = this.props.navigation.state.params.scoreType;
+            if (scoreType == "A") {
+                // 前列腺炎 nih
+                this.setState({
+                    isLoading: true,
+                    ErrorPromptFlag: true,
+                    ErrorPromptText: '加载中...',
+                    ErrorPromptImg: require('../images/loading.png'),
+                })
+                let formData = new FormData();
+                formData.append("nihCpsiScoreId", scoreId);
+                fetch(requestUrl.nihAnswer, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        "token": global.Token,
+                    },
+                    body: formData,
+                }).then((response) => response.json())
+                    .then((responseData) => {
+                        console.log('responseData', responseData);
+                        if (responseData.code == 20000) {
+                            this.setState({
+                                answer: responseData.result.optionScore.split('-'),
+                            })
+                            fetch(requestUrl.nihTopic, {
+                                method: 'POST',
+                                headers: {
+                                    // 'Content-Type': 'multipart/form-data',
+                                    "token": global.Token,
+                                },
+                            }).then((response) => response.json())
+                                .then((responseData) => {
+                                    console.log('responseData', responseData);
+                                    if (responseData.code == 20000) {
+                                        let dataArr = responseData.result;
+                                        for (let i = 0; i < dataArr.length; i++) {
+                                            if (dataArr[i].nihCpsiType == "a") {
+                                                let tempArr = dataArr[i].childList;
+                                                for (let j = 0; j < tempArr.length; j++) {
+                                                    if (tempArr[j].nihCpsiType == 0) {
+                                                        // 单选
+
+                                                    } else {
+                                                        // 多选
+                                                        
+                                                    }
+
+                                                }
+                                            } else if (dataArr[i].nihCpsiType == "b") {
+
+                                            } else if (dataArr[i].nihCpsiType == "c") {
+
+                                            }
+                                        }
+                                    } else {
+                                        this.setState({
+                                            isLoading: false,
+                                            ErrorPromptFlag: true,
+                                            ErrorPromptText: '提交失败，请重试',
+                                            ErrorPromptImg: require('../images/error.png'),
+                                        })
+                                        clearTimeout(this.timer)
+                                        this.timer = setTimeout(() => {
+                                            this.setState({
+                                                ErrorPromptFlag: false,
+                                            })
+                                        }, global.TimingCount)
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.log('error', error);
+                                });
+                        } else {
+                            this.setState({
+                                isLoading: false,
+                                ErrorPromptFlag: true,
+                                ErrorPromptText: '提交失败，请重试',
+                                ErrorPromptImg: require('../images/error.png'),
+                            })
+                            clearTimeout(this.timer)
+                            this.timer = setTimeout(() => {
+                                this.setState({
+                                    ErrorPromptFlag: false,
+                                })
+                            }, global.TimingCount)
+                        }
+                    })
+                    .catch((error) => {
+                        console.log('error', error);
+                    });
+            } else {
+                // 前列腺 ipss
+
+            }
+        }
     }
     componentDidMount() {
         // 4获取数据 在 render 后
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
-        {/* <View style={styles.container} >
-                    <Text> 我的</Text>
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={{ uri: 'https://img1.360buyimg.com/da/jfs/t23440/198/1552616732/96159/b2b38b62/5b62c871N7bc2b6fd.jpg' }}
-                        defaultSource={require('../images/radio_yes.png')}// 默认图片
-                    />
-                    <TouchableOpacity activeOpacity={.8}
-                        onPress={() => this.click()}>
-                        <Text>点击</Text>
-                    </TouchableOpacity>
-                </View> */}
         return (
             <View style={styles.container}>
                 <Nav isLoading={this.state.isLoading} title={"评估详情"} leftClick={this.goBack.bind(this)} />
@@ -80,71 +167,6 @@ export default class AssessmentDetails extends Component {
     }
     goBack() {
         this.props.navigation.goBack();
-    }
-    submit() {
-        if (!this.state.text) {
-            this.setState({
-                ErrorPromptFlag: true,
-                ErrorPromptText: '请输入内容',
-                ErrorPromptImg: require('../images/error.png'),
-            })
-            clearTimeout(this.timer)
-            this.timer = setTimeout(() => {
-                this.setState({
-                    ErrorPromptFlag: false,
-                })
-            }, global.TimingCount)
-        } else {
-            this.setState({
-                isLoading: true,
-                ErrorPromptFlag: true,
-                ErrorPromptText: '提交中...',
-                ErrorPromptImg: require('../images/loading.png'),
-            })
-            let formData = new FormData();
-            formData.append("feedbackText", this.state.text);
-            fetch(requestUrl.addFeedback, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    "token": global.Token,
-                },
-                body: formData,
-            }).then((response) => response.json())
-                .then((responseData) => {
-                    console.log('responseData', responseData);
-                    if (responseData.code == 20000) {
-                        this.setState({
-                            isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '提交成功',
-                            ErrorPromptImg: require('../images/succeed.png'),
-                        })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
-                    } else {
-                        this.setState({
-                            isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '提交失败，请重试',
-                            ErrorPromptImg: require('../images/error.png'),
-                        })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
-                    }
-                })
-                .catch((error) => {
-                    console.log('error', error);
-                });
-        }
     }
 }
 

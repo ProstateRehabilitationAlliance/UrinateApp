@@ -520,7 +520,7 @@ export default class OrderDetails extends Component {
                             >
                                 <View style={styles.affirmContent}>
                                     <View style={styles.affirmBox}>
-                                        <Text style={styles.affirmText}>你确定拒绝回复{this.state.patientInfo.patientName}吗?</Text>
+                                        <Text style={styles.affirmText}>您确定把{this.state.patientInfo.patientName}转诊给</Text>
                                         <Text style={styles.affirmDoctorText}>{this.state.doctorInfo.hospitalName}-{this.state.doctorInfo.doctorName}</Text>
                                     </View>
                                     <View style={styles.btnBox}>
@@ -533,7 +533,7 @@ export default class OrderDetails extends Component {
                                             }}
                                             style={[styles.btnClick, { borderRightColor: global.Colors.text999, borderRightWidth: global.Pixel }]}
                                         >
-                                            <Text style={styles.noBtnText}>否</Text>
+                                            <Text style={styles.noBtnText}>取消</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             activeOpacity={.8}
@@ -545,7 +545,7 @@ export default class OrderDetails extends Component {
                                             }}
                                             style={styles.btnClick}
                                         >
-                                            <Text style={styles.yesBtnText}>是</Text>
+                                            <Text style={styles.yesBtnText}>确定</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -553,85 +553,6 @@ export default class OrderDetails extends Component {
                         </TouchableOpacity>
                         : null
                 }
-
-                {/* {this.state.maskLabelFlag ?
-                    <TouchableOpacity
-                        activeOpacity={1}
-                        style={styles.maskLabel}
-                        onPress={() => {
-                            this.setState({
-                                maskLabelFlag: !this.state.maskLabelFlag
-                            })
-                        }}
-                    >
-                        <TouchableOpacity
-                            activeOpacity={1}
-                            onPress={() => { }}
-                        >
-                            <View style={styles.maskLabelContent}>
-                                <View style={styles.labelTitleBox}>
-                                    <Text style={styles.labelTitleText}>请为该患者添加标签</Text>
-                                </View>
-                                <View style={styles.labelContent}>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => { }}
-                                        style={styles.labelBtn}
-                                    >
-                                        <View style={styles.labelBox}>
-                                            <Text style={styles.labelText}>腺增生</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => { }}
-                                        style={styles.labelBtn}
-                                    >
-                                        <View style={styles.labelBox}>
-                                            <Text style={styles.labelText}>前列腺增生</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => { }}
-                                        style={styles.labelBtn}
-                                    >
-                                        <View style={styles.labelBox}>
-                                            <Text style={styles.labelText}>前列腺增生</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                                <Text style={styles.separateText}>自定义</Text>
-                                <TextInput
-                                    style={[styles.textareaStyle, {
-                                        minHeight: 100,
-                                    }]}
-                                    placeholder={'请输入用户标签...'}
-                                    placeholderTextColor={global.Colors.placeholder}
-                                    multiline={true}
-                                    onChangeText={(text) => {
-                                        this.setState({
-                                            labelText: text,
-                                        })
-                                    }}
-                                    onContentSizeChange={this.onContentSizeChange.bind(this)}
-                                    underlineColorAndroid={'transparent'}
-                                    onBlur={this.blurReg.bind(this)}
-                                    keyboardType={'default'}
-                                />
-                                <TouchableOpacity
-                                    onPress={() => { }}
-                                    activeOpacity={.8}
-                                    style={styles.addLabelBtn}
-                                >
-                                    <View style={styles.addLabelBox}>
-                                        <Text style={styles.addLabelText}>保存</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                        </TouchableOpacity>
-                    </TouchableOpacity>
-                    : null} */}
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View >
         );
@@ -1191,93 +1112,5 @@ const styles = StyleSheet.create({
         fontSize: global.px2dp(17),
         color: global.Colors.color,
     },
-
-    // 添加标签 部分 - start
-    // maskLabel: {
-    //     position: 'absolute',
-    //     top: 0,
-    //     left: 0,
-    //     width: global.SCREEN_WIDTH,
-    //     height: global.SCREEN_HEIGHT,
-    //     backgroundColor: 'rgba(0,0,0,.6)',
-    //     alignItems: 'center',
-    //     justifyContent: 'center',
-    // },
-    // maskLabelContent: {
-    //     width: global.px2dp(345),
-    //     height: global.px2dp(375),
-    //     backgroundColor: global.Colors.textfff,
-    //     borderRadius: global.px2dp(3),
-    // },
-    // labelTitleBox: {
-    //     paddingLeft: global.px2dp(10),
-    //     height: global.px2dp(45),
-    //     justifyContent: 'center',
-    //     backgroundColor: global.Colors.bgColor,
-    //     borderBottomColor: global.Colors.colorccc,
-    //     borderBottomWidth: global.Pixel,
-    // },
-    // labelTitleText: {
-    //     fontSize: global.px2dp(16),
-    //     color: global.Colors.text333,
-    // },
-    // labelContent: {
-    //     flexDirection: 'row',
-    //     flexWrap: 'wrap',
-    //     paddingLeft: global.px2dp(18),
-    //     paddingRight: global.px2dp(18),
-    //     paddingBottom: global.px2dp(9),
-    //     paddingTop: global.px2dp(5),
-    // },
-    // labelBox: {
-    //     marginRight: global.px2dp(12),
-    //     marginTop: global.px2dp(12),
-    //     alignItems: 'center',
-    //     justifyContent: 'center',
-    //     paddingLeft: global.px2dp(15),
-    //     paddingRight: global.px2dp(15),
-    //     borderRadius: global.px2dp(6),
-    //     backgroundColor: global.Colors.color,
-    // },
-    // labelText: {
-    //     fontSize: global.px2dp(),
-    //     lineHeight: global.px2dp(32),
-    //     color: global.Colors.textfff,
-    // },
-    // separateText: {
-    //     fontSize: global.px2dp(15),
-    //     color: global.Colors.text333,
-    //     lineHeight: global.px2dp(42),
-    //     paddingLeft: global.px2dp(15),
-    //     paddingRight: global.px2dp(15),
-    // },
-    // textareaStyle: {
-    //     marginLeft: global.px2dp(15),
-    //     marginRight: global.px2dp(15),
-    //     backgroundColor: global.Colors.bgColor,
-    //     paddingLeft: global.px2dp(8),
-    //     paddingRight: global.px2dp(8),
-    //     paddingTop: global.px2dp(8),
-    //     paddingBottom: global.px2dp(8),
-    //     fontSize: global.px2dp(13),
-    //     lineHeight: global.px2dp(20),
-    // },
-    // addLabelBtn: {
-    // },
-    // addLabelBox: {
-    //     width: global.px2dp(250),
-    //     height: global.px2dp(42),
-    //     borderRadius: global.px2dp(5),
-    //     backgroundColor: global.Colors.color,
-    //     alignItems: 'center',
-    //     justifyContent: 'center',
-    //     marginTop: global.px2dp(21),
-    //     marginLeft: global.px2dp(48),
-    // },
-    // addLabelText: {
-    //     fontSize: global.px2dp(16),
-    //     color: global.Colors.textfff,
-    // }
-    // 添加标签 部分 - end
 });
 

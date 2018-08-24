@@ -44,6 +44,31 @@ export default class ReadDetails extends Component {
                         </View>
                         <Text style={styles.value}>您白细胞数异常，若存在尿路刺激症状如尿 频尿急等则考虑可能为泌尿系感染(如肾盂 肾炎)或急性细菌性前列腺炎等，医生会结 合症状评分及您的综合情况做出诊断；</Text>
                     </View>
+                    <View style={styles.minuteContent}>
+                        <ScrollView
+                            horizontal={true}
+                            style={styles.navScroll}
+                        >
+                            <TouchableOpacity
+                                onPress={() => { }}
+                                activeOpacity={.8}
+                                style={styles.navItemClick}
+                            >
+                                <View style={styles.navBox}>
+                                    <Text style={styles.navText}>B超结果</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </ScrollView>
+                        <ScrollView
+                            horizontal={true}
+                            style={styles.bodyScroll}
+                        >
+                            <View style={styles.bodyItem}>
+                                <Text style={styles.bodyTitle}>B超结果</Text>
+                                <Text style={styles.bodyText}></Text>
+                            </View>
+                        </ScrollView>
+                    </View>
                 </ScrollView>
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View>
@@ -157,5 +182,47 @@ const styles = StyleSheet.create({
         marginRight: global.px2dp(9),
         marginBottom: global.px2dp(15),
     },
+
+    minuteContent: {
+        marginTop: global.px2dp(15),
+        marginLeft: global.px2dp(15),
+        marginRight: global.px2dp(15),
+        backgroundColor: global.Colors.textfff,
+        borderRadius: global.px2dp(5),
+    },
+    navScroll: {
+        borderBottomColor: global.Colors.colorccc,
+        borderBottomWidth: global.Pixel,
+    },
+    navBox: {
+        height: global.px2dp(42),
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottomWidth: global.px2dp(2),
+        borderBottomColor: global.Colors.transparent,
+        marginLeft: global.px2dp(15),
+        marginRight: global.px2dp(15),
+    },
+    navText: {
+        fontSize: global.px2dp(17),
+        color: global.Colors.text333,
+    },
+    bodyScroll: {
+
+    },
+    bodyItem: {
+        paddingLeft: global.px2dp(10),
+        paddingRight: global.px2dp(10),
+    },
+    bodyTitle: {
+        lineHeight: global.px2dp(43),
+        fontSize: global.px2dp(18),
+        color: global.Colors.text333,
+    },
+    bodyText: {
+        fontSize: global.px2dp(16),
+        color: global.Colors.text666,
+        lineHeight: global.px2dp(20),
+    }
 });
 

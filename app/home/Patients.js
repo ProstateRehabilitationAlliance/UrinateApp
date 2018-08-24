@@ -6,6 +6,7 @@ import { global } from '../utils/Global';// 常量
 import ErrorPrompt from "../common/ErrorPrompt";
 import { BoxShadow } from 'react-native-shadow';
 import LinearGradient from "react-native-linear-gradient";
+import { NavigationEvents } from "react-navigation";
 export default class Patients extends Component {
     static navigationOptions = {
         header: null,
@@ -14,20 +15,93 @@ export default class Patients extends Component {
         super(props);
         this.state = {
             isLoading: false,
+            isRefresh: false,
 
             ErrorPromptFlag: false,
             ErrorPromptText: '',
             ErrorPromptImg: '',
 
-            searchText: '',
-            patientsData: [{ id: '1' }, { id: '2' }],
+            dataFlag: true,// 是否还有下一页
+            patientArr: [],// 搜索到的数据
+            searchLabel: [],// 搜索标签
+            stickerId: '',// 标签id
+            searchText: '',// 搜索内容
+            pageNo: 1,
+            pageSize: 10,
         }
     }
     getInitalState() {
         // 1初始化state
     }
     componentWillMount() {
-        // 2仅调用一次在 render 前
+        // 查询搜索标签 - start
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '加载中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        })
+        fetch(requestUrl.getLablePatientJson, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: false,
+                        searchLabel: responseData.result
+                    })
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '加载失败',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+        // 查询搜索标签 - end
+
+    }
+    renderSearchLabel() {
+        let tempArr = [];
+        for (const key in this.state.searchLabel) {
+            tempArr.push(
+                <TouchableOpacity
+                    activeOpacity={.8}
+                    onPress={() => {
+                        this.setState({
+                            stickerId: key,
+                            patientArr: [],
+                            pageNo: 1,
+                        })
+                        this.renderSearchLabel();
+                        this.findPatientList(1, key);
+                    }}
+                    style={styles.serachLabelBtn}
+                    key={key}
+                >
+                    <View style={[styles.searchLabelItem, this.state.stickerId == key ? { backgroundColor: global.Colors.color } : null]}>
+                        <Text style={[styles.searchLabelText, this.state.stickerId == key ? { color: global.Colors.textfff } : null]}>{this.state.searchLabel[key]}</Text>
+                    </View>
+                </TouchableOpacity>
+            )
+        }
+        return tempArr;
     }
     componentDidMount() {
         // 4获取数据 在 render 后
@@ -45,9 +119,18 @@ export default class Patients extends Component {
             y: 0,
             style: styles.searchBoxShadow,
         }
-
         return (
             <View style={styles.container}>
+                {/* 后退刷新数据 */}
+                <NavigationEvents
+                    onWillFocus={() => {
+                        this.setState({
+                            patientArr: [],
+                            pageNo: 1,
+                        })
+                        this.findPatientList(1, this.state.stickerId);
+                    }}
+                />
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏
@@ -94,13 +177,13 @@ export default class Patients extends Component {
                                         });
                                     }
                                 }}
-                                // onSubmitEditing={() => {
-                                //     this.setState({
-                                //         doctorArr: [],
-                                //         pageNo: 1,
-                                //     })
-                                //     this.findDoctorList(this.state.searchText, 1);
-                                // }}
+                                onSubmitEditing={() => {
+                                    this.setState({
+                                        patientArr: [],
+                                        pageNo: 1,
+                                    })
+                                    this.findPatientList(1, this.state.stickerId);
+                                }}
                                 defaultValue={this.state.searchText}
                                 underlineColorAndroid={'transparent'}
                                 keyboardType={"default"}
@@ -108,66 +191,68 @@ export default class Patients extends Component {
                                 returnKeyType={'search'}
                             />
                             <TouchableOpacity
-                                onPress={() => { }}
+                                onPress={() => {
+                                    this.setState({
+                                        patientArr: [],
+                                        pageNo: 1,
+                                    })
+                                    this.findPatientList(1, this.state.stickerId);
+                                }}
                                 activeOpacity={.8}
                                 style={styles.serachBtn}
                             >
                                 <Text style={styles.searchText}>搜索</Text>
                             </TouchableOpacity>
                         </View>
-                        <View style={styles.searchLabelBox}>
+                        <ScrollView
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                            style={styles.searchLabelBox}>
                             <TouchableOpacity
                                 activeOpacity={.8}
-                                onPress={() => { }}
+                                onPress={() => {
+                                    this.setState({
+                                        stickerId: '',
+                                        patientArr: [],
+                                        pageNo: 1,
+                                    })
+                                    this.findPatientList(1, '');
+                                }}
                                 style={styles.serachLabelBtn}
                             >
-                                <View style={styles.searchLabelItem}>
-                                    <Text style={styles.searchLabelText}>全部</Text>
+                                <View style={[styles.searchLabelItem, this.state.stickerId == '' ? { backgroundColor: global.Colors.color } : null]}>
+                                    <Text style={[styles.searchLabelText, this.state.stickerId == '' ? { color: global.Colors.textfff } : null]}>全部</Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity
-                                activeOpacity={.8}
-                                onPress={() => { }}
-                                style={styles.serachLabelBtn}
-                            >
-                                <View style={styles.searchLabelItem}>
-                                    <Text style={styles.searchLabelText}>前列腺增生</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+                            {this.renderSearchLabel()}
+                        </ScrollView>
                     </View>
                 </BoxShadow>
                 <FlatList
                     style={styles.flatListStyle}
-                    data={this.state.patientsData}
-                    // initialNumToRender={20}
-                    keyExtractor={item => item.id}
-                    // ListFooterComponent={() => {
-                    // 尾部组件
-                    // }}
+                    data={this.state.patientArr}
+                    // initialNumToRender={10}
+                    keyExtractor={item => item.patientId}
                     renderItem={({ item }) => this.renderItem(item)}
-                // 分隔线
-                // ItemSeparatorComponent={() => {
-                //     return (
-                //         <View style={{
-                //             height: global.Pixel,
-                //             backgroundColor: global.Colors.text999,
-                //         }}></View>
-                //     )
-                // }}
-                // onRefresh={() => { }}//头部刷新组件
-                // refreshing={this.state.isRefresh}//加载图标
-                // onEndReached={() => this.onEndReached()} // 加载更多
-                // onEndReachedThreshold={.1}// 加载更多触发时机
-                // ListEmptyComponent={() => {
-                //     // 无数据时显示的内容
-                //     return (
-                //         <View style={styles.noDataBox}>
-                //             <Image source={require('../../images/no_data.png')} />
-                //             <Text style={styles.noDataText}>暂无信息</Text>
-                //         </View>
-                //     )
-                // }}
+                    onRefresh={() => {
+                        this.setState({
+                            pageNo: 1,
+                            patientArr: [],
+                        })
+                        this.findPatientList(1, this.state.stickerId);
+                    }}//头部刷新组件
+                    refreshing={this.state.isRefresh}//加载图标
+                    onEndReached={() => this.onEndReached()} // 加载更多
+                    onEndReachedThreshold={.2}// 加载更多触发时机
+                    ListEmptyComponent={() => {
+                        // 无数据时显示的内容
+                        return (
+                            <View style={styles.noDataBox}>
+                                <Image source={require('../images/no_patient.png')} />
+                                <Text style={styles.noDataText}>你暂无患者可查看</Text>
+                            </View>
+                        )
+                    }}
                 />
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View>
@@ -189,18 +274,20 @@ export default class Patients extends Component {
         }
         return (
             <BoxShadow
+                key={item.patientId}
                 setting={itemShadowOpt}>
                 <TouchableOpacity
                     onPress={() => {
-                        console.log(item)
+                        navigate("PatientsDetails", {
+                            patientId: item.patientId,
+                        });
                     }}
                     activeOpacity={.8}
-                    key={item.id}
                 >
                     <View style={styles.itemBox}>
                         <View style={styles.leftBox}>
-                            <Text style={styles.baseInfo}>王胖虎 男 45岁</Text>
-                            <Text style={styles.illnessName}>疾病名称</Text>
+                            <Text style={styles.baseInfo}>{item.patientName} {item.patientSex} {item.patientAge}岁</Text>
+                            <Text style={styles.sourceText}>患者来源:{item.patientSource}</Text>
                         </View>
                         <View style={styles.rightBox}>
                             <Text style={styles.rightText}>详情</Text>
@@ -214,70 +301,66 @@ export default class Patients extends Component {
     goBack() {
         this.props.navigation.goBack();
     }
-    submit() {
-        if (!this.state.text) {
-            this.setState({
-                ErrorPromptFlag: true,
-                ErrorPromptText: '请输入内容',
-                ErrorPromptImg: require('../images/error.png'),
-            })
-            clearTimeout(this.timer)
-            this.timer = setTimeout(() => {
-                this.setState({
-                    ErrorPromptFlag: false,
-                })
-            }, global.TimingCount)
-        } else {
-            this.setState({
-                isLoading: true,
-                ErrorPromptFlag: true,
-                ErrorPromptText: '提交中...',
-                ErrorPromptImg: require('../images/loading.png'),
-            })
-            let formData = new FormData();
-            formData.append("feedbackText", this.state.text);
-            fetch(requestUrl.addFeedback, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    "token": global.Token,
-                },
-                body: formData,
-            }).then((response) => response.json())
-                .then((responseData) => {
-                    console.log('responseData', responseData);
-                    if (responseData.code == 20000) {
-                        this.setState({
-                            isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '提交成功',
-                            ErrorPromptImg: require('../images/succeed.png'),
-                        })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
-                    } else {
-                        this.setState({
-                            isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '提交失败，请重试',
-                            ErrorPromptImg: require('../images/error.png'),
-                        })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
-                    }
-                })
-                .catch((error) => {
-                    console.log('error', error);
-                });
+    onEndReached() {
+        // 判断是否还有数据 
+        if (this.state.dataFlag) {
+            this.findPatientList(this.state.pageNo * 1 + 1 + '', this.state.stickerId);
+            this.setState({ pageNo: this.state.pageNo * 1 + 1 + '' });
         }
+    }
+    // 查患者列表
+    findPatientList(pageNo, stickerId) {
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '加载中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        })
+        if (stickerId) {
+            var url = requestUrl.findPatientList + "?pageSize=" + this.state.pageSize + "&pageNo=" + pageNo + "&patientName=" + this.state.searchText + "&stickerId=" + stickerId;
+        } else {
+            var url = requestUrl.findPatientList + "?pageSize=" + this.state.pageSize + "&pageNo=" + pageNo + "&patientName=" + this.state.searchText;
+        }
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    if (responseData.result.length >= this.state.pageSize) {
+                        let temp = this.state.patientArr;
+                        temp = temp.concat(responseData.result);
+                        this.setState({
+                            isLoading: false,
+                            ErrorPromptFlag: false,
+                            patientArr: temp,
+                            dataFlag: true,
+                        })
+                    } else {
+                        let temp = this.state.patientArr;
+                        temp = temp.concat(responseData.result);
+                        this.setState({
+                            isLoading: false,
+                            ErrorPromptFlag: false,
+                            patientArr: temp,
+                            dataFlag: false,
+                        })
+                    }
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: false,
+                        dataFlag: false,
+                    })
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
 }
 
@@ -357,7 +440,6 @@ const styles = StyleSheet.create({
     searchLabelBox: {
         paddingTop: global.px2dp(14),
         paddingBottom: global.px2dp(14),
-        flexDirection: 'row',
     },
     searchLabelItem: {
         backgroundColor: "#bfd3e9",
@@ -395,12 +477,16 @@ const styles = StyleSheet.create({
     baseInfo: {
         fontSize: global.px2dp(17),
         color: global.Colors.text333,
-        lineHeight: global.px2dp(24),
     },
     illnessName: {
         fontSize: global.px2dp(16),
         lineHeight: global.px2dp(22),
         color: global.Colors.color,
+    },
+    sourceText: {
+        fontSize: global.px2dp(13),
+        lineHeight: global.px2dp(22),
+        color: global.Colors.text999,
     },
     rightBox: {
         flexDirection: 'row',
@@ -411,6 +497,15 @@ const styles = StyleSheet.create({
         fontSize: global.px2dp(16),
         color: global.Colors.color,
         marginRight: global.px2dp(9),
+    },
+    noDataBox: {
+        alignItems: 'center',
+        paddingTop: global.px2dp(109),
+    },
+    noDataText: {
+        marginTop: global.px2dp(15),
+        fontSize: global.px2dp(18),
+        color: global.Colors.text666,
     },
     // 列表-end
 });
