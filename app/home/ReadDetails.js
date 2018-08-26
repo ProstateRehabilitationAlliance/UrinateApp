@@ -60,12 +60,13 @@ export default class ReadDetails extends Component {
                             </TouchableOpacity>
                         </ScrollView>
                         <ScrollView
-                            horizontal={true}
+                            // horizontal={true}
+                            // pagingEnabled={true}
                             style={styles.bodyScroll}
                         >
                             <View style={styles.bodyItem}>
                                 <Text style={styles.bodyTitle}>B超结果</Text>
-                                <Text style={styles.bodyText}></Text>
+                                <Text style={styles.bodyText}>前列腺体积处于异常增大状态若出现梗 阻症状可能需要口服药物或手术治疗；</Text>
                             </View>
                         </ScrollView>
                     </View>
@@ -208,7 +209,8 @@ const styles = StyleSheet.create({
         color: global.Colors.text333,
     },
     bodyScroll: {
-
+        height: global.px2dp(360),
+        paddingBottom: global.px2dp(15),
     },
     bodyItem: {
         paddingLeft: global.px2dp(10),
@@ -223,6 +225,6 @@ const styles = StyleSheet.create({
         fontSize: global.px2dp(16),
         color: global.Colors.text666,
         lineHeight: global.px2dp(20),
-    }
+    },
 });
 

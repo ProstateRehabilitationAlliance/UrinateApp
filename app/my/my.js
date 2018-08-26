@@ -12,9 +12,12 @@ export default class My extends Component {
         super(props);
         this.state = {
             isLoading: false,
+
             ErrorPromptFlag: false,
             ErrorPromptText: '',
             ErrorPromptImg: '',
+
+            approveMaskFlag: false,// 认证提示框
 
             userInfo: {},
             signStatus: '',
@@ -406,7 +409,55 @@ export default class My extends Component {
                     </TouchableOpacity>
                 </View>
                 <View style={{ height: global.px2dp(20) }}></View>
+                {this.state.approveMaskFlag ?
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={() => {
+                            this.setState({
+                                approveMaskFlag: !this.state.approveMaskFlag
+                            })
+                        }}
+                        style={styles.approveMask}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            onPress={() => { }}
+                        >
+                            <View style={styles.approveContent}>
+                                <Text style={styles.approveTitle}>认证信息</Text>
+                                <Text style={styles.approveText}>该功能需要实名认证之后才能继续使用，请先进行认证</Text>
+                                <View style={styles.approveBtnBox}>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => {
+                                            this.setState({
+                                                approveMaskFlag: !this.state.approveMaskFlag
+                                            })
+                                        }}
+                                        style={[styles.approveBtnClick, {
+                                            borderRightColor: global.Colors.colorccc,
+                                            borderRightWidth: global.Pixel,
+                                        }]}
+                                    >
+
+                                        <Text style={[styles.approveBtnText, { color: global.Colors.text666, }]}>取消</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+
+                                        }}
+                                        activeOpacity={.8}
+                                        style={styles.approveBtnClick}
+                                    >
+                                        <Text style={[styles.approveBtnText, { color: global.Colors.color }]}>去认证</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </TouchableOpacity>
+                    : null}
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
+
             </ScrollView>
         );
     }
@@ -490,5 +541,54 @@ const styles = StyleSheet.create({
     arrowRightGrey: {
         marginRight: global.px2dp(15),
     },
+
+    // 认证信息 - start
+    approveMask: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: global.SCREEN_WIDTH,
+        height: global.SCREEN_HEIGHT,
+        backgroundColor: "rgba(0,0,0,.6)",
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    approveContent: {
+        width: global.px2dp(300),
+        height: global.px2dp(170),
+        backgroundColor: global.Colors.textfff,
+        justifyContent: 'space-between',
+        borderRadius: global.px2dp(4),
+    },
+    approveTitle: {
+        marginTop: global.px2dp(17),
+        textAlign: 'center',
+        fontSize: global.px2dp(18),
+        color: global.Colors.text333,
+    },
+    approveText: {
+        fontSize: global.px2dp(16),
+        color: global.Colors.text666,
+        textAlign: 'center',
+        marginLeft: global.px2dp(40),
+        marginRight: global.px2dp(40),
+        lineHeight: global.px2dp(22),
+    },
+    approveBtnBox: {
+        height: global.px2dp(48),
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderTopWidth: global.Pixel,
+        borderTopColor: global.Colors.colorcccccc,
+    },
+    approveBtnClick: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    approveBtnText: {
+        fontSize: global.px2dp(17),
+    }
 });
 
