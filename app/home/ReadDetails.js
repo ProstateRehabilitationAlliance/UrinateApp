@@ -17,117 +17,96 @@ export default class ReadDetails extends Component {
             ErrorPromptFlag: false,
             ErrorPromptText: '',
             ErrorPromptImg: '',
+
+            activeTab: 0,
+            medicalExaminationRemark: '',// 总的结果
+
+            detailsFlag: true,
+
+            navArr: [],
         }
     }
     getInitalState() {
         // 1初始化state
     }
     componentWillMount() {
-        // 2仅调用一次在 render 前
-    }
-    componentDidMount() {
-        // 4获取数据 在 render 后
-    }
-    render() {
-        // 3 渲染 render
-        // 变量声明
-        const { navigate, goBack } = this.props.navigation;
-
-        return (
-            <View style={styles.container}>
-                <Nav isLoading={this.state.isLoading} title={"解读报告详情"} leftClick={this.goBack.bind(this)} />
-                <ScrollView>
-                    <View style={styles.reportContent}>
-                        <View style={styles.titleBox}>
-                            <View style={styles.titleLine}></View>
-                            <Text style={styles.titleText}>化验单结果</Text>
-                        </View>
-                        <Text style={styles.value}>您白细胞数异常，若存在尿路刺激症状如尿 频尿急等则考虑可能为泌尿系感染(如肾盂 肾炎)或急性细菌性前列腺炎等，医生会结 合症状评分及您的综合情况做出诊断；</Text>
-                    </View>
-                    <View style={styles.minuteContent}>
-                        <ScrollView
-                            horizontal={true}
-                            style={styles.navScroll}
-                        >
-                            <TouchableOpacity
-                                onPress={() => { }}
-                                activeOpacity={.8}
-                                style={styles.navItemClick}
-                            >
-                                <View style={styles.navBox}>
-                                    <Text style={styles.navText}>B超结果</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </ScrollView>
-                        <ScrollView
-                            // horizontal={true}
-                            // pagingEnabled={true}
-                            style={styles.bodyScroll}
-                        >
-                            <View style={styles.bodyItem}>
-                                <Text style={styles.bodyTitle}>B超结果</Text>
-                                <Text style={styles.bodyText}>前列腺体积处于异常增大状态若出现梗 阻症状可能需要口服药物或手术治疗；</Text>
-                            </View>
-                        </ScrollView>
-                    </View>
-                </ScrollView>
-                {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
-            </View>
-        );
-    }
-    goBack() {
-        this.props.navigation.goBack();
-    }
-    submit() {
-        if (!this.state.text) {
-            this.setState({
-                ErrorPromptFlag: true,
-                ErrorPromptText: '请输入内容',
-                ErrorPromptImg: require('../images/error.png'),
-            })
-            clearTimeout(this.timer)
-            this.timer = setTimeout(() => {
-                this.setState({
-                    ErrorPromptFlag: false,
-                })
-            }, global.TimingCount)
-        } else {
+        if (this.props.navigation.state.params) {
             this.setState({
                 isLoading: true,
                 ErrorPromptFlag: true,
-                ErrorPromptText: '提交中...',
+                ErrorPromptText: '加载中...',
                 ErrorPromptImg: require('../images/loading.png'),
             })
-            let formData = new FormData();
-            formData.append("feedbackText", this.state.text);
-            fetch(requestUrl.addFeedback, {
-                method: 'POST',
+            fetch(requestUrl.getExaminationDetails + "?id=" + this.props.navigation.state.params.id, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     "token": global.Token,
                 },
-                body: formData,
             }).then((response) => response.json())
                 .then((responseData) => {
                     console.log('responseData', responseData);
                     if (responseData.code == 20000) {
+                        let navArr = [];
+                        if (responseData.result.bloodRoutineAnswer) {
+                            navArr.push({
+                                name: "血常规",
+                                value: responseData.result.bloodRoutineRemark,
+                            })
+                        }
+                        if (responseData.result.digitalRectalAnswer) {
+                            // 前列腺指诊
+                            navArr.push({
+                                name: "前列腺指诊",
+                                value: responseData.result.digitalRectalRemark,
+                            })
+                        }
+                        if (responseData.result.expressedProstaticSecretionAnswer) {
+                            // 前列腺按摩液
+                            navArr.push({
+                                name: "前列腺按摩液",
+                                value: responseData.result.expressedProstaticSecretionRemark,
+                            })
+                        }
+                        if (responseData.result.specificAntigenAnswer) {
+                            // 特异性抗原
+                            navArr.push({
+                                name: "特异性抗原",
+                                value: responseData.result.specificAntigenRemark,
+                            })
+                        }
+                        if (responseData.result.ultrasonographyBAnswer) {
+                            // B超
+                            navArr.push({
+                                name: "B超",
+                                value: responseData.result.ultrasonographyBRemark,
+                            })
+                        }
+                        if (responseData.result.urineFlowRateAnswer) {
+                            // 尿流率
+                            navArr.push({
+                                name: "尿流率",
+                                value: responseData.result.urineFlowRateRemark,
+                            })
+                        }
+                        if (responseData.result.urineRoutineAnswer) {
+                            // 尿常规
+                            navArr.push({
+                                name: "尿常规",
+                                value: responseData.result.urineRoutineRemark,
+                            })
+                        }
                         this.setState({
                             isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '提交成功',
-                            ErrorPromptImg: require('../images/succeed.png'),
+                            ErrorPromptFlag: false,
+                            medicalExaminationRemark: responseData.result.medicalExaminationRemark.replace(regExp.RegHtmlLabel, ''),
+                            navArr: navArr,
                         })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
                     } else {
                         this.setState({
                             isLoading: false,
                             ErrorPromptFlag: true,
-                            ErrorPromptText: '提交失败，请重试',
+                            ErrorPromptText: '加载失败，请重试',
                             ErrorPromptImg: require('../images/error.png'),
                         })
                         clearTimeout(this.timer)
@@ -142,6 +121,84 @@ export default class ReadDetails extends Component {
                     console.log('error', error);
                 });
         }
+
+    }
+    componentDidMount() {
+        // 4获取数据 在 render 后
+    }
+    render() {
+        const { navigate, goBack } = this.props.navigation;
+        return (
+            <View style={styles.container}>
+                <Nav isLoading={this.state.isLoading} title={"解读报告详情"} leftClick={this.goBack.bind(this)} />
+                <ScrollView>
+                    <View style={styles.reportContent}>
+                        <View style={styles.titleBox}>
+                            <View style={styles.titleLine}></View>
+                            <Text style={styles.titleText}>化验单结果</Text>
+                        </View>
+                        <Text style={styles.value}>{this.state.medicalExaminationRemark}</Text>
+                    </View>
+                    {this.state.detailsFlag ?
+                        <View style={styles.minuteContent}>
+                            <ScrollView
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                style={styles.navScroll}
+                            >
+                                {this.state.navArr && this.state.navArr.map((item, index) => {
+                                    return (
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                this.setState({
+                                                    activeTab: index,
+                                                })
+                                                this.refs.bodyScroll.scrollTo({
+                                                    x: (global.SCREEN_WIDTH - global.px2dp(30)) * index,
+                                                    animated: true
+                                                })
+                                            }}
+                                            key={index}
+                                            activeOpacity={.8}
+                                            style={styles.navItemClick}
+                                        >
+                                            <View style={[styles.navBox, this.state.activeTab == index ? { borderBottomColor: global.Colors.color } : null]}>
+                                                <Text style={[styles.navText, this.state.activeTab == index ? { color: global.Colors.color } : null]}>{item.name}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    )
+                                })}
+                            </ScrollView>
+                            <ScrollView
+                                ref={"bodyScroll"}
+                                horizontal={true}
+                                pagingEnabled={true}
+                                showsHorizontalScrollIndicator={false}
+                                style={styles.bodyScroll}
+                                onMomentumScrollEnd={(e) => {
+                                    this.setState({
+                                        activeTab: e.nativeEvent.contentOffset.x / e.nativeEvent.layoutMeasurement.width
+                                    })
+                                }}
+                            >
+                                {this.state.navArr && this.state.navArr.map((item, index) => {
+                                    return (
+                                        <View style={styles.bodyItem} key={index}>
+                                            <Text style={styles.bodyTitle}>{item.name}</Text>
+                                            <Text style={styles.bodyText}>{item.value}</Text>
+                                        </View>
+                                    )
+                                })}
+                            </ScrollView>
+                        </View>
+                        : null}
+                </ScrollView>
+                {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
+            </View>
+        );
+    }
+    goBack() {
+        this.props.navigation.goBack();
     }
 }
 
@@ -213,6 +270,7 @@ const styles = StyleSheet.create({
         paddingBottom: global.px2dp(15),
     },
     bodyItem: {
+        width: global.SCREEN_WIDTH - global.px2dp(30),
         paddingLeft: global.px2dp(10),
         paddingRight: global.px2dp(10),
     },

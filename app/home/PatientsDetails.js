@@ -384,8 +384,13 @@ export default class PatientsDetails extends Component {
                             horizontal={true}
                             pagingEnabled={true}
                             showsHorizontalScrollIndicator={false}
-                            scrollEnabled={false}
+                            scrollEnabled={true}
                             ref={"contentScrollView"}
+                            onMomentumScrollEnd={(e) => {
+                                this.setState({
+                                    tabActive: e.nativeEvent.contentOffset.x / e.nativeEvent.layoutMeasurement.width
+                                })
+                            }}
                         >
                             <View style={styles.contentItem}>
                                 <Text style={styles.contentTitleText}>上传报告</Text>
