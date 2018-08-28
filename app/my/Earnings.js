@@ -18,13 +18,60 @@ export default class Earnings extends Component {
             ErrorPromptFlag: false,
             ErrorPromptText: '',
             ErrorPromptImg: '',
+
+            balance: 0,// 余额
+
         }
     }
     getInitalState() {
         // 1初始化state
     }
     componentWillMount() {
-        // 2仅调用一次在 render 前
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '加载中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        })
+        fetch(requestUrl.getBalance, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: false,
+                        balance: responseData.result,
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '查询失败，请重试',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
     componentDidMount() {
         // 4获取数据 在 render 后
@@ -64,7 +111,7 @@ export default class Earnings extends Component {
                     </View>
                     <View style={styles.earningsContent}>
                         <View style={styles.earningsBox}>
-                            <Text style={styles.earningsValue}>300</Text>
+                            <Text style={styles.earningsValue}>{this.state.balance}</Text>
                             <Text style={styles.earningsText}>账户余额</Text>
                         </View>
                         <View style={styles.earningsLien}></View>
@@ -154,71 +201,6 @@ export default class Earnings extends Component {
     }
     goBack() {
         this.props.navigation.goBack();
-    }
-    submit() {
-        if (!this.state.text) {
-            this.setState({
-                ErrorPromptFlag: true,
-                ErrorPromptText: '请输入内容',
-                ErrorPromptImg: require('../images/error.png'),
-            })
-            clearTimeout(this.timer)
-            this.timer = setTimeout(() => {
-                this.setState({
-                    ErrorPromptFlag: false,
-                })
-            }, global.TimingCount)
-        } else {
-            this.setState({
-                isLoading: true,
-                ErrorPromptFlag: true,
-                ErrorPromptText: '提交中...',
-                ErrorPromptImg: require('../images/loading.png'),
-            })
-            let formData = new FormData();
-            formData.append("feedbackText", this.state.text);
-            fetch(requestUrl.addFeedback, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    "token": global.Token,
-                },
-                body: formData,
-            }).then((response) => response.json())
-                .then((responseData) => {
-                    console.log('responseData', responseData);
-                    if (responseData.code == 20000) {
-                        this.setState({
-                            isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '提交成功',
-                            ErrorPromptImg: require('../images/succeed.png'),
-                        })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
-                    } else {
-                        this.setState({
-                            isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '提交失败，请重试',
-                            ErrorPromptImg: require('../images/error.png'),
-                        })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
-                    }
-                })
-                .catch((error) => {
-                    console.log('error', error);
-                });
-        }
     }
 }
 

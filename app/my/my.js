@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView, } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView, BackHandler } from 'react-native';
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import { Storage } from '../utils/AsyncStorage';
 import LinearGradient from 'react-native-linear-gradient';
 import ErrorPrompt from "../common/ErrorPrompt";
+import Communications from 'react-native-communications';
+import { BoxShadow } from 'react-native-shadow';
+
 
 export default class My extends Component {
     constructor(props) {
@@ -19,14 +22,18 @@ export default class My extends Component {
 
             approveMaskFlag: false,// 认证提示框
 
-            userInfo: {},
-            signStatus: '',
+            userInfo: {},// 医生信息
+            signStatus: '',// 认证状态
+
+            telMaskFlag: false,
         }
     }
-    getInitalState() {
-        // 1初始化state
-    }
+    // handleBackPress() {
+    //     BackHandler.exitApp();
+    //     return true;
+    // }
     componentWillMount() {
+        // BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
         Storage.getItem("userInfo", (data) => {
             if (data) {
                 this.setState({
@@ -44,6 +51,9 @@ export default class My extends Component {
             }
         })
     }
+    // componentWillUnmount() {
+    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    // }
 
     // 获取后台认证状态
     getSignStates() {
@@ -227,6 +237,17 @@ export default class My extends Component {
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
+        const telShadowOpt = {
+            width: global.px2dp(285),
+            height: global.px2dp(140),
+            color: "#000",
+            border: 8,
+            radius: 0,
+            opacity: .2,
+            x: 0,
+            y: 0,
+            style: {},
+        }
         return (
             <ScrollView
                 alwaysBounceVertical={true}// ios不满一屏时弹性
@@ -261,7 +282,14 @@ export default class My extends Component {
                         style={styles.navigateBtn}
                         activeOpacity={.8}
                         onPress={() => {
-                            navigate("Earnings");
+                            if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
+                                // 不是 认证成功
+                                this.setState({
+                                    approveMaskFlag: !this.state.approveMaskFlag,
+                                })
+                            } else {
+                                navigate("Earnings");
+                            }
                         }}>
                         <View style={styles.navigateBox}>
                             <Image
@@ -281,7 +309,14 @@ export default class My extends Component {
                         style={[styles.navigateBtn, { borderBottomWidth: global.Pixel }]}
                         activeOpacity={.8}
                         onPress={() => {
-                            navigate("Followee");
+                            if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
+                                // 不是 认证成功
+                                this.setState({
+                                    approveMaskFlag: !this.state.approveMaskFlag,
+                                })
+                            } else {
+                                navigate("Followee");
+                            }
                         }}>
                         <View style={styles.navigateBox}>
                             <Image
@@ -299,7 +334,14 @@ export default class My extends Component {
                         style={[styles.navigateBtn, { borderBottomWidth: global.Pixel }]}
                         activeOpacity={.8}
                         onPress={() => {
-                            navigate('PersonalInfo');
+                            if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
+                                // 不是 认证成功
+                                this.setState({
+                                    approveMaskFlag: !this.state.approveMaskFlag,
+                                })
+                            } else {
+                                navigate("PersonalInfo");
+                            }
                         }}>
                         <View style={styles.navigateBox}>
                             <Image
@@ -317,7 +359,14 @@ export default class My extends Component {
                         style={[styles.navigateBtn]}
                         activeOpacity={.8}
                         onPress={() => {
-                            navigate('Authentication');
+                            if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
+                                // 不是 认证成功
+                                this.setState({
+                                    approveMaskFlag: !this.state.approveMaskFlag,
+                                })
+                            } else {
+                                navigate('Authentication');
+                            }
                         }}>
                         <View style={styles.navigateBox}>
                             <Image
@@ -337,7 +386,14 @@ export default class My extends Component {
                         style={[styles.navigateBtn, { borderBottomWidth: global.Pixel }]}
                         activeOpacity={.8}
                         onPress={() => {
-                            // navigate();
+                            if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
+                                // 不是 认证成功
+                                this.setState({
+                                    approveMaskFlag: !this.state.approveMaskFlag,
+                                })
+                            } else {
+                                // navigate();
+                            }
                         }}>
                         <View style={styles.navigateBox}>
                             <Image
@@ -355,7 +411,14 @@ export default class My extends Component {
                         style={[styles.navigateBtn]}
                         activeOpacity={.8}
                         onPress={() => {
-                            // navigate();
+                            if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
+                                // 不是 认证成功
+                                this.setState({
+                                    approveMaskFlag: !this.state.approveMaskFlag,
+                                })
+                            } else {
+                                // navigate();
+                            }
                         }}>
                         <View style={styles.navigateBox}>
                             <Image
@@ -393,7 +456,9 @@ export default class My extends Component {
                         style={[styles.navigateBtn]}
                         activeOpacity={.8}
                         onPress={() => {
-                            // navigate();
+                            this.setState({
+                                telMaskFlag: !this.state.telMaskFlag,
+                            })
                         }}>
                         <View style={styles.navigateBox}>
                             <Image
@@ -409,56 +474,119 @@ export default class My extends Component {
                     </TouchableOpacity>
                 </View>
                 <View style={{ height: global.px2dp(20) }}></View>
-                {this.state.approveMaskFlag ?
-                    <TouchableOpacity
-                        activeOpacity={1}
-                        onPress={() => {
-                            this.setState({
-                                approveMaskFlag: !this.state.approveMaskFlag
-                            })
-                        }}
-                        style={styles.approveMask}
-                    >
+                {
+                    this.state.approveMaskFlag ?
                         <TouchableOpacity
                             activeOpacity={1}
-                            onPress={() => { }}
+                            onPress={() => {
+                                this.setState({
+                                    approveMaskFlag: !this.state.approveMaskFlag
+                                })
+                            }}
+                            style={styles.approveMask}
                         >
-                            <View style={styles.approveContent}>
-                                <Text style={styles.approveTitle}>认证信息</Text>
-                                <Text style={styles.approveText}>该功能需要实名认证之后才能继续使用，请先进行认证</Text>
-                                <View style={styles.approveBtnBox}>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => {
-                                            this.setState({
-                                                approveMaskFlag: !this.state.approveMaskFlag
-                                            })
-                                        }}
-                                        style={[styles.approveBtnClick, {
-                                            borderRightColor: global.Colors.colorccc,
-                                            borderRightWidth: global.Pixel,
-                                        }]}
-                                    >
-
-                                        <Text style={[styles.approveBtnText, { color: global.Colors.text666, }]}>取消</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => {
-
-                                        }}
-                                        activeOpacity={.8}
-                                        style={styles.approveBtnClick}
-                                    >
-                                        <Text style={[styles.approveBtnText, { color: global.Colors.color }]}>去认证</Text>
-                                    </TouchableOpacity>
+                            <TouchableOpacity
+                                activeOpacity={1}
+                                onPress={() => { }}
+                            >
+                                <View style={styles.approveContent}>
+                                    <Text style={styles.approveTitle}>认证信息</Text>
+                                    <Text style={styles.approveText}>该功能需要实名认证之后才能继续使用，请先进行认证</Text>
+                                    <View style={styles.approveBtnBox}>
+                                        <TouchableOpacity
+                                            activeOpacity={.8}
+                                            onPress={() => {
+                                                this.setState({
+                                                    approveMaskFlag: !this.state.approveMaskFlag
+                                                })
+                                            }}
+                                            style={[styles.approveBtnClick, {
+                                                borderRightColor: global.Colors.colorccc,
+                                                borderRightWidth: global.Pixel,
+                                            }]}
+                                        >
+                                            <Text style={[styles.approveBtnText, { color: global.Colors.text666, }]}>取消</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                // AUTHENTICATION_PROGRESS,//认证中
+                                                // AUTHENTICATION_SUCCESS,//认证成功
+                                                // AUTHENTICATION_FAILED, //认证失败
+                                                // AUTHENTICATION_EMPTY //未填写认证信息
+                                                if (this.state.signStatus == "AUTHENTICATION_FAILED" || this.state.signStatus == "AUTHENTICATION_EMPTY") {
+                                                    // 认证失败 未认证 去认证页面
+                                                    navigate("Approve");
+                                                } else if (this.state.signStatus == "AUTHENTICATION_PROGRESS") {
+                                                    // 认证中 去查看信息页
+                                                    navigate("Authentication");
+                                                }
+                                            }}
+                                            activeOpacity={.8}
+                                            style={styles.approveBtnClick}
+                                        >
+                                            <Text style={[styles.approveBtnText, { color: global.Colors.color }]}>去认证</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
+                        </TouchableOpacity>
+                        : null
+                }
+                {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
+                {this.state.telMaskFlag ?
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.setState({
+                                telMaskFlag: !this.state.telMaskFlag,
+                            })
+                        }}
+                        activeOpacity={1}
+                        style={styles.telMask}
+                    >
+                        <TouchableOpacity
+                            onPress={() => { }}
+                            activeOpacity={1}
+                        >
+                            <BoxShadow
+                                setting={telShadowOpt}>
+                                <View style={styles.telContent}>
+                                    <View style={styles.telTitleBox}>
+                                        <Image source={require('../images/tel_left.png')} />
+                                        <Text style={styles.telTitle}>请拨打客服电话</Text>
+                                        <Image source={require('../images/tel_right.png')} />
+                                    </View>
+                                    <Text style={styles.telNum}>{global.serviceTel}</Text>
+                                    <View style={styles.telBtnBox}>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                this.setState({
+                                                    telMaskFlag: !this.state.telMaskFlag,
+                                                })
+                                            }}
+                                            style={[styles.telBtnClick, { borderRightColor: global.Colors.text999, borderRightWidth: global.Pixel }]}
+                                            activeOpacity={.8}
+                                        >
+                                            <Text style={[styles.telBtnText, { color: global.Colors.text666 }]}>取消</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                this.setState({
+                                                    telMaskFlag: !this.state.telMaskFlag,
+                                                })
+                                                Communications.phonecall(global.serviceTel, true);
+                                            }}
+                                            style={styles.telBtnClick}
+                                            activeOpacity={.8}
+                                        >
+                                            <Text style={[styles.telBtnText, { color: global.Colors.color }]}>确认</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </BoxShadow>
                         </TouchableOpacity>
                     </TouchableOpacity>
                     : null}
-                {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
-
-            </ScrollView>
+            </ScrollView >
         );
     }
 }
@@ -589,6 +717,56 @@ const styles = StyleSheet.create({
     },
     approveBtnText: {
         fontSize: global.px2dp(17),
-    }
+    },
+
+    // 拨打电话
+    telMask: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: global.SCREEN_WIDTH,
+        height: global.SCREEN_HEIGHT,
+        backgroundColor: "rgba(0,0,0,0),",
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    telContent: {
+        width: global.px2dp(285),
+        height: global.px2dp(140),
+        backgroundColor: global.Colors.textfff,
+        borderRadius: global.px2dp(4),
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    telTitleBox: {
+        marginTop: global.px2dp(18),
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    telTitle: {
+        paddingLeft: global.px2dp(5),
+        paddingRight: global.px2dp(5),
+        fontSize: global.px2dp(17),
+        color: global.Colors.text333,
+    },
+    telNum: {
+        fontSize: global.px2dp(17),
+        color: global.Colors.text555,
+    },
+    telBtnBox: {
+        height: global.px2dp(46),
+        borderTopColor: global.Colors.text999,
+        borderTopWidth: global.Pixel,
+        flexDirection: 'row',
+    },
+    telBtnClick: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    telBtnText: {
+        fontSize: global.px2dp(17),
+    },
 });
 

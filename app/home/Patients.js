@@ -461,7 +461,8 @@ const styles = StyleSheet.create({
     itemBoxShadow: {
         marginLeft: global.px2dp(15),
         marginRight: global.px2dp(15),
-        marginTop: global.px2dp(15),
+        marginTop: global.px2dp(8),
+        marginBottom: global.px2dp(8),
     },
     itemBox: {
         height: global.px2dp(79),

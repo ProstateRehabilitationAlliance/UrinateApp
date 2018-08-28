@@ -541,8 +541,8 @@ const styles = StyleSheet.create({
     },
     // 导航 - end
     flatListStyle: {
-        paddingLeft: global.px2dp(15),
-        paddingRight: global.px2dp(15),
+        // paddingLeft: global.px2dp(15),
+        // paddingRight: global.px2dp(15),
         paddingBottom: global.px2dp(15),
     },
     // 列表 item - start
@@ -550,6 +550,8 @@ const styles = StyleSheet.create({
         marginTop: global.px2dp(15),
     },
     itemContent: {
+        marginLeft: global.px2dp(15),
+        marginRight: global.px2dp(15),
         height: global.px2dp(83),
         flexDirection: 'row',
         alignItems: 'center',

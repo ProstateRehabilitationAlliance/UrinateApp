@@ -32,5 +32,6 @@ export let global = {
     LinearGradient: ["#59a9e8", "#2c6cb5"],
     doctorInfo: {},
     stateKey: '',
+    serviceTel: "010-6378-6220",
 };
 

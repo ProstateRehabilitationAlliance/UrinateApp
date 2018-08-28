@@ -6,12 +6,9 @@ import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";
 import Nav from "../common/Nav";
 import UpFile from "../common/UpFile";
-import BasicData from "../common/BasicData";
 import ErrorPrompt from "../common/ErrorPrompt";
 import SubmitPrompt from "../common/SubmitPrompt";
-import SQLite from '../common/SQLite';
-var sqLite = new SQLite();
-var db;
+
 export default class Approve extends Component {
     static navigationOptions = {
         header: null,
@@ -66,10 +63,7 @@ export default class Approve extends Component {
         // 2仅调用一次在 render 前
     }
     componentDidMount() {
-        this.refs.BasicData.getHospitalData();
-        this.refs.BasicData.getBranchData();
-        this.refs.BasicData.getTitleData();
-        this.refs.BasicData.getLocalDoctorDetail();
+        
     }
     // 获取认证信息
     getAuthentication() {
@@ -109,60 +103,10 @@ export default class Approve extends Component {
             });
     }
     // 根据 id 查 对应的名字
-    idToName() {
-        db = sqLite.open();
-        db.transaction((tx) => {
-            tx.executeSql("select * from hospital where id = ?", [this.state.hospitalId], (tx, results) => {
-                var len = results.rows.length;
-                this.setState({
-                    hospitalName: results.rows.item(0).hospitalName
-                })
-            })
-            tx.executeSql("select * from branch where id = ?", [this.state.branchId], (tx, results) => {
-                var len = results.rows.length;
-                this.setState({
-                    branchName: results.rows.item(0).branchName
-                })
-            })
-            tx.executeSql("select * from title where id = ?", [this.state.titleId], (tx, results) => {
-                var len = results.rows.length;
-                this.setState({
-                    titleName: results.rows.item(0).titleName
-                })
-            })
-        })
-    }
     render() {
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container}>
-                <BasicData
-                    ref='BasicData'
-                    hospitalData={(data) => {
-                        this.setState({
-                            hospitalData: data
-                        })
-                    }}
-                    branchData={(data) => {
-                        this.setState({
-                            branchData: data
-                        })
-                    }}
-                    titleData={(data) => {
-                        this.setState({
-                            titleData: data
-                        })
-                    }}
-                    userInfo={(data) => {
-                        console.log(data)
-                        this.setState({
-                            userInfo: data
-                        })
-                        if (data.signStatus == "AUTHENTICATION_FAILED") {
-                            this.getAuthentication();
-                        }
-                    }}
-                />
                 <Nav
                     isLoading={this.state.isLoading}
                     title="认证信息"

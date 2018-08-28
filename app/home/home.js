@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView, } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView, BackHandler } from 'react-native';
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
@@ -25,6 +25,8 @@ export default class Home extends Component {
 
             maskContentFlag: false,
             goodsPrice: 30,
+
+            approveMaskFlag: false,//未认证弹框
 
         }
     }
@@ -222,7 +224,16 @@ export default class Home extends Component {
                 console.log('error', error);
             });
     }
-
+    // handleBackPress() {
+    //     BackHandler.exitApp();
+    //     return true;
+    // }
+    // componentWillMount() {
+    //     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    // }
+    // componentWillUnmount() {
+    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    // }
     componentDidMount() {
         Storage.removeItem("userInfo", () => { })
         Storage.getItem("userInfo", (data) => {
@@ -374,7 +385,14 @@ export default class Home extends Component {
                                 style={styles.moduleBtn}
                                 activeOpacity={.8}
                                 onPress={() => {
-                                    navigate("Order");
+                                    if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
+                                        // 不是 认证成功
+                                        this.setState({
+                                            approveMaskFlag: !this.state.approveMaskFlag,
+                                        })
+                                    } else {
+                                        navigate('Order');
+                                    }
                                 }}>
                                 <Image
                                     style={styles.moduleImg}
@@ -389,7 +407,14 @@ export default class Home extends Component {
                                 style={styles.moduleBtn}
                                 activeOpacity={.8}
                                 onPress={() => {
-                                    navigate("Patients");
+                                    if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
+                                        // 不是 认证成功
+                                        this.setState({
+                                            approveMaskFlag: !this.state.approveMaskFlag,
+                                        })
+                                    } else {
+                                        navigate('Patients');
+                                    }
                                 }}>
                                 <Image
                                     style={styles.moduleImg}
@@ -404,7 +429,14 @@ export default class Home extends Component {
                                 style={styles.moduleBtn}
                                 activeOpacity={.8}
                                 onPress={() => {
-                                    navigate("TurnOrder");
+                                    if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
+                                        // 不是 认证成功
+                                        this.setState({
+                                            approveMaskFlag: !this.state.approveMaskFlag,
+                                        })
+                                    } else {
+                                        navigate('TurnOrder');
+                                    }
                                 }}>
                                 <Image
                                     style={styles.moduleImg}
@@ -497,122 +529,180 @@ export default class Home extends Component {
                         </TouchableOpacity>
                     </TouchableOpacity>
                     : null}
-                {this.state.maskContentFlag ? <TouchableOpacity
-                    activeOpacity={1}
-                    onPress={() => {
-                        this.setState({
-                            maskContentFlag: !this.state.maskContentFlag
-                        })
-                    }}
-                    style={styles.maskContent}
-                >
+                {this.state.maskContentFlag ?
                     <TouchableOpacity
                         activeOpacity={1}
-                        onPress={() => { }}
+                        onPress={() => {
+                            this.setState({
+                                maskContentFlag: !this.state.maskContentFlag
+                            })
+                        }}
+                        style={styles.maskContent}
                     >
-                        <View style={styles.amountContent}>
-                            <View style={styles.amountTitleBox}>
-                                <Text style={styles.amountTitleText}>请选择你的服务金额</Text>
-                            </View>
-                            <View style={styles.amountCenterBox}>
-                                <TouchableOpacity
-                                    activeOpacity={.8}
-                                    onPress={() => {
-                                        this.setState({
-                                            goodsPrice: 30,
-                                        })
-                                    }}
-                                    style={styles.amountItem}
-                                >
-                                    <View style={[styles.amountBox, this.state.goodsPrice == 30 ? { backgroundColor: global.Colors.color } : null]}>
-                                        <Text style={[styles.picText, this.state.goodsPrice == 30 ? { color: global.Colors.textfff } : null]}>30元</Text>
-                                        <Text style={[styles.descText, this.state.goodsPrice == 30 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
-                                    </View>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    activeOpacity={.8}
-                                    onPress={() => {
-                                        this.setState({
-                                            goodsPrice: 60,
-                                        })
-                                    }}
-                                    style={styles.amountItem}
-                                >
-                                    <View style={[styles.amountBox, this.state.goodsPrice == 60 ? { backgroundColor: global.Colors.color } : null]}>
-                                        <Text style={[styles.picText, this.state.goodsPrice == 60 ? { color: global.Colors.textfff } : null]}>60元</Text>
-                                        <Text style={[styles.descText, this.state.goodsPrice == 60 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
-                                    </View>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    activeOpacity={.8}
-                                    onPress={() => {
-                                        this.setState({
-                                            goodsPrice: 80,
-                                        })
-                                    }}
-                                    style={styles.amountItem}
-                                >
-                                    <View style={[styles.amountBox, this.state.goodsPrice == 80 ? { backgroundColor: global.Colors.color } : null]}>
-                                        <Text style={[styles.picText, this.state.goodsPrice == 80 ? { color: global.Colors.textfff } : null]}>80元</Text>
-                                        <Text style={[styles.descText, this.state.goodsPrice == 80 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
-                                    </View>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    activeOpacity={.8}
-                                    onPress={() => {
-                                        this.setState({
-                                            goodsPrice: 100,
-                                        })
-                                    }}
-                                    style={styles.amountItem}
-                                >
-                                    <View style={[styles.amountBox, this.state.goodsPrice == 100 ? { backgroundColor: global.Colors.color } : null]}>
-                                        <Text style={[styles.picText, this.state.goodsPrice == 100 ? { color: global.Colors.textfff } : null]}>100元</Text>
-                                        <Text style={[styles.descText, this.state.goodsPrice == 100 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
-                                    </View>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    activeOpacity={.8}
-                                    onPress={() => {
-                                        this.setState({
-                                            goodsPrice: 120,
-                                        })
-                                    }}
-                                    style={styles.amountItem}
-                                >
-                                    <View style={[styles.amountBox, this.state.goodsPrice == 120 ? { backgroundColor: global.Colors.color } : null]}>
-                                        <Text style={[styles.picText, this.state.goodsPrice == 120 ? { color: global.Colors.textfff } : null]}>120元</Text>
-                                        <Text style={[styles.descText, this.state.goodsPrice == 120 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
-                                    </View>
-                                </TouchableOpacity>
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            onPress={() => { }}
+                        >
+                            <View style={styles.amountContent}>
+                                <View style={styles.amountTitleBox}>
+                                    <Text style={styles.amountTitleText}>请选择你的服务金额</Text>
+                                </View>
+                                <View style={styles.amountCenterBox}>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => {
+                                            this.setState({
+                                                goodsPrice: 30,
+                                            })
+                                        }}
+                                        style={styles.amountItem}
+                                    >
+                                        <View style={[styles.amountBox, this.state.goodsPrice == 30 ? { backgroundColor: global.Colors.color } : null]}>
+                                            <Text style={[styles.picText, this.state.goodsPrice == 30 ? { color: global.Colors.textfff } : null]}>30元</Text>
+                                            <Text style={[styles.descText, this.state.goodsPrice == 30 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => {
+                                            this.setState({
+                                                goodsPrice: 60,
+                                            })
+                                        }}
+                                        style={styles.amountItem}
+                                    >
+                                        <View style={[styles.amountBox, this.state.goodsPrice == 60 ? { backgroundColor: global.Colors.color } : null]}>
+                                            <Text style={[styles.picText, this.state.goodsPrice == 60 ? { color: global.Colors.textfff } : null]}>60元</Text>
+                                            <Text style={[styles.descText, this.state.goodsPrice == 60 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => {
+                                            this.setState({
+                                                goodsPrice: 80,
+                                            })
+                                        }}
+                                        style={styles.amountItem}
+                                    >
+                                        <View style={[styles.amountBox, this.state.goodsPrice == 80 ? { backgroundColor: global.Colors.color } : null]}>
+                                            <Text style={[styles.picText, this.state.goodsPrice == 80 ? { color: global.Colors.textfff } : null]}>80元</Text>
+                                            <Text style={[styles.descText, this.state.goodsPrice == 80 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => {
+                                            this.setState({
+                                                goodsPrice: 100,
+                                            })
+                                        }}
+                                        style={styles.amountItem}
+                                    >
+                                        <View style={[styles.amountBox, this.state.goodsPrice == 100 ? { backgroundColor: global.Colors.color } : null]}>
+                                            <Text style={[styles.picText, this.state.goodsPrice == 100 ? { color: global.Colors.textfff } : null]}>100元</Text>
+                                            <Text style={[styles.descText, this.state.goodsPrice == 100 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => {
+                                            this.setState({
+                                                goodsPrice: 120,
+                                            })
+                                        }}
+                                        style={styles.amountItem}
+                                    >
+                                        <View style={[styles.amountBox, this.state.goodsPrice == 120 ? { backgroundColor: global.Colors.color } : null]}>
+                                            <Text style={[styles.picText, this.state.goodsPrice == 120 ? { color: global.Colors.textfff } : null]}>120元</Text>
+                                            <Text style={[styles.descText, this.state.goodsPrice == 120 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
+                                        </View>
+                                    </TouchableOpacity>
 
+                                </View>
+                                <View style={styles.amountBtnBox}>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => {
+                                            this.setState({
+                                                maskContentFlag: !this.state.maskContentFlag,
+                                            })
+                                        }}
+                                        style={[styles.amountBtn, styles.noBtn]}
+                                    >
+                                        <Text style={[styles.btnText, styles.noBtnText]}>取消</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => {
+                                            this.addGoods();
+                                        }}
+                                        style={[styles.amountBtn, styles.yesBtn]}
+                                    >
+                                        <Text style={[styles.btnText, styles.yesBtnText]}>确认</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-                            <View style={styles.amountBtnBox}>
-                                <TouchableOpacity
-                                    activeOpacity={.8}
-                                    onPress={() => {
-                                        this.setState({
-                                            maskContentFlag: !this.state.maskContentFlag,
-                                        })
-                                    }}
-                                    style={[styles.amountBtn, styles.noBtn]}
-                                >
-                                    <Text style={[styles.btnText, styles.noBtnText]}>取消</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    activeOpacity={.8}
-                                    onPress={() => {
-                                        this.addGoods();
-                                    }}
-                                    style={[styles.amountBtn, styles.yesBtn]}
-                                >
-                                    <Text style={[styles.btnText, styles.yesBtnText]}>确认</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+                        </TouchableOpacity>
                     </TouchableOpacity>
-                </TouchableOpacity> : null}
+                    : null}
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
+                {this.state.approveMaskFlag ?
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={() => {
+                            this.setState({
+                                approveMaskFlag: !this.state.approveMaskFlag
+                            })
+                        }}
+                        style={styles.approveMask}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            onPress={() => { }}
+                        >
+                            <View style={styles.approveContent}>
+                                <Text style={styles.approveTitle}>认证信息</Text>
+                                <Text style={styles.approveText}>该功能需要实名认证之后才能继续使用，请先进行认证</Text>
+                                <View style={styles.approveBtnBox}>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => {
+                                            this.setState({
+                                                approveMaskFlag: !this.state.approveMaskFlag
+                                            })
+                                        }}
+                                        style={[styles.approveBtnClick, {
+                                            borderRightColor: global.Colors.colorccc,
+                                            borderRightWidth: global.Pixel,
+                                        }]}
+                                    >
+                                        <Text style={[styles.approveBtnText, { color: global.Colors.text666, }]}>取消</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            // AUTHENTICATION_PROGRESS,//认证中
+                                            // AUTHENTICATION_SUCCESS,//认证成功
+                                            // AUTHENTICATION_FAILED, //认证失败
+                                            // AUTHENTICATION_EMPTY //未填写认证信息
+                                            if (this.state.signStatus == "AUTHENTICATION_FAILED" || this.state.signStatus == "AUTHENTICATION_EMPTY") {
+                                                // 认证失败 未认证 去认证页面
+                                                navigate("Approve");
+                                            } else if (this.state.signStatus == "AUTHENTICATION_PROGRESS") {
+                                                // 认证中 去查看信息页
+                                                navigate("Authentication");
+                                            }
+                                        }}
+                                        activeOpacity={.8}
+                                        style={styles.approveBtnClick}
+                                    >
+                                        <Text style={[styles.approveBtnText, { color: global.Colors.color }]}>去认证</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </TouchableOpacity>
+                    : null}
             </ScrollView>
         );
     }
@@ -987,5 +1077,54 @@ const styles = StyleSheet.create({
         color: global.Colors.color,
     },
     // 金额选择 - end
+
+    // 认证信息 - start
+    approveMask: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: global.SCREEN_WIDTH,
+        height: global.SCREEN_HEIGHT,
+        backgroundColor: "rgba(0,0,0,.6)",
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    approveContent: {
+        width: global.px2dp(300),
+        height: global.px2dp(170),
+        backgroundColor: global.Colors.textfff,
+        justifyContent: 'space-between',
+        borderRadius: global.px2dp(4),
+    },
+    approveTitle: {
+        marginTop: global.px2dp(17),
+        textAlign: 'center',
+        fontSize: global.px2dp(18),
+        color: global.Colors.text333,
+    },
+    approveText: {
+        fontSize: global.px2dp(16),
+        color: global.Colors.text666,
+        textAlign: 'center',
+        marginLeft: global.px2dp(40),
+        marginRight: global.px2dp(40),
+        lineHeight: global.px2dp(22),
+    },
+    approveBtnBox: {
+        height: global.px2dp(48),
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderTopWidth: global.Pixel,
+        borderTopColor: global.Colors.colorcccccc,
+    },
+    approveBtnClick: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    approveBtnText: {
+        fontSize: global.px2dp(17),
+    }
 });
 

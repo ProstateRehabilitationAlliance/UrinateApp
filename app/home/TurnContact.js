@@ -331,7 +331,8 @@ const styles = StyleSheet.create({
     },
     // 列表 item - start
     boxShadow: {
-        marginTop: global.px2dp(15),
+        marginTop: global.px2dp(8),
+        marginBottom: global.px2dp(8),
         marginLeft: global.px2dp(15),
         marginRight: global.px2dp(15),
     },

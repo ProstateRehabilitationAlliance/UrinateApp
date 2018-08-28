@@ -53,7 +53,7 @@ export default class WithdrawDeposit extends Component {
             opacity: .2,
             x: 0,
             y: 0,
-            style: { marginTop: global.px2dp(15) },
+            style: styles.boxShadow,
         }
         const { navigate, goBack } = this.props.navigation;
         return (
@@ -189,9 +189,13 @@ const styles = StyleSheet.create({
         backgroundColor: global.Colors.bgColor,
     },
     scrollView: {
-        paddingTop: global.px2dp(15),
-        paddingLeft: global.px2dp(15),
-        paddingRight: global.px2dp(15),
+        paddingTop: global.px2dp(8),
+    },
+    boxShadow: {
+        marginLeft: global.px2dp(15),
+        marginRight: global.px2dp(15),
+        marginTop: global.px2dp(8),
+        marginBottom: global.px2dp(8),
     },
     accountContent: {
         height: global.px2dp(71),
@@ -219,6 +223,8 @@ const styles = StyleSheet.create({
     },
     btnBox: {
         marginTop: global.px2dp(27),
+        marginLeft: global.px2dp(15),
+        marginRight: global.px2dp(15),
     },
 
     withdrawalContent: {

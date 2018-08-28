@@ -3,6 +3,7 @@ package com.urinateapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.theweflex.react.WeChatPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.horcrux.svg.SvgPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
@@ -26,6 +27,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new WeChatPackage(),
             new ImagePickerPackage(),
             new SvgPackage(),
             new LinearGradientPackage()

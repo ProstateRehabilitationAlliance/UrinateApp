@@ -1542,16 +1542,18 @@ const styles = StyleSheet.create({
     },
     // 垂直滚动容器
     itemBox: {
-        height: global.px2dp(238),
+        maxHeight: global.px2dp(238),
         backgroundColor: global.Colors.colorededed,
-        paddingLeft: global.px2dp(8),
-        paddingRight: global.px2dp(8),
-        paddingBottom: global.px2dp(28),
-        paddingTop: global.px2dp(8),
+        // paddingLeft: global.px2dp(8),
+        // paddingRight: global.px2dp(8),
+        // paddingBottom: global.px2dp(28),
+        // paddingTop: global.px2dp(8),
     },
     // 上传报告 - start
     uploadImgItem: {
-        marginBottom: global.px2dp(10),
+        marginLeft: global.px2dp(8),
+        marginRight: global.px2dp(8),
+        marginTop: global.px2dp(8),
         backgroundColor: global.Colors.textfff,
     },
     uploadImgTitle: {
@@ -1577,7 +1579,9 @@ const styles = StyleSheet.create({
     // 上传报告 - end
     // 问诊记录 - start
     inquiryItem: {
-        marginBottom: global.px2dp(10),
+        marginLeft: global.px2dp(8),
+        marginRight: global.px2dp(8),
+        marginTop: global.px2dp(8),
         backgroundColor: global.Colors.textfff,
     },
     inquiryTopBox: {
@@ -1619,7 +1623,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: global.Colors.textfff,
         height: global.px2dp(64),
-        marginBottom: global.px2dp(10),
+        marginLeft: global.px2dp(8),
+        marginRight: global.px2dp(8),
+        marginTop: global.px2dp(8),
         paddingLeft: global.px2dp(3),
         paddingRight: global.px2dp(13),
     },
@@ -1665,7 +1671,9 @@ const styles = StyleSheet.create({
         backgroundColor: global.Colors.textfff,
         paddingLeft: global.px2dp(14),
         paddingRight: global.px2dp(14),
-        marginBottom: global.px2dp(10),
+        marginLeft: global.px2dp(8),
+        marginRight: global.px2dp(8),
+        marginTop: global.px2dp(8),
     },
     examinationTime: {
         lineHeight: global.px2dp(32),

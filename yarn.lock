@@ -1341,21 +1341,11 @@ big-integer@^1.6.7:
   version "1.6.34"
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.34.tgz#701affc8f0d73c490930a6b482dc23ed6ffc7484"
 
-bplist-creator@0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/bplist-creator/-/bplist-creator-0.0.4.tgz#4ac0496782e127a85c1d2026a4f5eb22a7aff991"
-  dependencies:
-    stream-buffers "~0.2.3"
-
 bplist-creator@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/bplist-creator/-/bplist-creator-0.0.7.tgz#37df1536092824b87c42f957b01344117372ae45"
   dependencies:
     stream-buffers "~2.2.0"
-
-bplist-parser@0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/bplist-parser/-/bplist-parser-0.0.6.tgz#38da3471817df9d44ab3892e27707bbbd75a11b9"
 
 bplist-parser@0.1.1:
   version "0.1.1"
@@ -1958,6 +1948,10 @@ event-target-shim@^1.0.5:
 eventemitter3@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.0.tgz#090b4d6cdbd645ed10bf750d4b5407942d7ba163"
+
+events@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/events/-/events-1.0.2.tgz#75849dcfe93d10fb057c30055afdbd51d06a8e24"
 
 exec-sh@^0.2.0:
   version "0.2.2"
@@ -3781,10 +3775,6 @@ node-pre-gyp@^0.10.0:
     semver "^5.3.0"
     tar "^4"
 
-node-uuid@1.4.7:
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/node-uuid/-/node-uuid-1.4.7.tgz#6da5a17668c4b3dd59623bda11cf7fa4c1f60a6f"
-
 nopt@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/nopt/-/nopt-4.0.1.tgz#d0d4685afd5415193c8c7505602d0d17cd64474d"
@@ -4068,10 +4058,6 @@ path-type@^2.0.0:
   dependencies:
     pify "^2.0.0"
 
-pegjs@0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/pegjs/-/pegjs-0.9.0.tgz#f6aefa2e3ce56169208e52179dfe41f89141a369"
-
 pegjs@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/pegjs/-/pegjs-0.10.0.tgz#cf8bafae6eddff4b5a7efb185269eaaf4610ddbd"
@@ -4110,21 +4096,21 @@ pkg-dir@^2.0.0:
   dependencies:
     find-up "^2.1.0"
 
-plist@1.2.0, plist@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/plist/-/plist-1.2.0.tgz#084b5093ddc92506e259f874b8d9b1afb8c79593"
-  dependencies:
-    base64-js "0.0.8"
-    util-deprecate "1.0.2"
-    xmlbuilder "4.0.0"
-    xmldom "0.1.x"
-
 plist@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/plist/-/plist-2.0.1.tgz#0a32ca9481b1c364e92e18dc55c876de9d01da8b"
   dependencies:
     base64-js "1.1.2"
     xmlbuilder "8.2.2"
+    xmldom "0.1.x"
+
+plist@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/plist/-/plist-1.2.0.tgz#084b5093ddc92506e259f874b8d9b1afb8c79593"
+  dependencies:
+    base64-js "0.0.8"
+    util-deprecate "1.0.2"
+    xmlbuilder "4.0.0"
     xmldom "0.1.x"
 
 plugin-error@^0.1.2:
@@ -4271,6 +4257,10 @@ react-lifecycles-compat@^3, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
 
+react-native-communications@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-communications/-/react-native-communications-2.2.1.tgz#7883b56b20a002eeb790c113f8616ea8692ca795"
+
 react-native-dismiss-keyboard@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/react-native-dismiss-keyboard/-/react-native-dismiss-keyboard-1.0.0.tgz#32886242b3f2317e121f3aeb9b0a585e2b879b49"
@@ -4333,12 +4323,6 @@ react-native-smscode-count-down@^0.1.14:
   version "0.1.14"
   resolved "https://registry.yarnpkg.com/react-native-smscode-count-down/-/react-native-smscode-count-down-0.1.14.tgz#e71cc0fb17b5e10fda0922fdf68c048ea791d493"
 
-react-native-sqlite-storage@^3.3.6:
-  version "3.3.6"
-  resolved "https://registry.yarnpkg.com/react-native-sqlite-storage/-/react-native-sqlite-storage-3.3.6.tgz#c8ab7d2547fcd91332a7bf759c471749a9abd187"
-  dependencies:
-    xcode "0.8.9"
-
 react-native-svg@^6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-6.5.2.tgz#1105896b8873b0856821b18daa0c6898cea6c00c"
@@ -4358,6 +4342,12 @@ react-native-tab-view@^1.0.0:
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-1.0.2.tgz#66e0bc6d38a227ed2b212e3a256b7902f6ce02ed"
   dependencies:
     prop-types "^15.6.1"
+
+react-native-wechat@^1.9.10:
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/react-native-wechat/-/react-native-wechat-1.9.10.tgz#e9e26aba60ecf17d878a17047136cb8d223056bb"
+  dependencies:
+    events "1.0.2"
 
 react-native@0.55.4:
   version "0.55.4"
@@ -4877,14 +4867,6 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
 
-simple-plist@0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/simple-plist/-/simple-plist-0.1.4.tgz#10eb51b47e33c556eb8ec46d5ee64d64e717db5d"
-  dependencies:
-    bplist-creator "0.0.4"
-    bplist-parser "0.0.6"
-    plist "1.2.0"
-
 simple-plist@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/simple-plist/-/simple-plist-0.2.1.tgz#71766db352326928cf3a807242ba762322636723"
@@ -5056,10 +5038,6 @@ statuses@~1.4.0:
 stealthy-require@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
-
-stream-buffers@~0.2.3:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/stream-buffers/-/stream-buffers-0.2.6.tgz#181c08d5bb3690045f69401b9ae6a7a0cf3313fc"
 
 stream-buffers@~2.2.0:
   version "2.2.0"
@@ -5513,14 +5491,6 @@ ws@^5.2.0:
   resolved "https://registry.yarnpkg.com/ws/-/ws-5.2.2.tgz#dffef14866b8e8dc9133582514d1befaf96e980f"
   dependencies:
     async-limiter "~1.0.0"
-
-xcode@0.8.9:
-  version "0.8.9"
-  resolved "https://registry.yarnpkg.com/xcode/-/xcode-0.8.9.tgz#ec6765f70e9dccccc9f6e9a5b9b4e7e814b4cf35"
-  dependencies:
-    node-uuid "1.4.7"
-    pegjs "0.9.0"
-    simple-plist "0.1.4"
 
 xcode@^0.9.1:
   version "0.9.3"

@@ -99,7 +99,15 @@ export let requestUrl = {
 
     "ipssAnswer": IP + "/api-assessmen/patientIpssScore/getById",// 前列腺 ipss 增生答案
     "ipssTopic": IP + "/api-stata/ipss/getAll",// 前列腺 ipss 增生题目
-    
+
+    "getExaminationDetails": IP + "/api-assessmen/medicalExamination/getById",// 根据 ID查询化验单解读结果
+
+
+    // 收益
+    "getBalance": IP + "/api-wallet/doctorWallet/getBalance",// 查询余额
+    "getBalanceList": IP + "/api-wallet/dealRecord/getList",// 分页查询收支明 列表
+
+    "weChatCode": IP + "/api-user/login/weChat",// 微信权限
     // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口

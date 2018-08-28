@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, ScrollView, StatusBar, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, ScrollView, StatusBar, Image, BackHandler } from 'react-native';
 import ErrorPrompt from "../common/ErrorPrompt";
 import LinearGradient from 'react-native-linear-gradient';
 import { regExp } from '../netWork/RegExp';// 正则
@@ -28,9 +28,16 @@ export default class Contact extends Component {
     getInitalState() {
         // 1初始化state
     }
-    componentWillMount() {
-
-    }
+    // handleBackPress() {
+    //     BackHandler.exitApp();
+    //     return true;
+    // }
+    // componentWillMount() {
+    //     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    // }
+    // componentWillUnmount() {
+    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    // }
     componentDidMount() {
         this.findStar(this.state.pageNo);
     }
@@ -327,7 +334,8 @@ const styles = StyleSheet.create({
     },
     // 列表 item - start
     boxShadow: {
-        marginTop: global.px2dp(15),
+        marginTop: global.px2dp(8),
+        marginBottom: global.px2dp(8),
         marginLeft: global.px2dp(15),
         marginRight: global.px2dp(15),
     },

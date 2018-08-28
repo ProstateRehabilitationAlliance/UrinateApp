@@ -6,6 +6,7 @@ import { global } from '../utils/Global';// 常量
 import ErrorPrompt from "../common/ErrorPrompt";
 import Nav from "../common/Nav";// 导航组件
 import { BoxShadow } from "react-native-shadow";
+import * as WeChat from 'react-native-wechat'
 export default class CashManagement extends Component {
     static navigationOptions = {
         header: null,
@@ -26,10 +27,10 @@ export default class CashManagement extends Component {
         // 1初始化state
     }
     componentWillMount() {
-        // 2仅调用一次在 render 前
+
     }
     componentDidMount() {
-        // 4获取数据 在 render 后
+        WeChat.registerApp('wx879a26e37acadb20');
     }
     render() {
         const addAccountShadowOpt = {
@@ -89,7 +90,7 @@ export default class CashManagement extends Component {
                         setting={addAccountShadowOpt}>
                         <TouchableOpacity
                             onPress={() => {
-
+                                this.addWeChat();
                             }}
                             activeOpacity={.8}
                             style={styles.addAccountBtn}
@@ -162,6 +163,24 @@ export default class CashManagement extends Component {
     }
     goBack() {
         this.props.navigation.goBack();
+    }
+
+    addWeChat = () => {
+        console.log(WeChat)
+        WeChat.isWXAppInstalled()
+            .then((isInstalled) => {
+                if (isInstalled) {
+                    let scope = 'snsapi_userinfo';//snsapi_base
+                    let state = 'wechat_sdk_demo';
+                    WeChat.sendAuthRequest(scope, state)
+                        .then(res => {
+                            console.log(res)
+                        });
+                } else {
+                    // 未安装微信
+                    global.Alert.alert('没有安装微信，请您安装微信之后再试')
+                }
+            });
     }
     submit() {
         if (!this.state.text) {

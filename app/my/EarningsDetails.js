@@ -13,19 +13,24 @@ export default class EarningsDetails extends Component {
         super(props);
         this.state = {
             isLoading: false,
+            isRefresh: false,
 
             ErrorPromptFlag: false,
             ErrorPromptText: '',
             ErrorPromptImg: '',
 
-            dataArr: [{ id: "1" }, { id: '2' }],
+
+            pageNo: 1,
+            pageSize: 10,
+            earningsArr: [],
+            dataFlag: true,
         }
     }
     getInitalState() {
         // 1初始化state
     }
     componentWillMount() {
-        // 2仅调用一次在 render 前
+        this.getBalanceList(1);
     }
     componentDidMount() {
         // 4获取数据 在 render 后
@@ -38,7 +43,7 @@ export default class EarningsDetails extends Component {
                 <Text style={styles.earningsTitle}>全部流水</Text>
                 <FlatList
                     style={styles.flatListStyle}
-                    data={this.state.dataArr}
+                    data={this.state.earningsArr}
                     // initialNumToRender={20}
                     keyExtractor={item => item.id}
                     // ListFooterComponent={() => {
@@ -54,19 +59,24 @@ export default class EarningsDetails extends Component {
                             }}></View>
                         )
                     }}
-                // onRefresh={() => { }}//头部刷新组件
-                // refreshing={this.state.isRefresh}//加载图标
-                // onEndReached={() => this.onEndReached()} // 加载更多
-                // onEndReachedThreshold={.1}// 加载更多触发时机
-                // ListEmptyComponent={() => {
-                //     // 无数据时显示的内容
-                //     return (
-                //         <View style={styles.noDataBox}>
-                //             <Image source={require('../../images/no_data.png')} />
-                //             <Text style={styles.noDataText}>暂无信息</Text>
-                //         </View>
-                //     )
-                // }}
+                    onRefresh={() => {
+                        this.setState({
+                            pageNo: 1,
+                            earningsArr: [],
+                        })
+                        this.getBalanceList(1);
+                    }}//头部刷新组件
+                    refreshing={this.state.isRefresh}//加载图标
+                    onEndReached={() => this.onEndReached()} // 加载更多
+                    onEndReachedThreshold={.1}// 加载更多触发时机
+                    ListEmptyComponent={() => {
+                        // 无数据时显示的内容
+                        return (
+                            <View style={styles.noDataBox}>
+                                <Text style={styles.noDataText}>暂无记录</Text>
+                            </View>
+                        )
+                    }}
                 />
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View>
@@ -76,79 +86,69 @@ export default class EarningsDetails extends Component {
         return (
             <View style={styles.itemBox}>
                 <View style={styles.leftBox}>
-                    <Text style={styles.type}>提现</Text>
-                    <Text style={styles.time}>2018-07-12 13:14:12</Text>
+                    <Text style={styles.type}>{item.dealType == "EXPEND_TYPE" ? "提现" : null}{item.dealType == "INCOME_TYPE" ? "收入" : null}</Text>
+                    <Text style={styles.time}>{item.createTime}</Text>
                 </View>
-                <Text style={[styles.pic, { color: true ? global.Colors.color : global.Colors.text333, }]}>300</Text>
+                <Text style={[styles.pic, { color: item.dealType == "INCOME_TYPE" ? global.Colors.color : global.Colors.text333, }]}>{item.dealType == "EXPEND_TYPE" ? "-" : null}{item.dealType == "INCOME_TYPE" ? "+" : null}{item.dealAmount}</Text>
             </View >
         )
     }
     goBack() {
         this.props.navigation.goBack();
     }
-    submit() {
-        if (!this.state.text) {
-            this.setState({
-                ErrorPromptFlag: true,
-                ErrorPromptText: '请输入内容',
-                ErrorPromptImg: require('../images/error.png'),
-            })
-            clearTimeout(this.timer)
-            this.timer = setTimeout(() => {
-                this.setState({
-                    ErrorPromptFlag: false,
-                })
-            }, global.TimingCount)
-        } else {
-            this.setState({
-                isLoading: true,
-                ErrorPromptFlag: true,
-                ErrorPromptText: '提交中...',
-                ErrorPromptImg: require('../images/loading.png'),
-            })
-            let formData = new FormData();
-            formData.append("feedbackText", this.state.text);
-            fetch(requestUrl.addFeedback, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    "token": global.Token,
-                },
-                body: formData,
-            }).then((response) => response.json())
-                .then((responseData) => {
-                    console.log('responseData', responseData);
-                    if (responseData.code == 20000) {
+
+    getBalanceList(pageNo) {
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '加载中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        })
+        fetch(requestUrl.getBalanceList + "?pageNo=" + pageNo + "&pageSize" + this.state.pageSize, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    if (responseData.result.length >= this.state.pageSize) {
+                        let temp = this.state.earningsArr;
+                        temp = temp.concat(responseData.result);
                         this.setState({
                             isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '提交成功',
-                            ErrorPromptImg: require('../images/succeed.png'),
+                            ErrorPromptFlag: false,
+                            earningsArr: temp,
+                            dataFlag: true,
                         })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
                     } else {
+                        let temp = this.state.earningsArr;
+                        temp = temp.concat(responseData.result);
                         this.setState({
                             isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '提交失败，请重试',
-                            ErrorPromptImg: require('../images/error.png'),
+                            ErrorPromptFlag: false,
+                            earningsArr: temp,
+                            dataFlag: false,
                         })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
                     }
-                })
-                .catch((error) => {
-                    console.log('error', error);
-                });
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: false,
+                        earningsArr: [],
+                    })
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
+    onEndReached() {
+        if (this.state.dataFlag) {
+            this.getBalanceList(this.state.pageNo * 1 + 1 + '');
+            this.setState({ pageNo: this.state.pageNo * 1 + 1 + '' });
         }
     }
 }
@@ -166,7 +166,6 @@ const styles = StyleSheet.create({
     },
     flatListStyle: {
         backgroundColor: global.Colors.textfff,
-        paddingLeft: global.px2dp(15),
     },
     itemBox: {
         height: global.px2dp(63),
@@ -174,6 +173,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingRight: global.px2dp(15),
+        marginLeft: global.px2dp(15),
     },
     leftBox: {
 
@@ -190,6 +190,16 @@ const styles = StyleSheet.create({
     },
     pic: {
         fontSize: global.px2dp(19),
-    }
+    },
+
+    noDataBox: {
+        flex: 1,
+    },
+    noDataText: {
+        marginTop: global.px2dp(80),
+        fontSize: global.px2dp(14),
+        color: global.Colors.text666,
+        textAlign: 'center',
+    },
 });
 

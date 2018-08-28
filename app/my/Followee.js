@@ -297,11 +297,13 @@ const styles = StyleSheet.create({
         fontSize: global.px2dp(14),
     },
     flatListStyle: {
-        paddingBottom: global.px2dp(15),
+        paddingBottom: global.px2dp(8),
+        paddingTop: global.px2dp(8),
     },
     // 列表 item - start
     boxShadow: {
-        marginTop: global.px2dp(15),
+        marginTop: global.px2dp(8),
+        marginBottom: global.px2dp(8),
         marginLeft: global.px2dp(15),
         marginRight: global.px2dp(15),
     },

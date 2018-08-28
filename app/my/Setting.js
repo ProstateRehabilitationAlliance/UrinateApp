@@ -147,7 +147,7 @@ export default class Setting extends Component {
                         <Button text={"退出登录"} click={this.loginOut.bind(this)} style={{ borderRadius: global.px2dp(3) }} />
                     </View>
                 </ScrollView>
-                {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
+                {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptUrl} /> : null}
             </View>
         );
     }
@@ -176,7 +176,7 @@ export default class Setting extends Component {
                         isLoading: false,
                         ErrorPromptFlag: true,
                         ErrorPromptText: "退出成功",
-                        ErrorPromptUrl: require('../images/error.png'),
+                        ErrorPromptUrl: require('../images/succeed.png'),
                     })
                     Storage.removeItem("userInfo", () => { })
                     clearTimeout(this.timer)

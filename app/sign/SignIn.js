@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, StatusBar, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, StatusBar, TextInput, BackHandler } from 'react-native';
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
@@ -29,12 +29,19 @@ export default class SignIn extends Component {
     getInitalState() {
         // 1初始化state
     }
-    componentWillMount() {
-        // 2仅调用一次在 render 前
-    }
     componentDidMount() {
         // 4获取数据 在 render 后
     }
+    // handleBackPress() {
+    //     BackHandler.exitApp();
+    //     return true;
+    // }
+    // componentWillMount() {
+    //     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    // }
+    // componentWillUnmount() {
+    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    // }
     render() {
         const { navigate, goBack } = this.props.navigation;
         return (
