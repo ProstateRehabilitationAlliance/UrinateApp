@@ -639,17 +639,19 @@ export default class PatientsDetails extends Component {
         let tempArr = [];
         for (let key in this.state.allLabelArr) {
             tempArr.push(
-                <View key={key} style={styles.baseLabelBox}>
-                    <Text style={styles.baseLabelText}>{this.state.allLabelArr[key]}</Text>
-                    <TouchableOpacity
-                        activeOpacity={.8}
-                        onPress={() => {
-                            this.deleteLabel(key)
-                        }}
-                        style={styles.delLabelBtn}
-                    >
-                        <Image source={require('../images/del_img.png')} />
-                    </TouchableOpacity>
+                <View key={key} style={styles.baseLabelItem}>
+                    <View style={styles.baseLabelBox}>
+                        <Text style={styles.baseLabelText}>{this.state.allLabelArr[key]}</Text>
+                        <TouchableOpacity
+                            activeOpacity={.8}
+                            onPress={() => {
+                                this.deleteLabel(key)
+                            }}
+                            style={styles.delLabelBtn}
+                        >
+                            <Image source={require('../images/del_img.png')} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
             )
         }
@@ -1734,10 +1736,12 @@ const styles = StyleSheet.create({
         paddingBottom: global.px2dp(9),
         paddingTop: global.px2dp(5),
     },
+    baseLabelItem: {
+        paddingRight: global.px2dp(12),
+        paddingTop: global.px2dp(12),
+    },
     baseLabelBox: {
         position: 'relative',
-        marginRight: global.px2dp(12),
-        marginTop: global.px2dp(12),
         alignItems: 'center',
         justifyContent: 'center',
         paddingLeft: global.px2dp(15),

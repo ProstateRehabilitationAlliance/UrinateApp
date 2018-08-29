@@ -26,19 +26,6 @@ export default class About extends Component {
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
-
-        {/* <View style={styles.container} >
-                    <Text> 我的</Text>
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={{ uri: 'https://img1.360buyimg.com/da/jfs/t23440/198/1552616732/96159/b2b38b62/5b62c871N7bc2b6fd.jpg' }}
-                        defaultSource={require('../images/radio_yes.png')}// 默认图片
-                    />
-                    <TouchableOpacity activeOpacity={.8}
-                        onPress={() => this.click()}>
-                        <Text>点击</Text>
-                    </TouchableOpacity>
-                </View> */}
         return (
             <View style={styles.container}>
                 <Nav title={"关于"} leftClick={this.goBack.bind(this)} />
@@ -46,7 +33,7 @@ export default class About extends Component {
                     <View style={styles.content}>
                         <Image style={styles.imgLogo} source={require('../images/img_logo.png')} />
                         <Text style={styles.name}>栗子医学</Text>
-                        <Text style={styles.versionNumber}>版本号1.0.0</Text>
+                        <Text style={styles.versionNumber}>版本号{global.versionNum}</Text>
                     </View>
                     <TouchableOpacity
                         style={styles.itemBtn}

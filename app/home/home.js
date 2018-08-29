@@ -499,19 +499,19 @@ export default class Home extends Component {
 
                                 <View style={styles.countContent}>
                                     <View style={styles.countItem}>
-                                        <Text>555</Text>
+                                        <Text>暂无数据</Text>
                                         <Text>访问量</Text>
                                     </View>
                                     <View style={styles.countLine}></View>
                                     <View style={styles.countItem}>
-                                        <Text>555</Text>
+                                        <Text>暂无数据</Text>
                                         <Text>访问量</Text>
                                     </View>
                                 </View>
                                 <View style={styles.QRImgBox}>
                                     <QRCode
                                         value={global.Token}
-                                        size={141}
+                                        size={140}
                                         bgColor='#000'
                                         fgColor='white' />
                                 </View>
@@ -982,7 +982,9 @@ const styles = StyleSheet.create({
         borderColor: global.Colors.text999,
         borderRadius: global.px2dp(5),
         padding: global.px2dp(3),
-        marginTop: global.px2dp(8)
+        marginTop: global.px2dp(8),
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     QRText: {
         fontSize: global.px2dp(13),
