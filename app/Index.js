@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from "react-navigation";
-
+import { global } from "./utils/Global";
 // 首页tab图标-start
 const IndexIcon = require('./images/tab_index.png');
 const IndexEleIcon = require('./images/tab_ele_index.png');
@@ -76,12 +76,12 @@ import LookImg from "./common/LookImg";// 查看大图
 // tab-start
 const TabOptions = (tabBarTitle, normalImage, selectedImage) => {
     const tabBarLabel = tabBarTitle;
-    const tabBarIcon = (({ tintColor, focused }) => {
+    const tabBarIcon = (({ focused }) => {
         return (
             <View style={styles.tabBox}>
                 <Image
-                    source={!focused ? normalImage : selectedImage}
-                    style={[styles.tabImg, { tintColor: tintColor }]}
+                    source={focused ? normalImage : selectedImage}
+                    style={[styles.tabImg]}
                 />
                 <Text style={[{
                     color: focused ? '#2c6cb5' : '#999999',
@@ -102,10 +102,10 @@ const MainView = createBottomTabNavigator({
         screen: ContactTab,
         navigationOptions: () => TabOptions('通讯录', ContactIcon, ContactEleIcon),
     },
-    TabStudyPage: {
-        screen: StudyTab,
-        navigationOptions: () => TabOptions('直播课', StudyIcon, StudyEleIcon),
-    },
+    // TabStudyPage: {
+    //     screen: StudyTab,
+    //     navigationOptions: () => TabOptions('直播课', StudyIcon, StudyEleIcon),
+    // },
     TabMyPage: {
         screen: MyTab,
         navigationOptions: () => TabOptions('个人中心', MyIcon, MyEleIcon),
@@ -123,7 +123,8 @@ const MainView = createBottomTabNavigator({
                 fontSize: 12,
             },
             tabStyle: {//选项卡的样式。
-                height: 50,
+                height: global.IPhoneX ? 50 + global.TabBar : 50,
+                paddingBottom: global.IPhoneX ? global.TabBar : 0,
             },
             style: {//标签栏的样式
                 // height: 50,
@@ -184,7 +185,7 @@ export default createStackNavigator(
             screen: MainView,//工作台
             navigationOptions: {
                 header: null,
-                gesturesEnabled: false,
+                // gesturesEnabled: false,
             }
         },
         Patients: {

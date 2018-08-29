@@ -28,16 +28,6 @@ export default class Contact extends Component {
     getInitalState() {
         // 1初始化state
     }
-    // handleBackPress() {
-    //     BackHandler.exitApp();
-    //     return true;
-    // }
-    // componentWillMount() {
-    //     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-    // }
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-    // }
     componentDidMount() {
         this.findStar(this.state.pageNo);
     }

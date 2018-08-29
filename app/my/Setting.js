@@ -7,6 +7,7 @@ import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";
 import Nav from "../common/Nav";// 导航组件
 import { Storage } from "../utils/AsyncStorage";
+import { StackActions, NavigationActions } from 'react-navigation';
 export default class Setting extends Component {
     static navigationOptions = {
         header: null,
@@ -184,7 +185,11 @@ export default class Setting extends Component {
                         this.setState({
                             ErrorPromptFlag: false,
                         })
-                        this.props.navigation.navigate("SignIn")
+                        const resetAction = StackActions.reset({
+                            index: 0,
+                            actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
+                        });
+                        this.props.navigation.dispatch(resetAction);
                     }, global.TimingCount)
                 } else {
                     this.setState({

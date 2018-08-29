@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView, BackHandler } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView, } from 'react-native';
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
@@ -28,12 +28,7 @@ export default class My extends Component {
             telMaskFlag: false,
         }
     }
-    // handleBackPress() {
-    //     BackHandler.exitApp();
-    //     return true;
-    // }
     componentWillMount() {
-        // BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
         Storage.getItem("userInfo", (data) => {
             if (data) {
                 this.setState({
@@ -51,9 +46,6 @@ export default class My extends Component {
             }
         })
     }
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-    // }
 
     // 获取后台认证状态
     getSignStates() {
@@ -246,7 +238,7 @@ export default class My extends Component {
             opacity: .2,
             x: 0,
             y: 0,
-            style: {},
+            style: { margin: global.px2dp(8) },
         }
         return (
             <ScrollView
@@ -288,7 +280,8 @@ export default class My extends Component {
                                     approveMaskFlag: !this.state.approveMaskFlag,
                                 })
                             } else {
-                                navigate("Earnings");
+                                global.Alert.alert("努力开发中...")
+                                // navigate("Earnings");
                             }
                         }}>
                         <View style={styles.navigateBox}>
@@ -381,7 +374,7 @@ export default class My extends Component {
                         />
                     </TouchableOpacity>
                 </View>
-                <View style={styles.content}>
+                {/* <View style={styles.content}>
                     <TouchableOpacity
                         style={[styles.navigateBtn, { borderBottomWidth: global.Pixel }]}
                         activeOpacity={.8}
@@ -432,7 +425,7 @@ export default class My extends Component {
                             source={require('../images/arrow_right_grey.png')}
                         />
                     </TouchableOpacity>
-                </View>
+                </View> */}
                 <View style={styles.content}>
                     <TouchableOpacity
                         style={[styles.navigateBtn, { borderBottomWidth: global.Pixel }]}

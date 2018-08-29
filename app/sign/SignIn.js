@@ -6,6 +6,7 @@ import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";// 错误格式提示
 import { Storage } from "../utils/AsyncStorage";
+import { StackActions, NavigationActions } from 'react-navigation';
 export default class SignIn extends Component {
     static navigationOptions = {
         header: null,
@@ -32,16 +33,6 @@ export default class SignIn extends Component {
     componentDidMount() {
         // 4获取数据 在 render 后
     }
-    // handleBackPress() {
-    //     BackHandler.exitApp();
-    //     return true;
-    // }
-    // componentWillMount() {
-    //     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-    // }
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-    // }
     render() {
         const { navigate, goBack } = this.props.navigation;
         return (
@@ -347,7 +338,11 @@ export default class SignIn extends Component {
                             this.setState({
                                 ErrorPrompt: true,
                             })
-                            this.props.navigation.navigate("Home");
+                            const resetAction = StackActions.reset({
+                                index: 0,
+                                actions: [NavigationActions.navigate({ routeName: 'Home' })],
+                            });
+                            this.props.navigation.dispatch(resetAction);
                         }, global.TimingCount)
                     } else if (responseData.code == 20005) {
                         this.setState({

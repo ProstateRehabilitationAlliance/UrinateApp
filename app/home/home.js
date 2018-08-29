@@ -224,16 +224,6 @@ export default class Home extends Component {
                 console.log('error', error);
             });
     }
-    // handleBackPress() {
-    //     BackHandler.exitApp();
-    //     return true;
-    // }
-    // componentWillMount() {
-    //     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-    // }
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-    // }
     componentDidMount() {
         Storage.removeItem("userInfo", () => { })
         Storage.getItem("userInfo", (data) => {
@@ -306,6 +296,7 @@ export default class Home extends Component {
             style: styles.boxShadow,
         }
         const { navigate, goBack } = this.props.navigation;
+        console.log(this.props.navigation)
         return (
             <ScrollView
                 style={styles.container}

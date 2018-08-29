@@ -56,7 +56,7 @@ export default class AssessmentDetails extends Component {
                                 nihAnswer: responseData.result.optionScore.split('-'),
                             })
                             fetch(requestUrl.nihTopic, {
-                                method: 'POST',
+                                method: 'GET',
                                 headers: {
                                     // 'Content-Type': 'multipart/form-data',
                                     "token": global.Token,
@@ -199,7 +199,7 @@ export default class AssessmentDetails extends Component {
                                 ipssAnswer: responseData.result.optionScore.split('-'),
                             })
                             fetch(requestUrl.ipssTopic, {
-                                method: 'POST',
+                                method: 'GET',
                                 headers: {
                                     // 'Content-Type': 'multipart/form-data',
                                     "token": global.Token,

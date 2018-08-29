@@ -48,12 +48,12 @@ export default class Earnings extends Component {
                         ErrorPromptFlag: false,
                         balance: responseData.result,
                     })
-                    clearTimeout(this.timer)
-                    this.timer = setTimeout(() => {
-                        this.setState({
-                            ErrorPromptFlag: false,
-                        })
-                    }, global.TimingCount)
+                } else if (responseData.code == 40004) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: false,
+                        balance: 0,
+                    })
                 } else {
                     this.setState({
                         isLoading: false,

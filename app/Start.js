@@ -4,6 +4,7 @@ import { regExp } from './netWork/RegExp';// 正则
 import { requestUrl } from './netWork/Url';// IP地址
 import { global } from './utils/Global';// 常量
 import { Storage } from "./utils/AsyncStorage";
+import { StackActions, NavigationActions } from 'react-navigation';
 export default class Start extends Component {
     static navigationOptions = {
         header: null,
@@ -30,9 +31,17 @@ export default class Start extends Component {
                         console.log('responseData', responseData);
                         if (responseData.code == 40001) {
                             // 未登录
-                            this.props.navigation.navigate("SignIn");
+                            const resetAction = StackActions.reset({
+                                index: 0,
+                                actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
+                            });
+                            this.props.navigation.dispatch(resetAction);
                         } else {
-                            this.props.navigation.navigate("Home");
+                            const resetAction = StackActions.reset({
+                                index: 0,
+                                actions: [NavigationActions.navigate({ routeName: 'Home' })],
+                            });
+                            this.props.navigation.dispatch(resetAction);
                         }
                     })
                     .catch(
