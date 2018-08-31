@@ -280,7 +280,7 @@ export default class ForgetPassword extends Component {
         fetch(requestUrl.passwordSms + '?passwordPhone=' + this.state.doctorPhone, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data', "token": global.Token,
+                'Content-Type': 'multipart/form-data',
             },
         })
             .then((response) => response.json())
@@ -602,7 +602,7 @@ export default class ForgetPassword extends Component {
             fetch(requestUrl.passwordReset, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data', "token": global.Token,
+                    'Content-Type': 'multipart/form-data',
                 },
                 body: formData,
             })

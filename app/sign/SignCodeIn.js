@@ -342,7 +342,7 @@ export default class SignCodeIn extends Component {
             fetch(requestUrl.loginSms + '?loginPhone=' + this.state.doctorPhone, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'multipart/form-data', "token": global.Token,
+                    'Content-Type': 'multipart/form-data',
                 },
             })
                 .then((response) => response.json())
@@ -461,7 +461,7 @@ export default class SignCodeIn extends Component {
             fetch(requestUrl.smsLogin, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data', "token": global.Token,
+                    'Content-Type': 'multipart/form-data',
                 },
                 body: formData,
             })

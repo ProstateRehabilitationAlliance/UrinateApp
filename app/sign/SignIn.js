@@ -317,7 +317,6 @@ export default class SignIn extends Component {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    "token": global.Token,
                 },
                 body: formData,
             })
