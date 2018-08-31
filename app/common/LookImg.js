@@ -26,6 +26,7 @@ export default class LookImg extends Component {
     componentWillMount() {
         if (this.props.navigation.state.params) {
             let data = this.props.navigation.state.params;
+            console.log(data);
             let temp = [];
             data.data.map((item, index) => {
                 temp.push({ 'url': item })

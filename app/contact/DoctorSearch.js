@@ -41,11 +41,11 @@ export default class DoctorSearch extends Component {
     componentDidMount() {
         Storage.getItem("userInfo", (data) => {
             if (data) {
-                console.log(data)
                 this.setState({
                     userInfo: data,
                     signStatus: 'AUTHENTICATION_SUCCESS',
                 })
+                this.findDoctorList(this.state.searchText, 1);
             } else {
                 this.setState({
                     isLoading: true,
@@ -222,7 +222,7 @@ export default class DoctorSearch extends Component {
                 <FlatList
                     style={styles.flatListStyle}
                     data={this.state.doctorArr}
-                    initialNumToRender={10}
+                    // initialNumToRender={10}
                     keyExtractor={item => item.id}
                     // ListFooterComponent={() => {
                     // 尾部组件

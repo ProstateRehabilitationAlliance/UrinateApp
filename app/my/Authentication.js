@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     imgBtn: {
-        marginRight: global.px2dp(11),
+        // marginRight: global.px2dp(11),
     },
     // title模块 - end
     // 医生信息模块-start

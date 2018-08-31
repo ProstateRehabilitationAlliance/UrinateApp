@@ -155,7 +155,6 @@ export default class DoctorDetails extends Component {
             style: styles.flodShadow,
         }
         const { navigate, goBack } = this.props.navigation;
-        console.log(StatusBar)
         return (
             <View style={styles.container}>
                 <StatusBar

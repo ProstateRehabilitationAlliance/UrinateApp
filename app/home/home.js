@@ -296,7 +296,6 @@ export default class Home extends Component {
             style: styles.boxShadow,
         }
         const { navigate, goBack } = this.props.navigation;
-        console.log(this.props.navigation)
         return (
             <ScrollView
                 style={styles.container}
@@ -909,6 +908,8 @@ const styles = StyleSheet.create({
     // 二维码 box - start
     maskContent: {
         position: 'absolute',
+        top: 0,
+        left: 0,
         width: global.SCREEN_WIDTH,
         height: global.SCREEN_HEIGHT,
         backgroundColor: 'rgba(0,0,0,.6)',

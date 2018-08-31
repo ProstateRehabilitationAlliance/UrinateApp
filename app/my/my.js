@@ -25,7 +25,7 @@ export default class My extends Component {
             userInfo: {},// 医生信息
             signStatus: '',// 认证状态
 
-            telMaskFlag: false,
+            telMaskFlag: false,// 客服电话弹框
         }
     }
     componentWillMount() {
