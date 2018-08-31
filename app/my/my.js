@@ -513,6 +513,9 @@ export default class My extends Component {
                                                     // 认证中 去查看信息页
                                                     navigate("Authentication");
                                                 }
+                                                this.setState({
+                                                    approveMaskFlag: !this.state.approveMaskFlag
+                                                })
                                             }}
                                             activeOpacity={.8}
                                             style={styles.approveBtnClick}

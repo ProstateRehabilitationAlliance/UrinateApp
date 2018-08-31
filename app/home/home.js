@@ -255,7 +255,7 @@ export default class Home extends Component {
     headTextHtml() {
         if (this.state.signStatus == "AUTHENTICATION_SUCCESS") {
             return (<Text style={styles.headText}>{this.state.userInfo.doctorName}医生工作站</Text>)
-        } else if (this.state.userInfo.signStatus == "AUTHENTICATION_EMPTY") {
+        } else if (this.state.signStatus == "AUTHENTICATION_EMPTY") {
             return (
                 <TouchableOpacity
                     activeOpacity={.8}
@@ -682,6 +682,9 @@ export default class Home extends Component {
                                                 // 认证中 去查看信息页
                                                 navigate("Authentication");
                                             }
+                                            this.setState({
+                                                approveMaskFlag: !this.state.approveMaskFlag
+                                            })
                                         }}
                                         activeOpacity={.8}
                                         style={styles.approveBtnClick}
