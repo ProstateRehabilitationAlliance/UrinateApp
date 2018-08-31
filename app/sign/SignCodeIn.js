@@ -5,6 +5,7 @@ import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";// 错误格式提示
+import { Storage } from "../utils/AsyncStorage";
 import CountDownButton from 'react-native-smscode-count-down';// 倒计时
 import { StackActions, NavigationActions } from 'react-navigation';
 export default class SignCodeIn extends Component {
