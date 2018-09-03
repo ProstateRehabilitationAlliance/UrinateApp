@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, Platform, Image, StatusBar, ScrollView, } from 'react-native';
+import { StyleSheet, View, Text, Image, StatusBar, ScrollView, TouchableOpacity } from 'react-native';
 import { regExp } from './netWork/RegExp';// 正则
 import { requestUrl } from './netWork/Url';// IP地址
 import { global } from './utils/Global';// 常量
@@ -13,50 +13,69 @@ export default class Start extends Component {
         super(props);
         this.state = {
             isLoading: false,
+            initializeFlag: false,// 是否是第一次
         }
     }
     componentDidMount() {
-        Storage.getItem('token', (data) => {
+        // 判断是否启动过
+        Storage.getItem('startFlag', (data) => {
             if (data) {
-                global.Token = data;
-                // 获取认证状态 判断登录状态
-                fetch(requestUrl.getSignStatus, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        "token": global.Token,
-                    },
-                }).then((response) => response.json())
-                    .then((responseData) => {
-                        console.log('responseData', responseData);
-                        if (responseData.code == 40001) {
-                            // 未登录
-                            const resetAction = StackActions.reset({
-                                index: 0,
-                                actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
-                            });
-                            this.props.navigation.dispatch(resetAction);
-                        } else {
-                            const resetAction = StackActions.reset({
-                                index: 0,
-                                actions: [NavigationActions.navigate({ routeName: 'Home' })],
-                            });
-                            this.props.navigation.dispatch(resetAction);
-                        }
-                    })
-                    .catch(
-                        (error) => {
-                            console.log('error', error);
+                // 非第一次启动
+                // 判断登录状态
+                Storage.getItem('token', (data) => {
+                    if (data) {
+                        global.Token = data;
+                        // 通过获取认证状态 判断登录状态
+                        fetch(requestUrl.getSignStatus, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                                "token": global.Token,
+                            },
+                        }).then((response) => response.json())
+                            .then((responseData) => {
+                                console.log('responseData', responseData);
+                                if (responseData.code == 40001) {
+                                    // 未登录
+                                    const resetAction = StackActions.reset({
+                                        index: 0,
+                                        actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
+                                    });
+                                    this.props.navigation.dispatch(resetAction);
+                                } else {
+                                    const resetAction = StackActions.reset({
+                                        index: 0,
+                                        actions: [NavigationActions.navigate({ routeName: 'Home' })],
+                                    });
+                                    this.props.navigation.dispatch(resetAction);
+                                }
+                            })
+                            .catch(
+                                (error) => {
+                                    console.log('error', error);
+                                });
+                    } else {
+                        // 未登录
+                        const resetAction = StackActions.reset({
+                            index: 0,
+                            actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
                         });
+                        this.props.navigation.dispatch(resetAction);
+                    }
+                })
             } else {
-                this.props.navigation.navigate("SignIn");
+                // 第一次启动App 设置启动表示 切换为引导页
+                Storage.setItem("startFlag", "1");
+                this.setState({
+                    initializeFlag: true,
+                })
             }
         })
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
         return (
-            <ScrollView style={styles.container}>
+            <View style={styles.container}>
                 <StatusBar
                     animated={true}//是否动画
                     hidden={true}//是否隐藏
@@ -66,17 +85,64 @@ export default class Start extends Component {
                     networkActivityIndicatorVisible={this.state.isLoading}//IOS设定网络活动指示器(就是那个菊花)是否显示在状态栏。
                     statusBarStyle={"default"}//ios:白底黑字  android:黑底白字
                 />
-            </ScrollView>
+                {this.state.initializeFlag ?
+                    <ScrollView
+                        horizontal={true}
+                        pagingEnabled={true}
+                        showsHorizontalScrollIndicator={false}
+                        bounces={false}// ios弹性
+                    >
+                        <Image
+                            resizeMode={"cover"}// cover填满并裁去多余 contain等比例缩放留白 stretch拉伸填充
+                            style={styles.startImg}
+                            source={{ uri: "https://m.360buyimg.com/babel/jfs/t26095/57/1041327989/55624/ccd7caf0/5b865819N416fa14a.jpg" }}
+                        />
+                        <Image
+                            resizeMode={"cover"}// cover填满并裁去多余 contain等比例缩放留白 stretch拉伸填充
+                            style={styles.startImg}
+                            source={{ uri: "https://m.360buyimg.com/babel/jfs/t26095/57/1041327989/55624/ccd7caf0/5b865819N416fa14a.jpg" }}
+                        />
+                        <TouchableOpacity
+                            activeOpacity={.8}
+                            onPress={() => {
+                                const resetAction = StackActions.reset({
+                                    index: 0,
+                                    actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
+                                });
+                                this.props.navigation.dispatch(resetAction);
+                            }}
+                        >
+                            <Image
+                                resizeMode={"cover"}// cover填满并裁去多余 contain等比例缩放留白 stretch拉伸填充
+                                style={styles.startImg}
+                                source={{ uri: "https://m.360buyimg.com/babel/jfs/t26095/57/1041327989/55624/ccd7caf0/5b865819N416fa14a.jpg" }}
+                            />
+                        </TouchableOpacity>
+                    </ScrollView>
+                    :
+                    <View style={styles.startImgBox}>
+                        <Image
+                            resizeMode={"cover"}// cover填满并裁去多余 contain等比例缩放留白 stretch拉伸填充
+                            style={styles.startImg}
+                            source={{ uri: "https://m.360buyimg.com/babel/jfs/t26095/57/1041327989/55624/ccd7caf0/5b865819N416fa14a.jpg" }}
+                        />
+                    </View>
+                }
+            </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
-        // backgroundColor: global.Colors.bgColor,
-        // paddingTop: 20,
-        // paddingBottom: global.TabBar,
+        flex: 1,
+    },
+    startImgBox: {
+        backgroundColor: 'red',
+    },
+    startImg: {
+        width: global.SCREEN_WIDTH,
+        height: global.SCREEN_HEIGHT,
     }
 });
 
