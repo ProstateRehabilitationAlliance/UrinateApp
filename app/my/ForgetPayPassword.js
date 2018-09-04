@@ -167,11 +167,12 @@ export default class ForgetPayPassword extends Component {
                         <View style={[styles.inputItem, { borderBottomWidth: global.Pixel }, this.state.doctorPasswordReg ? null : styles.errorStyle]}>
                             <TextInput
                                 style={styles.textInput}
-                                placeholder={'请输入密码6-10字符（数字+字母）'}
+                                placeholder={'请输入提现密码'}
                                 placeholderTextColor={global.Colors.placeholder}
                                 onChangeText={(text) => this.setState({ doctorPassword: text })}
                                 underlineColorAndroid={'transparent'}
-                                keyboardType={'default'}
+                                keyboardType={'numeric'}
+                                maxLength={6}
                                 secureTextEntry={this.state.isEyes ? true : false}
                                 onFocus={this.doctorPasswordFocus.bind(this)}
                                 onBlur={this.doctorPasswordBlur.bind(this)}
@@ -196,11 +197,12 @@ export default class ForgetPayPassword extends Component {
                         <View style={[styles.inputItem, this.state.confirmPasswordReg ? null : styles.errorStyle]}>
                             <TextInput
                                 style={styles.textInput}
-                                placeholder={'请再次输入密码'}
+                                placeholder={'请再次输入提现密码'}
                                 placeholderTextColor={global.Colors.placeholder}
                                 onChangeText={(text) => this.setState({ confirmPassword: text })}
                                 underlineColorAndroid={'transparent'}
-                                keyboardType={'default'}
+                                keyboardType={'numeric'}
+                                maxLength={6}
                                 secureTextEntry={this.state.confirmEyes ? true : false}
                                 onFocus={this.confirmPasswordFocus.bind(this)}
                                 onBlur={this.confirmPasswordBlur.bind(this)}
@@ -243,11 +245,15 @@ export default class ForgetPayPassword extends Component {
             ErrorText: '正在获取验证码...',
             ErrorImg: require('../images/loading.png')
         })
-        fetch(requestUrl.passwordSms + '?passwordPhone=' + this.state.doctorPhone, {
-            method: 'GET',
+        let formData = new FormData();
+        formData.append("phoneNumber", this.state.doctorPhone);
+        fetch(requestUrl.sendPayPasswordCode, {
+            method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data', "token": global.Token,
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
             },
+            body: formData,
         })
             .then((response) => response.json())
             .then((responseData) => {
@@ -352,7 +358,7 @@ export default class ForgetPayPassword extends Component {
             this.setState({
                 ErrorPrompt: false,
                 doctorPasswordReg: false,
-                ErrorText: '请输入密码',
+                ErrorText: '请输入提现密码',
                 ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
@@ -361,11 +367,11 @@ export default class ForgetPayPassword extends Component {
                     ErrorPrompt: true,
                 })
             }, global.TimingCount)
-        } else if (!regExp.Reg_PassWord.test(this.state.doctorPassword)) {
+        } else if (!regExp.Reg_Number.test(this.state.doctorPassword)) {
             this.setState({
                 ErrorPrompt: false,
                 doctorPasswordReg: false,
-                ErrorText: '密码为6-10个字符（数字+字母）',
+                ErrorText: '提现密码为6位纯数字',
                 ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
@@ -394,7 +400,7 @@ export default class ForgetPayPassword extends Component {
             this.setState({
                 ErrorPrompt: false,
                 confirmPasswordReg: false,
-                ErrorText: '请再次输入密码',
+                ErrorText: '请再次输入提现密码',
                 ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
@@ -403,11 +409,11 @@ export default class ForgetPayPassword extends Component {
                     ErrorPrompt: true,
                 })
             }, global.TimingCount)
-        } else if (!regExp.Reg_PassWord.test(this.state.confirmPassword)) {
+        } else if (!regExp.Reg_Number.test(this.state.confirmPassword)) {
             this.setState({
                 ErrorPrompt: false,
                 confirmPasswordReg: false,
-                ErrorText: '确认密码为6-10个字符（数字+字母）',
+                ErrorText: '提现密码为6位纯数字',
                 ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
@@ -467,7 +473,7 @@ export default class ForgetPayPassword extends Component {
             this.setState({
                 ErrorPrompt: false,
                 doctorPasswordReg: false,
-                ErrorText: '请输入密码',
+                ErrorText: '请输入提现密码',
                 ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
@@ -476,11 +482,11 @@ export default class ForgetPayPassword extends Component {
                     ErrorPrompt: true,
                 })
             }, global.TimingCount)
-        } else if (!regExp.Reg_PassWord.test(this.state.doctorPassword)) {
+        } else if (!regExp.Reg_Number.test(this.state.doctorPassword)) {
             this.setState({
                 ErrorPrompt: false,
                 doctorPasswordReg: false,
-                ErrorText: '密码为6-10个字符（数字+字母）',
+                ErrorText: '提现密码为6位纯数字',
                 ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
@@ -493,7 +499,7 @@ export default class ForgetPayPassword extends Component {
             this.setState({
                 ErrorPrompt: false,
                 confirmPasswordReg: false,
-                ErrorText: '请再次输入密码',
+                ErrorText: '请再次输入提现密码',
                 ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
@@ -502,11 +508,11 @@ export default class ForgetPayPassword extends Component {
                     ErrorPrompt: true,
                 })
             }, global.TimingCount)
-        } else if (!regExp.Reg_PassWord.test(this.state.confirmPassword)) {
+        } else if (!regExp.Reg_Number.test(this.state.confirmPassword)) {
             this.setState({
                 ErrorPrompt: false,
                 confirmPasswordReg: false,
-                ErrorText: '确认密码为6-10个字符（数字+字母）',
+                ErrorText: '提现密码为6位纯数字',
                 ErrorImg: require('../images/error.png')
             })
             clearTimeout(this.timer);
@@ -536,10 +542,9 @@ export default class ForgetPayPassword extends Component {
                 ErrorImg: require('../images/loading.png')
             })
             let formData = new FormData();
-            formData.append("doctorPhone", this.state.doctorPhone);
-            formData.append("doctorPassword", this.state.doctorPassword);
+            formData.append("paymentPassword", this.state.doctorPassword);
             formData.append("smsCode", this.state.smsCode);
-            fetch(requestUrl.passwordReset, {
+            fetch(requestUrl.paymentPasswordReset, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'multipart/form-data', "token": global.Token,
@@ -553,7 +558,7 @@ export default class ForgetPayPassword extends Component {
                         this.setState({
                             isLoading: false,
                             ErrorPrompt: false,
-                            ErrorText: '密码设置成功',
+                            ErrorText: '提现密码设置成功',
                             ErrorImg: require('../images/succeed.png')
                         })
                         clearTimeout(this.timer);
@@ -561,9 +566,9 @@ export default class ForgetPayPassword extends Component {
                             this.setState({
                                 ErrorPrompt: true,
                             })
-                            this.props.navigation.navigate("SignIn");
+                            this.props.navigation.goBack();
                         }, global.TimingCount)
-                    } else if (responseData.code == 50006) {
+                    } else if (responseData.code == 20001) {
                         this.setState({
                             isLoading: false,
                             ErrorPrompt: false,

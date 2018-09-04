@@ -7,6 +7,7 @@ import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";
 import Nav from "../common/Nav";// 导航组件
 import CountDownButton from 'react-native-smscode-count-down';// 倒计时
+import { StackActions, NavigationActions } from 'react-navigation';
 
 export default class SafetyCheckout extends Component {
     static navigationOptions = {
@@ -561,7 +562,11 @@ export default class SafetyCheckout extends Component {
                             this.setState({
                                 ErrorPrompt: true,
                             })
-                            this.props.navigation.navigate("SignIn");
+                            const resetAction = StackActions.reset({
+                                index: 0,
+                                actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
+                            });
+                            this.props.navigation.dispatch(resetAction);
                         }, global.TimingCount)
                     } else if (responseData.code == 50006) {
                         this.setState({

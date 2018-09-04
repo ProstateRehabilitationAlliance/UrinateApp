@@ -19,6 +19,8 @@ export default class UpdatePayPassword extends Component {
             ErrorPromptText: '',
             ErrorPromptImg: '',
 
+            checkPay: false,// 旧密码是否正确
+
             oldPasswordReg: true,//旧密码是否符合规则
             newPasswordReg: true,//新密码是否符合规则
             confirmPasswordReg: true,//确认密码是否符合规则
@@ -52,8 +54,9 @@ export default class UpdatePayPassword extends Component {
                                 placeholderTextColor={global.Colors.placeholder}
                                 onChangeText={(text) => this.setState({ oldPassword: text })}
                                 underlineColorAndroid={'transparent'}
-                                keyboardType={'default'}
+                                keyboardType={'numeric'}
                                 secureTextEntry={true}
+                                maxLength={6}
                                 onFocus={this.oldPasswordFocus.bind(this)}
                                 onBlur={this.oldPasswordBlur.bind(this)}
                             />
@@ -77,8 +80,9 @@ export default class UpdatePayPassword extends Component {
                                 placeholderTextColor={global.Colors.placeholder}
                                 onChangeText={(text) => this.setState({ newPassword: text })}
                                 underlineColorAndroid={'transparent'}
-                                keyboardType={'default'}
+                                keyboardType={'numeric'}
                                 secureTextEntry={true}
+                                maxLength={6}
                                 onFocus={this.newPasswordFocus.bind(this)}
                                 onBlur={this.newPasswordBlur.bind(this)}
                             />
@@ -91,8 +95,9 @@ export default class UpdatePayPassword extends Component {
                                 placeholderTextColor={global.Colors.placeholder}
                                 onChangeText={(text) => this.setState({ confirmPassword: text })}
                                 underlineColorAndroid={'transparent'}
-                                keyboardType={'default'}
+                                keyboardType={'numeric'}
                                 secureTextEntry={true}
+                                maxLength={6}
                                 onFocus={this.confirmPasswordFocus.bind(this)}
                                 onBlur={this.confirmPasswordBlur.bind(this)}
                             />
@@ -128,7 +133,7 @@ export default class UpdatePayPassword extends Component {
                     ErrorPromptFlag: false,
                 })
             }, global.TimingCount)
-        } else if (!regExp.Reg_PassWord.test(this.state.oldPassword)) {
+        } else if (!regExp.Reg_Number.test(this.state.oldPassword)) {
             this.setState({
                 ErrorPromptFlag: true,
                 ErrorPromptText: '旧密码不符合规则',
@@ -141,6 +146,42 @@ export default class UpdatePayPassword extends Component {
                     ErrorPromptFlag: false,
                 })
             }, global.TimingCount)
+        } else {
+            let formData = new FormData();
+            formData.append("paymentPassword", this.state.oldPassword);
+            fetch(requestUrl.checkPay, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    "token": global.Token,
+                },
+                body: formData,
+            }).then((response) => response.json())
+                .then((responseData) => {
+                    console.log('responseData', responseData);
+                    if (responseData.code == 20000) {
+                        this.setState({
+                            checkPay: true,
+                        })
+                    } else if (responseData.code == 40004) {
+                        this.setState({
+                            checkPay: false,
+                            isLoading: false,
+                            ErrorPromptFlag: true,
+                            ErrorPromptText: '旧密码不正确',
+                            ErrorPromptImg: require('../images/error.png'),
+                        })
+                        clearTimeout(this.timer)
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPromptFlag: false,
+                            })
+                        }, global.TimingCount)
+                    }
+                })
+                .catch((error) => {
+                    console.log('error', error);
+                });
         }
     }
     newPasswordFocus() {
@@ -162,7 +203,7 @@ export default class UpdatePayPassword extends Component {
                     ErrorPromptFlag: false,
                 })
             }, global.TimingCount)
-        } else if (!regExp.Reg_PassWord.test(this.state.newPassword)) {
+        } else if (!regExp.Reg_Number.test(this.state.newPassword)) {
             this.setState({
                 ErrorPromptFlag: true,
                 ErrorPromptText: '新密码不符合规则',
@@ -196,7 +237,7 @@ export default class UpdatePayPassword extends Component {
                     ErrorPromptFlag: false,
                 })
             }, global.TimingCount)
-        } else if (!regExp.Reg_PassWord.test(this.state.confirmPassword)) {
+        } else if (!regExp.Reg_Number.test(this.state.confirmPassword)) {
             this.setState({
                 ErrorPromptFlag: true,
                 ErrorPromptText: '确认密码不符合规则',
@@ -225,7 +266,33 @@ export default class UpdatePayPassword extends Component {
         }
     }
     submit() {
-        if (!this.state.newPassword) {
+        if (!this.state.oldPassword) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '请输入旧密码',
+                ErrorPromptImg: require('../images/error.png'),
+                newPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (!this.state.checkPay) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '旧密码不正确',
+                ErrorPromptImg: require('../images/error.png'),
+                newPasswordReg: false,
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (!this.state.newPassword) {
             this.setState({
                 ErrorPromptFlag: true,
                 ErrorPromptText: '请输入新密码',
@@ -238,7 +305,7 @@ export default class UpdatePayPassword extends Component {
                     ErrorPromptFlag: false,
                 })
             }, global.TimingCount)
-        } else if (!regExp.Reg_PassWord.test(this.state.newPassword)) {
+        } else if (!regExp.Reg_Number.test(this.state.newPassword)) {
             this.setState({
                 ErrorPromptFlag: true,
                 ErrorPromptText: '新密码不符合规则',
@@ -264,7 +331,7 @@ export default class UpdatePayPassword extends Component {
                     ErrorPromptFlag: false,
                 })
             }, global.TimingCount)
-        } else if (!regExp.Reg_PassWord.test(this.state.newPassword)) {
+        } else if (!regExp.Reg_Number.test(this.state.newPassword)) {
             this.setState({
                 ErrorPromptFlag: true,
                 ErrorPromptText: '新密码不符合规则',
@@ -290,7 +357,7 @@ export default class UpdatePayPassword extends Component {
                     ErrorPromptFlag: false,
                 })
             }, global.TimingCount)
-        } else if (!regExp.Reg_PassWord.test(this.state.confirmPassword)) {
+        } else if (!regExp.Reg_Number.test(this.state.confirmPassword)) {
             this.setState({
                 ErrorPromptFlag: true,
                 ErrorPromptText: '确认密码不符合规则',
@@ -324,9 +391,8 @@ export default class UpdatePayPassword extends Component {
                 ErrorPromptImg: require('../images/loading.png'),
             })
             let formData = new FormData();
-            formData.append("oldPassword", this.state.oldPassword);
-            formData.append("newPassword", this.state.newPassword);
-            fetch(requestUrl.updatePassword, {
+            formData.append("paymentPassword", this.state.newPassword);
+            fetch(requestUrl.updatePay, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -340,7 +406,7 @@ export default class UpdatePayPassword extends Component {
                         this.setState({
                             isLoading: false,
                             ErrorPromptFlag: true,
-                            ErrorPromptText: '提交成功',
+                            ErrorPromptText: '修改成功',
                             ErrorPromptImg: require('../images/succeed.png'),
                         })
                         clearTimeout(this.timer)
@@ -349,45 +415,6 @@ export default class UpdatePayPassword extends Component {
                                 ErrorPromptFlag: false,
                             })
                             this.props.navigation.goBack();
-                        }, global.TimingCount)
-                    } else if (responseData.code == 51001) {
-                        this.setState({
-                            isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '新密码格式错误',
-                            ErrorPromptImg: require('../images/error.png'),
-                        })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
-                    } else if (responseData.code == 51002) {
-                        this.setState({
-                            isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '旧密码不正确',
-                            ErrorPromptImg: require('../images/error.png'),
-                        })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
-                    } else if (responseData.code == 51003) {
-                        this.setState({
-                            isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '新密码与旧密码一致',
-                            ErrorPromptImg: require('../images/error.png'),
-                        })
-                        clearTimeout(this.timer)
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                ErrorPromptFlag: false,
-                            })
                         }, global.TimingCount)
                     } else {
                         this.setState({

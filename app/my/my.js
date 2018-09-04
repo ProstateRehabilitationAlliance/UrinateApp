@@ -280,8 +280,8 @@ export default class My extends Component {
                                     approveMaskFlag: !this.state.approveMaskFlag,
                                 })
                             } else {
-                                global.Alert.alert("努力开发中...")
-                                // navigate("Earnings");
+                                // global.Alert.alert("努力开发中...");
+                                navigate("Earnings");
                             }
                         }}>
                         <View style={styles.navigateBox}>
@@ -708,6 +708,7 @@ const styles = StyleSheet.create({
     },
     approveBtnClick: {
         flex: 1,
+        height: global.px2dp(48),
         alignItems: 'center',
         justifyContent: 'center',
     },
