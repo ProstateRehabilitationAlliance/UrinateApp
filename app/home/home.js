@@ -24,7 +24,8 @@ export default class Home extends Component {
             QRCodeContentFlag: false,
 
             maskContentFlag: false,
-            goodsPrice: 30,
+            serviceLabelArr: [],// 服务金额数组
+            goodsPrice: 0,
 
             approveMaskFlag: false,//未认证弹框
 
@@ -47,7 +48,7 @@ export default class Home extends Component {
                     this.setState({
                         signStatus: 'AUTHENTICATION_SUCCESS'
                     })
-                    this.queryCount();
+                    this.getPriceInquiryPictureByParams();
                     this.getDoctorDetail();
                 } else if (responseData.code == 40002) {
                     // 认证中
@@ -147,28 +148,6 @@ export default class Home extends Component {
                 console.log('error', error);
             });
     }
-    queryCount() {
-        fetch(requestUrl.queryCount, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                "token": global.Token,
-            },
-        }).then((response) => response.json())
-            .then((responseData) => {
-                console.log('responseData', responseData);
-                if (responseData.code == 20000) {
-                    if (responseData.result == 0) {
-                        this.setState({
-                            maskContentFlag: !this.state.maskContentFlag,
-                        })
-                    }
-                }
-            })
-            .catch((error) => {
-                console.log('error', error);
-            });
-    }
     // 设置金额
     addGoods() {
         this.setState({
@@ -224,16 +203,71 @@ export default class Home extends Component {
                 console.log('error', error);
             });
     }
+
+    // 查询当前所选服务金额
+    getPriceInquiryPictureByParams() {
+        fetch(requestUrl.getPriceInquiryPictureByParams, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                // 为选择服务金额
+                if (responseData.code == 40004) {
+                    this.setState({
+                        maskContentFlag: true,
+                    })
+                    // 查询价格标签
+                    fetch(requestUrl.getPriceDocketList, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            "token": global.Token,
+                        },
+                    }).then((response) => response.json())
+                        .then((responseData) => {
+                            console.log('responseData', responseData);
+                            if (responseData.code == 20000) {
+                                this.setState({
+                                    isLoading: false,
+                                    ErrorPromptFlag: false,
+                                    serviceLabelArr: responseData.result,// 服务金额数组
+                                })
+                            } else {
+                                this.setState({
+                                    isLoading: false,
+                                    ErrorPromptFlag: true,
+                                    ErrorPromptText: '服务标签查询失败，请重试',
+                                    ErrorPromptImg: require('../images/error.png'),
+                                })
+                                clearTimeout(this.timer)
+                                this.timer = setTimeout(() => {
+                                    this.setState({
+                                        ErrorPromptFlag: false,
+                                    })
+                                }, global.TimingCount)
+                            }
+                        })
+                        .catch((error) => {
+                            console.log('error', error);
+                        });
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
     componentDidMount() {
         Storage.removeItem("userInfo", () => { })
         Storage.getItem("userInfo", (data) => {
             if (data) {
-                console.log(data)
                 this.setState({
                     userInfo: data,
                     signStatus: 'AUTHENTICATION_SUCCESS',
                 })
-                this.queryCount();
+                this.getPriceInquiryPictureByParams();
             } else {
                 this.setState({
                     isLoading: true,
@@ -281,7 +315,32 @@ export default class Home extends Component {
             return (<Text style={styles.headText}>认证信息审核中...</Text>)
         }
     }
-
+    // 渲染服务标签
+    renderServiceLabel() {
+        let tempArr = [];
+        if (this.state.serviceLabelArr.length > 0) {
+            for (let i = 0; i < this.state.serviceLabelArr.length; i++) {
+                tempArr.push(
+                    <TouchableOpacity
+                        activeOpacity={.8}
+                        onPress={() => {
+                            this.setState({
+                                goodsPrice: this.state.serviceLabelArr[i].docketValue,
+                            })
+                        }}
+                        style={styles.amountItem}
+                        key={i}
+                    >
+                        <View style={[styles.amountBox, this.state.goodsPrice == this.state.serviceLabelArr[i].docketValue ? { backgroundColor: global.Colors.color } : null]}>
+                            <Text style={[styles.picText, this.state.goodsPrice == this.state.serviceLabelArr[i].docketValue ? { color: global.Colors.textfff } : null]}>{this.state.serviceLabelArr[i].docketName}元</Text>
+                            <Text style={[styles.descText, this.state.goodsPrice == this.state.serviceLabelArr[i].docketValue ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
+                        </View>
+                    </TouchableOpacity>
+                )
+            }
+        }
+        return tempArr;
+    }
 
     render() {
         const shadowOpt = {
@@ -449,6 +508,7 @@ export default class Home extends Component {
                 <View style={styles.bannerContent}>
                     <Image style={styles.bannerImg} source={require('../images/banner.png')} />
                 </View>
+                {/* 二维码 */}
                 {this.state.QRCodeContentFlag ?
                     <TouchableOpacity
                         activeOpacity={1}
@@ -519,6 +579,7 @@ export default class Home extends Component {
                         </TouchableOpacity>
                     </TouchableOpacity>
                     : null}
+                {/* 设置服务金额 */}
                 {this.state.maskContentFlag ?
                     <TouchableOpacity
                         activeOpacity={1}
@@ -538,77 +599,7 @@ export default class Home extends Component {
                                     <Text style={styles.amountTitleText}>请选择你的服务金额</Text>
                                 </View>
                                 <View style={styles.amountCenterBox}>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => {
-                                            this.setState({
-                                                goodsPrice: 30,
-                                            })
-                                        }}
-                                        style={styles.amountItem}
-                                    >
-                                        <View style={[styles.amountBox, this.state.goodsPrice == 30 ? { backgroundColor: global.Colors.color } : null]}>
-                                            <Text style={[styles.picText, this.state.goodsPrice == 30 ? { color: global.Colors.textfff } : null]}>30元</Text>
-                                            <Text style={[styles.descText, this.state.goodsPrice == 30 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => {
-                                            this.setState({
-                                                goodsPrice: 60,
-                                            })
-                                        }}
-                                        style={styles.amountItem}
-                                    >
-                                        <View style={[styles.amountBox, this.state.goodsPrice == 60 ? { backgroundColor: global.Colors.color } : null]}>
-                                            <Text style={[styles.picText, this.state.goodsPrice == 60 ? { color: global.Colors.textfff } : null]}>60元</Text>
-                                            <Text style={[styles.descText, this.state.goodsPrice == 60 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => {
-                                            this.setState({
-                                                goodsPrice: 80,
-                                            })
-                                        }}
-                                        style={styles.amountItem}
-                                    >
-                                        <View style={[styles.amountBox, this.state.goodsPrice == 80 ? { backgroundColor: global.Colors.color } : null]}>
-                                            <Text style={[styles.picText, this.state.goodsPrice == 80 ? { color: global.Colors.textfff } : null]}>80元</Text>
-                                            <Text style={[styles.descText, this.state.goodsPrice == 80 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => {
-                                            this.setState({
-                                                goodsPrice: 100,
-                                            })
-                                        }}
-                                        style={styles.amountItem}
-                                    >
-                                        <View style={[styles.amountBox, this.state.goodsPrice == 100 ? { backgroundColor: global.Colors.color } : null]}>
-                                            <Text style={[styles.picText, this.state.goodsPrice == 100 ? { color: global.Colors.textfff } : null]}>100元</Text>
-                                            <Text style={[styles.descText, this.state.goodsPrice == 100 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        activeOpacity={.8}
-                                        onPress={() => {
-                                            this.setState({
-                                                goodsPrice: 120,
-                                            })
-                                        }}
-                                        style={styles.amountItem}
-                                    >
-                                        <View style={[styles.amountBox, this.state.goodsPrice == 120 ? { backgroundColor: global.Colors.color } : null]}>
-                                            <Text style={[styles.picText, this.state.goodsPrice == 120 ? { color: global.Colors.textfff } : null]}>120元</Text>
-                                            <Text style={[styles.descText, this.state.goodsPrice == 120 ? { color: global.Colors.textfff } : null]}>问诊金额</Text>
-                                        </View>
-                                    </TouchableOpacity>
-
+                                    {this.renderServiceLabel()}
                                 </View>
                                 <View style={styles.amountBtnBox}>
                                     <TouchableOpacity
@@ -637,6 +628,7 @@ export default class Home extends Component {
                     </TouchableOpacity>
                     : null}
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
+                {/* 去认证弹框 */}
                 {this.state.approveMaskFlag ?
                     <TouchableOpacity
                         activeOpacity={1}

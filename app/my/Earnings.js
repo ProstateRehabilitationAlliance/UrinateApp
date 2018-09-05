@@ -21,13 +21,86 @@ export default class Earnings extends Component {
             ErrorPromptImg: '',
 
             balance: 0,// 余额
-
+            serviceLabelArr: [],// 服务金额标签
+            switchServiceFlag: false,
+            servicePicActive: 0,// 当前医生的服务金额
+            servicePic: 0,// 将要切换服务金额
         }
     }
     getInitalState() {
         // 1初始化state
     }
     componentWillMount() {
+        // 查询价格标签
+        fetch(requestUrl.getPriceDocketList, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: false,
+                        serviceLabelArr: responseData.result,// 服务金额数组
+                    })
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '服务标签查询失败，请重试',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+        // 查询当前所选价格
+        fetch(requestUrl.getPriceInquiryPictureByParams, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        servicePicActive: responseData.result,
+                    })
+                } else if (responseData.code == 40004) {
+                    this.setState({
+                        servicePicActive: 0,
+                    })
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '服务标签查询失败，请重试',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
     // 查询账号余额
     getBalance() {
@@ -171,45 +244,149 @@ export default class Earnings extends Component {
                     <View style={styles.serviceContent}>
                         <Text style={styles.serviceTitle}>服务金额</Text>
                         <View style={styles.serviceBox}>
-                            <TouchableOpacity
-                                activeOpacity={.8}
-                                style={styles.serviceBtn}
-                                onPress={() => { }}
-                            >
-                                <View style={styles.serviceItem}>
-                                    <Text style={styles.servicePic}>30元</Text>
-                                    <Text style={styles.serviceText}>服务金额</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                activeOpacity={.8}
-                                style={styles.serviceBtn}
-                                onPress={() => { }}
-                            >
-                                <View style={styles.serviceItem}>
-                                    <Text style={styles.servicePic}>30元</Text>
-                                    <Text style={styles.serviceText}>服务金额</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                activeOpacity={.8}
-                                style={styles.serviceBtn}
-                                onPress={() => { }}
-                            >
-                                <View style={styles.serviceItem}>
-                                    <Text style={styles.servicePic}>30元</Text>
-                                    <Text style={styles.serviceText}>服务金额</Text>
-                                </View>
-                            </TouchableOpacity>
+                            {this.renderServiceLabel()}
                         </View>
                     </View>
                 </ScrollView>
+                {/* 切换服务金额弹框 - start */}
+                {this.state.switchServiceFlag ?
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        style={styles.switchServiceMask}
+                        onPress={() => {
+                            this.setState({
+                                switchServiceFlag: !this.state.switchServiceFlag,
+                            })
+                        }}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            onPress={() => { }}
+                        >
+                            <View style={styles.switchServiceContent}>
+                                <View style={styles.switchServiceTextBox}>
+                                    <Text style={styles.switchServiceText}>确定要修改服务金额吗？</Text>
+                                </View>
+                                <View style={styles.switchServiceBtnBox}>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => {
+                                            this.setState({
+                                                switchServiceFlag: !this.state.switchServiceFlag,
+                                            })
+                                        }}
+                                        style={[styles.switchServiceClick, {
+                                            borderRightColor: global.Colors.text999,
+                                            borderRightWidth: global.Pixel,
+                                        }]}
+                                    >
+                                        <Text style={[styles.switchServiceBtnText, { color: global.Colors.text666 }]}>取消</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => {
+                                            this.addGoods();
+                                        }}
+                                        style={styles.switchServiceClick}
+                                    >
+                                        <Text style={[styles.switchServiceBtnText, { color: global.Colors.color }]}>确认</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </TouchableOpacity>
+                    : null}
+                {/* 切换服务金额弹框 - end */}
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View>
         );
     }
     goBack() {
         this.props.navigation.goBack();
+    }
+    // 循环服务标签
+    renderServiceLabel() {
+        let tempArr = [];
+        if (this.state.serviceLabelArr.length > 0) {
+            for (let i = 0; i < this.state.serviceLabelArr.length; i++) {
+                tempArr.push(
+                    <TouchableOpacity
+                        activeOpacity={.8}
+                        style={styles.serviceBtn}
+                        onPress={() => {
+                            this.setState({
+                                servicePic: this.state.serviceLabelArr[i].docketValue,
+                                switchServiceFlag: !this.state.switchServiceFlag,
+                            })
+                        }}
+                        key={i}
+                    >
+                        <View style={[styles.serviceItem, this.state.servicePicActive == this.state.serviceLabelArr[i].docketValue ? { backgroundColor: global.Colors.color } : null]}>
+                            <Text style={[styles.servicePic, this.state.servicePicActive == this.state.serviceLabelArr[i].docketValue ? { color: global.Colors.textfff } : null]}>{this.state.serviceLabelArr[i].docketName}元</Text>
+                            <Text style={[styles.serviceText, this.state.servicePicActive == this.state.serviceLabelArr[i].docketValue ? { color: global.Colors.textfff } : null]}>服务金额</Text>
+                        </View>
+                    </TouchableOpacity>
+                )
+            }
+        }
+        return tempArr;
+    }
+    // 修改服务标签
+    addGoods() {
+        this.setState({
+            switchServiceFlag: false,
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '提交中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        })
+        let formData = new FormData();
+        formData.append("goodsPrice", this.state.servicePic);
+        formData.append("goodsType", "GOODS_INQUIRY_PICTURE");
+        fetch(requestUrl.addGoods, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+            body: formData,
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        servicePicActive: this.state.servicePic,// 当前医生的服务金额
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '提交成功',
+                        ErrorPromptImg: require('../images/succeed.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                            maskContentFlag: !this.state.maskContentFlag,
+                        })
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '提交失败，请重试',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                            maskContentFlag: !this.state.maskContentFlag,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
 }
 
@@ -310,12 +487,12 @@ const styles = StyleSheet.create({
     serviceItem: {
         alignItems: 'center',
         justifyContent: 'center',
-        width: global.px2dp(78),
-        height: global.px2dp(43),
+        width: global.px2dp(77),
+        height: global.px2dp(42),
         borderColor: global.Colors.color,
         borderWidth: global.Pixel,
         marginTop: global.px2dp(10),
-        marginRight: global.px2dp(10),
+        marginRight: global.px2dp(8),
         borderRadius: global.px2dp(3),
     },
     servicePic: {
@@ -325,6 +502,51 @@ const styles = StyleSheet.create({
     serviceText: {
         fontSize: global.px2dp(9),
         color: global.Colors.text6492c8,
-    }
+    },
+    // 服务金额确认弹框
+    switchServiceMask: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: global.SCREEN_WIDTH,
+        height: global.SCREEN_HEIGHT,
+        backgroundColor: 'rgba(0,0,0,.6)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    switchServiceContent: {
+        width: global.px2dp(285),
+        height: global.px2dp(128),
+        borderRadius: global.px2dp(4),
+        backgroundColor: global.Colors.textfff,
+        justifyContent: 'space-between',
+    },
+    switchServiceTextBox: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: "center",
+        paddingLeft: global.px2dp(30),
+        paddingRight: global.px2dp(30),
+        borderBottomColor: global.Colors.text999,
+        borderBottomWidth: global.Pixel,
+    },
+    switchServiceText: {
+        fontSize: global.px2dp(17),
+        color: global.Colors.text333,
+    },
+    switchServiceBtnBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: global.px2dp(45),
+    },
+    switchServiceClick: {
+        flex: 1,
+        height: global.px2dp(45),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    switchServiceBtnText: {
+        fontSize: global.px2dp(17),
+    },
 });
 

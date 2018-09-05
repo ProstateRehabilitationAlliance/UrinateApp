@@ -251,7 +251,7 @@ export default class DoctorDetails extends Component {
                                         style={styles.diagnoseWayImg}
                                         source={require('../images/inquiry_img.png')} />
                                     <Text style={styles.diagnoseWayTitle}>图文咨询</Text>
-                                    <Text style={styles.diagnoseWayPic}>{this.state.picturePrice == 0 ? "暂未开通" : this.state.picturePrice + '/次'}</Text>
+                                    <Text style={styles.diagnoseWayPic}>{this.state.picturePrice == 0 ? "暂未开通" : this.state.picturePrice + '元/次'}</Text>
                                 </View>
                                 <View style={styles.diagnoseWayItem}>
                                     <Image
@@ -260,14 +260,14 @@ export default class DoctorDetails extends Component {
                                     <Text style={styles.diagnoseWayTitle}>电话咨询</Text>
                                     <Text style={styles.diagnoseWayPic}>{this.state.phonePrice
                                         == 0 ? "暂未开通" : this.state.phonePrice
-                                        + '/次'}</Text>
+                                        + '元/次'}</Text>
                                 </View>
                                 <View style={styles.diagnoseWayItem}>
                                     <Image
                                         style={styles.diagnoseWayImg}
                                         source={require('../images/inquiry_video.png')} />
                                     <Text style={styles.diagnoseWayTitle}>视频咨询</Text>
-                                    <Text style={styles.diagnoseWayPic}>{this.state.videoPrice == 0 ? "暂未开通" : this.state.videoPrice + '/次'}</Text>
+                                    <Text style={styles.diagnoseWayPic}>{this.state.videoPrice == 0 ? "暂未开通" : this.state.videoPrice + '元/次'}</Text>
                                 </View>
                                 {/* <TouchableOpacity
                                     style={styles.diagnoseWayBtn}

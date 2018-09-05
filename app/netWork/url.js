@@ -118,6 +118,14 @@ export let requestUrl = {
     "addWeChatAccount": IP + "/api-wallet/account/addWeChatAccount",// 添加微信 账号
     "deleteWeChatAccount": IP + "/api-wallet/account/deleteWeChatAccount",// 删除微信 账号
     "addOrderCash": IP + "/api-order/order/cash/addOrderCash",// 创建提现订单
+
+    "getPriceDocketList": IP + "/api-stata/docket/getPriceDocketList",// 查询 价格标签 列表
+    "getPriceInquiryPictureByParams": IP + "/api-goods/goods/inquiry/getPriceInquiryPictureByParams",// 查询已选图文问诊价格
+    // "login": IP + "login",// 注册接口
+    // "login": IP + "login",// 注册接口
+    // "login": IP + "login",// 注册接口
+    // "login": IP + "login",// 注册接口
+    // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
 };
