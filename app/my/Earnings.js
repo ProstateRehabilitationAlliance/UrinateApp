@@ -31,40 +31,7 @@ export default class Earnings extends Component {
         // 1初始化state
     }
     componentWillMount() {
-        // 查询价格标签
-        fetch(requestUrl.getPriceDocketList, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                "token": global.Token,
-            },
-        }).then((response) => response.json())
-            .then((responseData) => {
-                console.log('responseData', responseData);
-                if (responseData.code == 20000) {
-                    this.setState({
-                        isLoading: false,
-                        ErrorPromptFlag: false,
-                        serviceLabelArr: responseData.result,// 服务金额数组
-                    })
-                } else {
-                    this.setState({
-                        isLoading: false,
-                        ErrorPromptFlag: true,
-                        ErrorPromptText: '服务标签查询失败，请重试',
-                        ErrorPromptImg: require('../images/error.png'),
-                    })
-                    clearTimeout(this.timer)
-                    this.timer = setTimeout(() => {
-                        this.setState({
-                            ErrorPromptFlag: false,
-                        })
-                    }, global.TimingCount)
-                }
-            })
-            .catch((error) => {
-                console.log('error', error);
-            });
+
         // 查询当前所选价格
         fetch(requestUrl.getPriceInquiryPictureByParams, {
             method: 'GET',
@@ -154,7 +121,6 @@ export default class Earnings extends Component {
         // 4获取数据 在 render 后
     }
     render() {
-        // 3 渲染 render
         // 变量声明
         const { navigate, goBack } = this.props.navigation;
         return (
@@ -162,6 +128,53 @@ export default class Earnings extends Component {
                 <NavigationEvents
                     onWillFocus={() => {
                         this.getBalance();
+                        // 查询价格标签
+                        fetch(requestUrl.getPriceDocketList, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                                "token": global.Token,
+                            },
+                        }).then((response) => response.json())
+                            .then((responseData) => {
+                                console.log('responseData', responseData);
+                                if (responseData.code == 20000) {
+                                    this.setState({
+                                        isLoading: false,
+                                        ErrorPromptFlag: false,
+                                        serviceLabelArr: responseData.result,// 服务金额数组
+                                    })
+                                } else if (responseData.code == 40004) {
+                                    this.setState({
+                                        isLoading: false,
+                                        ErrorPromptFlag: true,
+                                        ErrorPromptText: '还没有标签，编辑标签添加',
+                                        ErrorPromptImg: require('../images/error.png'),
+                                    })
+                                    clearTimeout(this.timer)
+                                    this.timer = setTimeout(() => {
+                                        this.setState({
+                                            ErrorPromptFlag: false,
+                                        })
+                                    }, global.TimingCount)
+                                } else {
+                                    this.setState({
+                                        isLoading: false,
+                                        ErrorPromptFlag: true,
+                                        ErrorPromptText: '服务标签查询失败，请重试',
+                                        ErrorPromptImg: require('../images/error.png'),
+                                    })
+                                    clearTimeout(this.timer)
+                                    this.timer = setTimeout(() => {
+                                        this.setState({
+                                            ErrorPromptFlag: false,
+                                        })
+                                    }, global.TimingCount)
+                                }
+                            })
+                            .catch((error) => {
+                                console.log('error', error);
+                            });
                     }}
                 />
                 <StatusBar
@@ -242,7 +255,18 @@ export default class Earnings extends Component {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.serviceContent}>
-                        <Text style={styles.serviceTitle}>服务金额</Text>
+                        <View style={styles.serviceTopBox}>
+                            <Text style={styles.serviceTitle}>服务金额</Text>
+                            <TouchableOpacity
+                                activeOpacity={.8}
+                                onPress={() => {
+                                    navigate("ServiceAmountManagement");
+                                }}
+                                style={styles.serviceManagementClick}
+                            >
+                                <Text style={styles.serviceManagementText}>编辑标签</Text>
+                            </TouchableOpacity>
+                        </View>
                         <View style={styles.serviceBox}>
                             {this.renderServiceLabel()}
                         </View>
@@ -474,7 +498,21 @@ const styles = StyleSheet.create({
         paddingLeft: global.px2dp(15),
         paddingRight: global.px2dp(15),
     },
+    serviceTopBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
     serviceTitle: {
+        fontSize: global.px2dp(16),
+        color: global.Colors.text333,
+        lineHeight: global.px2dp(36),
+    },
+    serviceManagementClick: {
+        paddingLeft: global.px2dp(15),
+        paddingRight: global.px2dp(15),
+    },
+    serviceManagementText: {
         fontSize: global.px2dp(16),
         color: global.Colors.text333,
         lineHeight: global.px2dp(36),

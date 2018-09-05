@@ -29,6 +29,8 @@ export default class Home extends Component {
 
             approveMaskFlag: false,//未认证弹框
 
+            clickCount: 0,// 访问量
+            inquiryCount: 0,// 帮助患者量
         }
     }
 
@@ -50,6 +52,7 @@ export default class Home extends Component {
                     })
                     this.getPriceInquiryPictureByParams();
                     this.getDoctorDetail();
+                    this.getClickAndInquiry();
                 } else if (responseData.code == 40002) {
                     // 认证中
                     this.setState({
@@ -203,7 +206,6 @@ export default class Home extends Component {
                 console.log('error', error);
             });
     }
-
     // 查询当前所选服务金额
     getPriceInquiryPictureByParams() {
         fetch(requestUrl.getPriceInquiryPictureByParams, {
@@ -267,7 +269,7 @@ export default class Home extends Component {
                     userInfo: data,
                     signStatus: 'AUTHENTICATION_SUCCESS',
                 })
-                this.getPriceInquiryPictureByParams();
+
             } else {
                 this.setState({
                     isLoading: true,
@@ -341,6 +343,28 @@ export default class Home extends Component {
         }
         return tempArr;
     }
+    // 查询服务量
+    getClickAndInquiry() {
+        fetch(requestUrl.getClickAndInquiry, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log(responseData)
+                if (responseData.code == 20000) {
+                    this.setState({
+                        clickCount: responseData.result.clickCount,
+                        inquiryCount: responseData.result.inquiryCount,
+                    })
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
 
     render() {
         const shadowOpt = {
@@ -387,9 +411,16 @@ export default class Home extends Component {
                             style={styles.QRCodeBtn}
                             activeOpacity={.8}
                             onPress={() => {
-                                this.setState({
-                                    QRCodeContentFlag: !this.state.QRCodeContentFlag
-                                })
+                                if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
+                                    // 不是 认证成功
+                                    this.setState({
+                                        approveMaskFlag: !this.state.approveMaskFlag,
+                                    })
+                                } else {
+                                    this.setState({
+                                        QRCodeContentFlag: !this.state.QRCodeContentFlag
+                                    })
+                                }
                             }}>
                             <Image
                                 source={require('../images/qr_code_btn.png')}
@@ -417,12 +448,12 @@ export default class Home extends Component {
                         {/* 统计部分-start */}
                         <View style={styles.statisticsContent}>
                             <View style={styles.statisticsItem}>
-                                <Text style={[styles.statisticsNum, { color: this.state.authenticationFlag ? global.Colors.color : global.Colors.text555, fontSize: this.state.authenticationFlag ? global.px2dp(20) : global.px2dp(12) }]}>{this.state.authenticationFlag ? "9999" : "暂无数据"}</Text>
+                                <Text style={[styles.statisticsNum, { color: this.state.signStatus == "AUTHENTICATION_SUCCESS" ? global.Colors.color : global.Colors.text555, fontSize: this.state.signStatus == "AUTHENTICATION_SUCCESS" ? global.px2dp(20) : global.px2dp(12) }]}>{this.state.signStatus == "AUTHENTICATION_SUCCESS" ? this.state.clickCount : "暂无数据"}</Text>
                                 <Text style={styles.statisticsText}>访问量</Text>
                             </View>
                             <View style={styles.statisticsLine}></View>
                             <View style={styles.statisticsItem}>
-                                <Text style={[styles.statisticsNum, { color: this.state.authenticationFlag ? global.Colors.color : global.Colors.text555, fontSize: this.state.authenticationFlag ? global.px2dp(20) : global.px2dp(12) }]}>{this.state.authenticationFlag ? "9999" : "暂无数据"}</Text>
+                                <Text style={[styles.statisticsNum, { color: this.state.signStatus == "AUTHENTICATION_SUCCESS" ? global.Colors.color : global.Colors.text555, fontSize: this.state.signStatus == "AUTHENTICATION_SUCCESS" ? global.px2dp(20) : global.px2dp(12) }]}>{this.state.signStatus == "AUTHENTICATION_SUCCESS" ? this.state.inquiryCount : "暂无数据"}</Text>
                                 <Text style={styles.statisticsText}>已帮助位患者</Text>
                             </View>
                         </View>
@@ -448,9 +479,9 @@ export default class Home extends Component {
                                     source={require('../images/inquiry.png')}
                                 />
                                 <Text style={styles.moduleText}>问诊</Text>
-                                {this.state.authenticationFlag ? <View style={styles.countBox}>
+                                {/* {this.state.signStatus == "AUTHENTICATION_SUCCESS" ? <View style={styles.countBox}>
                                     <Text style={styles.countText}>99+</Text>
-                                </View> : null}
+                                </View> : null} */}
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={styles.moduleBtn}
@@ -470,9 +501,9 @@ export default class Home extends Component {
                                     source={require('../images/patient.png')}
                                 />
                                 <Text style={styles.moduleText}>患者管理</Text>
-                                {this.state.authenticationFlag ? <View style={styles.countBox}>
+                                {/* {this.state.signStatus == "AUTHENTICATION_SUCCESS" ? <View style={styles.countBox}>
                                     <Text style={styles.countText}>99+</Text>
-                                </View> : null}
+                                </View> : null} */}
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={styles.moduleBtn}
@@ -492,9 +523,9 @@ export default class Home extends Component {
                                     source={require('../images/shift_examine.png')}
                                 />
                                 <Text style={styles.moduleText}>转诊管理</Text>
-                                {this.state.authenticationFlag ? <View style={styles.countBox}>
+                                {/* {this.state.signStatus == "AUTHENTICATION_SUCCESS" ? <View style={styles.countBox}>
                                     <Text style={styles.countText}>99+</Text>
-                                </View> : null}
+                                </View> : null} */}
                             </TouchableOpacity>
                         </View>
                         {/* 三大模块-end */}
@@ -558,12 +589,12 @@ export default class Home extends Component {
 
                                 <View style={styles.countContent}>
                                     <View style={styles.countItem}>
-                                        <Text>暂无数据</Text>
+                                        <Text>{this.state.clickCount}</Text>
                                         <Text>访问量</Text>
                                     </View>
                                     <View style={styles.countLine}></View>
                                     <View style={styles.countItem}>
-                                        <Text>暂无数据</Text>
+                                        <Text>{this.state.inquiryCount}</Text>
                                         <Text>访问量</Text>
                                     </View>
                                 </View>

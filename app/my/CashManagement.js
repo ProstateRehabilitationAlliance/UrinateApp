@@ -62,7 +62,7 @@ export default class CashManagement extends Component {
         })
     }
     componentDidMount() {
-        WeChat.registerApp('wx879a26e37acadb20');
+        WeChat.registerApp('wxaeaf9ecd369f0592');
         // 查询是否有提现密码 - start
         fetch(requestUrl.isExist, {
             method: 'GET',

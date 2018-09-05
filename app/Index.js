@@ -55,6 +55,7 @@ import Earnings from "./my/Earnings";// 收益
 import CashManagement from "./my/CashManagement";// 提现管理
 import EarningsDetails from "./my/EarningsDetails";// 收益明细
 import WithdrawDeposit from "./my/WithdrawDeposit";// 提现
+import ServiceAmountManagement from "./my/ServiceAmountManagement";// 服务金额管理
 import UpdatePayPassword from "./my/UpdatePayPassword";// 修改支付密码
 import ForgetPayPassword from "./my/ForgetPayPassword";// 忘记支付密码
 import Followee from "./my/Followee";// 关注的医生列表页
@@ -265,6 +266,9 @@ export default createStackNavigator(
         },
         CashManagement: {
             screen: CashManagement,// 提现管理
+        },
+        ServiceAmountManagement: {
+            screen: ServiceAmountManagement,// 服务金额管理
         },
         UpdatePayPassword: {
             screen: UpdatePayPassword,// 修改支付密码

@@ -53,6 +53,9 @@ export let requestUrl = {
     "unFocus": IP + "/api-user/fansStar/unFocus",// 取消关注
     "findStar": IP + "/api-user/doctor/detail/findStar",// 查询关注的医生
 
+    // 首页
+    "getClickAndInquiry": IP + "/api-statistic/count/getClickAndInquiry",// 查询访问量 帮助量
+
     // 问诊
     "inquiryOrder": [
         IP + "/api-order/order/inquiry/getAllOrderList",//查询全部订单列表
@@ -121,9 +124,8 @@ export let requestUrl = {
 
     "getPriceDocketList": IP + "/api-stata/docket/getPriceDocketList",// 查询 价格标签 列表
     "getPriceInquiryPictureByParams": IP + "/api-goods/goods/inquiry/getPriceInquiryPictureByParams",// 查询已选图文问诊价格
-    // "login": IP + "login",// 注册接口
-    // "login": IP + "login",// 注册接口
-    // "login": IP + "login",// 注册接口
+    "addPriceDocket": IP + "/api-stata/docket/addPriceDocket",// 自定义添加 价格标签
+    "deleteCustomDocket": IP + "/api-stata/docket/deleteCustomDocket",// 删除自定义 标签
     // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
