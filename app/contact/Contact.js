@@ -6,6 +6,7 @@ import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import { BoxShadow } from 'react-native-shadow';
+import { NavigationEvents } from "react-navigation";
 
 export default class Contact extends Component {
     constructor(props) {
@@ -29,12 +30,20 @@ export default class Contact extends Component {
         // 1初始化state
     }
     componentDidMount() {
-        this.findStar(this.state.pageNo);
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container} >
+                <NavigationEvents
+                    onWillFocus={() => {
+                        this.setState({
+                            pageNo: 1,
+                            doctorArr: [],
+                        })
+                        this.findStar(1);
+                    }}
+                />
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏
