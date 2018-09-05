@@ -554,14 +554,18 @@ export default class CashManagement extends Component {
         }).catch((error) => {
             console.log('error', error);
         });
+        // console.log(WeChat)
         // WeChat.isWXAppInstalled().then((isInstalled) => {
         //     if (isInstalled) {
-        //         let scope = 'snsapi_userinfo';//snsapi_base
+        //         let scope = 'snsapi_base';//snsapi_base snsapi_userinfo
         //         let state = 'wechat_sdk_demo';
-        //         WeChat.sendAuthRequest(scope, state)
-        //             .then(res => {
-        //                 console.log(res)
-        //             });
+        //         // 65131551996b322bd12bde7140b06ecd
+        //         // WeChat.openWXApp().then((res) => {
+        //         //     console.log(res)
+        //         // })
+        //         WeChat.sendAuthRequest(scope, state).then((res) => {
+        //             console.log(res)
+        //         });
         //     } else {
         //         // 未安装微信
         //         global.Alert.alert("", '没有安装微信，请您安装微信之后再试');
