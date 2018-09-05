@@ -1,5 +1,5 @@
-// const IP = "http://192.168.0.222";//
-const IP = "http://www.yilaiyiwang.com";//
+const IP = "http://192.168.0.222";//
+// const IP = "http://www.yilaiyiwang.com";//
 export let requestUrl = {
     "idCardFrontUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IDCard_up.jpg',// 身份证示例图片
     "doctorCardFrontUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IDCard_up.jpg',// 医生执业证示例图片
@@ -105,12 +105,19 @@ export let requestUrl = {
 
 
     // 收益
+    "weChatCode": IP + "/api-user/login/weChat",// 微信权限
     "getBalance": IP + "/api-wallet/doctorWallet/getBalance",// 查询余额
     "getBalanceList": IP + "/api-wallet/dealRecord/getList",// 分页查询收支明 列表
-
-    "weChatCode": IP + "/api-user/login/weChat",// 微信权限
-    // "login": IP + "login",// 注册接口
-    // "login": IP + "login",// 注册接口
+    "isExist": IP + "/api-wallet/paymentSign/isExist",// 检测是否有支付密码
+    "savePay": IP + "/api-wallet/paymentSign/save",// 新增支付密码
+    "updatePay": IP + "/api-wallet/paymentSign/update",// 修改支付密码
+    "checkPay": IP + "/api-wallet/paymentSign/check",// 校验支付密码
+    "sendPayPasswordCode": IP + "/api-third/sms/sendPayPasswordCode",// 支付密码找回 短信验证码
+    "paymentPasswordReset": IP + "/api-wallet/paymentSign/paymentPasswordReset",// 重设 支付 密码
+    "getWeChatAccount": IP + "/api-wallet/account/getWeChatAccount",// 查询 微信 账号
+    "addWeChatAccount": IP + "/api-wallet/account/addWeChatAccount",// 添加微信 账号
+    "deleteWeChatAccount": IP + "/api-wallet/account/deleteWeChatAccount",// 删除微信 账号
+    "addOrderCash": IP + "/api-order/order/cash/addOrderCash",// 创建提现订单
     // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
 };

@@ -20,11 +20,12 @@ export default class CashManagement extends Component {
             ErrorPromptText: '',
             ErrorPromptImg: '',
 
-            weChatFlag: false,//是否已绑定微信账户
 
             maskFlag: false,
 
             payFlag: false,// 是否有支付密码
+            accountFlag: false,// 是否有绑账户
+            weChatAccountInfo: null,// 微信账号信息
             payPass: '',// 支付密码
             payPassFlag: false, // 输入密码模块
             payPassBoxBottom: new Animated.Value(-300),
@@ -62,6 +63,7 @@ export default class CashManagement extends Component {
     }
     componentDidMount() {
         WeChat.registerApp('wx879a26e37acadb20');
+        // 查询是否有提现密码 - start
         fetch(requestUrl.isExist, {
             method: 'GET',
             headers: {
@@ -93,6 +95,46 @@ export default class CashManagement extends Component {
             .catch((error) => {
                 console.log('error', error);
             });
+        // 查询是否有提现密码 - end
+        // 查询是否绑有账号 - start
+        fetch(requestUrl.getWeChatAccount, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        accountFlag: true,
+                        weChatAccountInfo: responseData.result,
+                    })
+                } else if (responseData.code == 40004) {
+                    this.setState({
+                        accountFlag: false,
+                    })
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '查询失败，请重试',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+        // 查询是否绑有账号 - end
+
     }
     render() {
         const addAccountShadowOpt = {
@@ -176,15 +218,12 @@ export default class CashManagement extends Component {
                         </View>
                     }
                     <Text style={styles.accountTitle}>账户管理</Text>
-                    {this.state.weChatFlag ?
+                    {this.state.accountFlag ?
                         <BoxShadow
                             setting={shadowOpt}>
                             <View style={styles.accountContent}>
                                 <Image style={styles.weChatImg} source={require('../images/wechat.png')} />
-                                <View style={styles.accountBox}>
-                                    <Text style={styles.accountText}><Text style={styles.accountType}>微信</Text>|<Text style={styles.accountName}>老大</Text></Text>
-                                    <Text style={styles.accountText}>151********59</Text>
-                                </View>
+                                <Text style={styles.accountType}>微信账户</Text>
                                 <TouchableOpacity
                                     onPress={() => {
                                         this.setState({
@@ -464,21 +503,70 @@ export default class CashManagement extends Component {
     }
     // 添加账户
     addWeChat = () => {
-        console.log(WeChat)
-        WeChat.isWXAppInstalled()
-            .then((isInstalled) => {
-                if (isInstalled) {
-                    let scope = 'snsapi_userinfo';//snsapi_base
-                    let state = 'wechat_sdk_demo';
-                    WeChat.sendAuthRequest(scope, state)
-                        .then(res => {
-                            console.log(res)
-                        });
-                } else {
-                    // 未安装微信
-                    global.Alert.alert('没有安装微信，请您安装微信之后再试')
-                }
-            });
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '提交中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        })
+        let formData = new FormData();
+        formData.append("accountNumber", "weixinzhanghu18801370533");
+        fetch(requestUrl.addWeChatAccount, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+            body: formData,
+        }).then((response) => response.json()).then((responseData) => {
+            console.log('responseData', responseData);
+            if (responseData.code == 20000) {
+                let tempJson = this.state.weChatAccountInfo;
+                tempJson["id"] = responseData.result;
+                this.setState({
+                    weChatAccountInfo: tempJson,
+                    accountFlag: true,
+                    isLoading: false,
+                    ErrorPromptFlag: true,
+                    ErrorPromptText: '绑定成功',
+                    ErrorPromptImg: require('../images/succeed.png'),
+                })
+                clearTimeout(this.timer)
+                this.timer = setTimeout(() => {
+                    this.setState({
+                        ErrorPromptFlag: false,
+                    })
+                }, global.TimingCount)
+            } else {
+                this.setState({
+                    isLoading: false,
+                    ErrorPromptFlag: true,
+                    ErrorPromptText: '绑定失败，请重试',
+                    ErrorPromptImg: require('../images/error.png'),
+                })
+                clearTimeout(this.timer)
+                this.timer = setTimeout(() => {
+                    this.setState({
+                        ErrorPromptFlag: false,
+                    })
+                }, global.TimingCount)
+            }
+        }).catch((error) => {
+            console.log('error', error);
+        });
+        // WeChat.isWXAppInstalled().then((isInstalled) => {
+        //     if (isInstalled) {
+        //         let scope = 'snsapi_userinfo';//snsapi_base
+        //         let state = 'wechat_sdk_demo';
+        //         WeChat.sendAuthRequest(scope, state)
+        //             .then(res => {
+        //                 console.log(res)
+        //             });
+        //     } else {
+        //         // 未安装微信
+        //         global.Alert.alert("", '没有安装微信，请您安装微信之后再试');
+        //     }
+        // });
     }
     // 删除账户
     deleteWeChat() {
@@ -488,50 +576,53 @@ export default class CashManagement extends Component {
             ErrorPromptText: '提交中...',
             ErrorPromptImg: require('../images/loading.png'),
         })
-        // let formData = new FormData();
-        // formData.append("feedbackText", this.state.text);
-        // fetch(requestUrl.addFeedback, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data',
-        //         "token": global.Token,
-        //     },
-        //     body: formData,
-        // }).then((response) => response.json())
-        //     .then((responseData) => {
-        //         console.log('responseData', responseData);
-        //         if (responseData.code == 20000) {
-        //             this.setState({
-        //                 weChatFlag: false,
-        //                 isLoading: false,
-        //                 ErrorPromptFlag: true,
-        //                 ErrorPromptText: '删除成功',
-        //                 ErrorPromptImg: require('../images/succeed.png'),
-        //             })
-        //             clearTimeout(this.timer)
-        //             this.timer = setTimeout(() => {
-        //                 this.setState({
-        //                     ErrorPromptFlag: false,
-        //                 })
-        //             }, global.TimingCount)
-        //         } else {
-        //             this.setState({
-        //                 isLoading: false,
-        //                 ErrorPromptFlag: true,
-        //                 ErrorPromptText: '删除失败，请重试',
-        //                 ErrorPromptImg: require('../images/error.png'),
-        //             })
-        //             clearTimeout(this.timer)
-        //             this.timer = setTimeout(() => {
-        //                 this.setState({
-        //                     ErrorPromptFlag: false,
-        //                 })
-        //             }, global.TimingCount)
-        //         }
-        //     })
-        //     .catch((error) => {
-        //         console.log('error', error);
-        //     });
+        let formData = new FormData();
+        formData.append("id", this.state.weChatAccountInfo.id);
+        fetch(requestUrl.deleteWeChatAccount, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+            body: formData,
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                this.setState({
+                    maskFlag: false,
+                })
+                if (responseData.code == 20000) {
+                    this.setState({
+                        accountFlag: false,
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '删除成功',
+                        ErrorPromptImg: require('../images/succeed.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '删除失败，请重试',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
 }
 
@@ -608,22 +699,11 @@ const styles = StyleSheet.create({
         marginLeft: global.px2dp(17),
         marginRight: global.px2dp(16),
     },
-    accountBox: {
-        flex: 1,
-    },
-    accountText: {
-        color: global.Colors.text999,
-        lineHeight: global.px2dp(24),
-    },
     accountType: {
+        flex: 1,
         fontSize: global.px2dp(17),
         color: global.Colors.text333,
         marginRight: global.px2dp(11),
-    },
-    accountName: {
-        fontSize: global.px2dp(17),
-        color: global.Colors.text333,
-        marginLeft: global.px2dp(10),
     },
     bindBox: {
         marginRight: global.px2dp(10),

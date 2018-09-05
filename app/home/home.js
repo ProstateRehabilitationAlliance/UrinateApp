@@ -509,7 +509,7 @@ export default class Home extends Component {
                                 </View>
                                 <View style={styles.QRImgBox}>
                                     <QRCode
-                                        value={global.Token}
+                                        value={"http://www.yilaiyiwang.com/chestnut/doctorDetails/DoctorDetails.html?" + global.Token}
                                         size={140}
                                         bgColor='#000'
                                         fgColor='white' />
@@ -1117,6 +1117,7 @@ const styles = StyleSheet.create({
     },
     approveBtnClick: {
         flex: 1,
+        height: global.px2dp(48),
         alignItems: 'center',
         justifyContent: 'center',
     },

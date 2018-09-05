@@ -5,6 +5,7 @@ import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import ErrorPrompt from "../common/ErrorPrompt";
 import LinearGradient from 'react-native-linear-gradient';
+import { NavigationEvents } from "react-navigation";
 
 export default class Earnings extends Component {
     static navigationOptions = {
@@ -27,6 +28,9 @@ export default class Earnings extends Component {
         // 1初始化state
     }
     componentWillMount() {
+    }
+    // 查询账号余额
+    getBalance() {
         this.setState({
             isLoading: true,
             ErrorPromptFlag: true,
@@ -82,6 +86,11 @@ export default class Earnings extends Component {
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container}>
+                <NavigationEvents
+                    onWillFocus={() => {
+                        this.getBalance();
+                    }}
+                />
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏

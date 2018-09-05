@@ -67,7 +67,7 @@ import Protocol from "./my/Protocol";// 协议
 import Setting from "./my/Setting";// 设置
 import Feedback from "./my/Feedback";// 反馈
 import UpdatePassword from "./my/UpdatePassword";// 修改密码
-import SafetyCheckout from "./my/SafetyCheckout";// 安全校验
+import SafetyCheckout from "./my/SafetyCheckout";// 重置密码
 import About from "./my/About";// 关于
 
 import LookImg from "./common/LookImg";// 查看大图
@@ -303,7 +303,7 @@ export default createStackNavigator(
             screen: UpdatePassword,// 修改密码
         },
         SafetyCheckout: {
-            screen: SafetyCheckout,// 安全校验
+            screen: SafetyCheckout,// 重置密码
         },
         About: {
             screen: About,// 关于

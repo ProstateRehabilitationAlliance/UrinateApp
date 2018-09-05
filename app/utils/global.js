@@ -33,6 +33,6 @@ export let global = {
     doctorInfo: {},
     stateKey: '',
     serviceTel: "010-6378-6220",// 客服电话
-    versionNum: "1.0.2",// 版本号
+    versionNum: "1.0.3",// 版本号
 };
 
