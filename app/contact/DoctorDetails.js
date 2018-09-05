@@ -331,79 +331,11 @@ export default class DoctorDetails extends Component {
                         </TouchableOpacity>
                     </View>
                     <View style={{ height: global.px2dp(15) }}></View>
-                    {/* <View style={styles.btnBox}>
-                        <Button text={'申请转给他'} click={this.submit.bind(this)} style={{ borderRadius: global.px2dp(4) }} />
-                    </View> */}
                 </ScrollView>
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View >
         );
     }
-    // submit() {
-    //     if (!this.state.text) {
-    //         this.setState({
-    //             ErrorPromptFlag: true,
-    //             ErrorPromptText: '请输入内容',
-    //             ErrorPromptImg: require('../images/error.png'),
-    //         })
-    //         clearTimeout(this.timer)
-    //         this.timer = setTimeout(() => {
-    //             this.setState({
-    //                 ErrorPromptFlag: false,
-    //             })
-    //         }, global.TimingCount)
-    //     } else {
-    //         this.setState({
-    //             isLoading: true,
-    //             ErrorPromptFlag: true,
-    //             ErrorPromptText: '提交中...',
-    //             ErrorPromptImg: require('../images/loading.png'),
-    //         })
-    //         let formData = new FormData();
-    //         formData.append("feedbackText", this.state.text);
-    //         fetch(requestUrl.addFeedback, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data',
-    //                 "token": global.Token,
-    //             },
-    //             body: formData,
-    //         }).then((response) => response.json())
-    //             .then((responseData) => {
-    //                 console.log('responseData', responseData);
-    //                 if (responseData.code == 20000) {
-    //                     this.setState({
-    //                         isLoading: false,
-    //                         ErrorPromptFlag: true,
-    //                         ErrorPromptText: '提交成功',
-    //                         ErrorPromptImg: require('../images/succeed.png'),
-    //                     })
-    //                     clearTimeout(this.timer)
-    //                     this.timer = setTimeout(() => {
-    //                         this.setState({
-    //                             ErrorPromptFlag: false,
-    //                         })
-    //                     }, global.TimingCount)
-    //                 } else {
-    //                     this.setState({
-    //                         isLoading: false,
-    //                         ErrorPromptFlag: true,
-    //                         ErrorPromptText: '提交失败，请重试',
-    //                         ErrorPromptImg: require('../images/error.png'),
-    //                     })
-    //                     clearTimeout(this.timer)
-    //                     this.timer = setTimeout(() => {
-    //                         this.setState({
-    //                             ErrorPromptFlag: false,
-    //                         })
-    //                     }, global.TimingCount)
-    //                 }
-    //             })
-    //             .catch((error) => {
-    //                 console.log('error', error);
-    //             });
-    //     }
-    // }
     // 加关注
     focus() {
         this.setState({

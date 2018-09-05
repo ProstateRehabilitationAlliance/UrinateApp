@@ -595,7 +595,7 @@ export default class Home extends Component {
                                     <View style={styles.countLine}></View>
                                     <View style={styles.countItem}>
                                         <Text>{this.state.inquiryCount}</Text>
-                                        <Text>访问量</Text>
+                                        <Text>已帮助位患者</Text>
                                     </View>
                                 </View>
                                 <View style={styles.QRImgBox}>

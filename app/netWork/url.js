@@ -1,5 +1,5 @@
-const IP = "http://192.168.0.222";//
-// const IP = "http://www.yilaiyiwang.com";//
+// const IP = "http://192.168.0.222";//
+const IP = "http://www.qlxlm.com";//
 export let requestUrl = {
     "idCardFrontUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IDCard_up.jpg',// 身份证示例图片
     "doctorCardFrontUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IDCard_up.jpg',// 医生执业证示例图片
@@ -42,6 +42,7 @@ export let requestUrl = {
     "findDoctorList": IP + "/api-user/doctor/detail/findDoctorList",// 条件查询医生列表
     "addFeedback": IP + "/api-stata/feedback/add",// 添加反馈意见
     "queryCount": IP + "/api-goods/goods/inquiry/queryCount",// 医生问诊服务数量查询
+    "getDoctorCount": IP + "/api-statistic/count/getDoctorCount",// 医生统计数据查询
     "queryListByToken": IP + "/api-goods/goods/inquiry/queryListByToken",// 根据token查询问诊服务列表
     "queryListByDoctor": IP + "/api-goods/goods/inquiry/queryListByDoctor",// 根医生ID查询问诊服务列表
     "addGoods": IP + "/api-goods/goods/inquiry/add",// 添加服务
