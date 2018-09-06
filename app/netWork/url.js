@@ -1,5 +1,5 @@
-// const IP = "http://192.168.0.222";//
-const IP = "http://www.qlxlm.com";//
+const IP = "http://192.168.0.222";//
+// const IP = "http://www.qlxlm.com";//
 export let requestUrl = {
     "idCardFrontUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IDCard_up.jpg',// 身份证示例图片
     "doctorCardFrontUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IDCard_up.jpg',// 医生执业证示例图片
@@ -55,7 +55,7 @@ export let requestUrl = {
     "findStar": IP + "/api-user/doctor/detail/findStar",// 查询关注的医生
 
     // 首页
-    "getClickAndInquiry": IP + "/api-statistic/count/getClickAndInquiry",// 查询访问量 帮助量
+    "getClickAndInquiry": IP + "/api-statistic/statistic/getClickAndInquiry",// 查询访问量 帮助量
 
     // 问诊
     "inquiryOrder": [
