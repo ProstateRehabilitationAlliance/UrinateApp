@@ -138,7 +138,6 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     startImgBox: {
-        backgroundColor: 'red',
     },
     startImg: {
         width: global.SCREEN_WIDTH,

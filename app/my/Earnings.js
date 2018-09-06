@@ -21,6 +21,7 @@ export default class Earnings extends Component {
             ErrorPromptImg: '',
 
             balance: 0,// 余额
+            totleIncome: 0,// 累计收益
             serviceLabelArr: [],// 服务金额标签
             switchServiceFlag: false,
             servicePicActive: 0,// 当前医生的服务金额
@@ -31,7 +32,38 @@ export default class Earnings extends Component {
         // 1初始化state
     }
     componentWillMount() {
-
+        // 查询累计收益
+        fetch(requestUrl.getTotleIncome, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        totleIncome: responseData.result,
+                    })
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '累计收益查询失败，请重试',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
         // 查询当前所选价格
         fetch(requestUrl.getPriceInquiryPictureByParams, {
             method: 'GET',
@@ -211,7 +243,7 @@ export default class Earnings extends Component {
                         </View>
                         <View style={styles.earningsLien}></View>
                         <View style={styles.earningsBox}>
-                            <Text style={styles.earningsValue}>300</Text>
+                            <Text style={styles.earningsValue}>{this.state.totleIncome}</Text>
                             <Text style={styles.earningsText}>累计诊费收益</Text>
                         </View>
                     </View>

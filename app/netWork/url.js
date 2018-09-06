@@ -1,5 +1,5 @@
-const IP = "http://192.168.0.222";//
-// const IP = "http://www.qlxlm.com";//
+// const IP = "http://192.168.0.222";//
+const IP = "http://www.qlxlm.com";//
 export let requestUrl = {
     "idCardFrontUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IDCard_up.jpg',// 身份证示例图片
     "doctorCardFrontUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IDCard_up.jpg',// 医生执业证示例图片
@@ -128,7 +128,7 @@ export let requestUrl = {
     "addPriceDocket": IP + "/api-stata/docket/addPriceDocket",// 自定义添加 价格标签
     "deleteCustomDocket": IP + "/api-stata/docket/deleteCustomDocket",// 删除自定义 标签
     "appAdd": IP + "/api-user/weChat/appAdd",// 添加微信用户信息
-    // "login": IP + "login",// 注册接口
+    "getTotleIncome": IP + "/api-statistic/statistic/getTotleIncome",// 查询累计收益
     // "login": IP + "login",// 注册接口
     // "login": IP + "login",// 注册接口
 };

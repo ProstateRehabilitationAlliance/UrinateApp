@@ -28,11 +28,11 @@ export let global = {
     NavHeight: Platform.OS === 'ios' ? (isIphoneX() ? 88 : 64) : 44,// 导航高度
     TabBar: isIphoneX() ? 34 : 0,// tabBar 高度
     IPhoneX: isIphoneX(),// 判断iPhoneX
-    TimingCount: 800,// 提示框显示时间
+    TimingCount: 1800,// 提示框显示时间
     LinearGradient: ["#59a9e8", "#2c6cb5"],
     doctorInfo: {},
     stateKey: '',
     serviceTel: "010-6378-6220",// 客服电话
-    versionNum: "1.0.4",// 版本号
+    versionNum: "1.0.5",// 版本号
 };
 
