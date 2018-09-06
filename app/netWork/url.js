@@ -1,5 +1,5 @@
-const IP = "http://192.168.0.222";//
-// const IP = "http://www.qlxlm.com";//
+// const IP = "http://192.168.0.222";//
+const IP = "http://www.qlxlm.com";//
 export let requestUrl = {
     "idCardFrontUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IDCard_up.jpg',// 身份证示例图片
     "doctorCardFrontUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IDCard_up.jpg',// 医生执业证示例图片
