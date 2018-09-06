@@ -508,7 +508,7 @@ export default class WithdrawDeposit extends Component {
     payment() {
         let formData = new FormData();
         formData.append("accountId", this.state.weChatAccountInfo.id);//医生id
-        formData.append("orderPrice", this.state.pic);//提现金额
+        formData.append("orderPrice", this.state.pic * 100);//提现金额
         fetch(requestUrl.addOrderCash, {
             method: 'POST',
             headers: {

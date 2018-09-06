@@ -55,7 +55,7 @@ export let requestUrl = {
     "findStar": IP + "/api-user/doctor/detail/findStar",// 查询关注的医生
 
     // 首页
-    "getClickAndInquiry": IP + "/api-statistic/count/getClickAndInquiry",// 查询访问量 帮助量
+    "getClickAndInquiry": IP + "/api-statistic/statistic/getClickAndInquiry",// 查询访问量 帮助量
 
     // 问诊
     "inquiryOrder": [
