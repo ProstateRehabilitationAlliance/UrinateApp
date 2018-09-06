@@ -6,7 +6,7 @@ import { global } from '../utils/Global';// 常量
 import ErrorPrompt from "../common/ErrorPrompt";
 import Nav from "../common/Nav";// 导航组件
 import { BoxShadow } from "react-native-shadow";
-import * as WeChat from 'react-native-wechat';
+import * as wechat from 'react-native-wechat';
 export default class CashManagement extends Component {
     static navigationOptions = {
         header: null,
@@ -25,7 +25,7 @@ export default class CashManagement extends Component {
 
             payFlag: false,// 是否有支付密码
             accountFlag: false,// 是否有绑账户
-            weChatAccountInfo: null,// 微信账号信息
+            weChatAccountInfo: {},// 微信账号信息
             payPass: '',// 支付密码
             payPassFlag: false, // 输入密码模块
             payPassBoxBottom: new Animated.Value(-300),
@@ -62,7 +62,7 @@ export default class CashManagement extends Component {
         })
     }
     componentDidMount() {
-        WeChat.registerApp('wxaeaf9ecd369f0592');
+        wechat.registerApp('wxaeaf9ecd369f0592');
         // 查询是否有提现密码 - start
         fetch(requestUrl.isExist, {
             method: 'GET',
@@ -426,9 +426,9 @@ export default class CashManagement extends Component {
                                         maxLength={6}
                                         caretHidden={true}
                                         keyboardType={'numeric'}
-                                        onLongPress={() => {
-                                            return false;
-                                        }}
+                                    // onLongPress={() => {
+                                    //     return false;
+                                    // }}
                                     >
                                     </TextInput>
                                 </View>
@@ -503,14 +503,95 @@ export default class CashManagement extends Component {
     }
     // 添加账户
     addWeChat = () => {
-        this.setState({
-            isLoading: true,
-            ErrorPromptFlag: true,
-            ErrorPromptText: '提交中...',
-            ErrorPromptImg: require('../images/loading.png'),
-        })
+        wechat.isWXAppInstalled().then((isInstalled) => {
+            if (isInstalled) {
+                let scope = 'snsapi_userinfo';
+                let state = 'wechat_sdk_demo';
+                wechat.sendAuthRequest(scope, state)
+                    .then(responseCode => {
+                        if (responseCode.errCode == 0) {
+                            this.setState({
+                                isLoading: true,
+                                ErrorPromptFlag: true,
+                                ErrorPromptText: '授权中...',
+                                ErrorPromptImg: require('../images/loading.png'),
+                            });
+                            fetch("https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxaeaf9ecd369f0592&secret=65131551996b322bd12bde7140b06ecd&code=" + responseCode.code + "&grant_type=authorization_code", {
+                                method: 'GET',
+                            }).then((response) => response.json()).then((responseData) => {
+                                console.log('responseData', responseData);
+                                // 获取微信个人信息
+                                fetch("https://api.weixin.qq.com/sns/userinfo?access_token=" + responseData.access_token + "&openid=" + responseData.openid, {
+                                    method: 'GET',
+                                }).then((response) => response.json()).then((responseData) => {
+                                    console.log('responseData', responseData);
+                                    this.appAdd(JSON.stringify(responseData))
+                                }).catch((error) => {
+                                    console.log('error', error);
+                                });
+                            }).catch((error) => {
+                                console.log('error', error);
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        this.setState({
+                            isLoading: true,
+                            ErrorPromptFlag: true,
+                            ErrorPromptText: '授权失败',
+                            ErrorPromptImg: require('../images/error.png'),
+                        })
+                        clearTimeout(this.timer)
+                        this.timer = setTimeout(() => {
+                            this.setState({
+                                ErrorPromptFlag: false,
+                            })
+                        }, global.TimingCount)
+                    })
+            } else {
+                // 未安装微信
+                global.Alert.alert("", '没有安装微信，请您安装微信之后再试');
+            }
+        });
+    }
+    // 发 用户信息 到后台
+    appAdd(jsonStr) {
         let formData = new FormData();
-        formData.append("accountNumber", "weixinzhanghu18801370533");
+        formData.append("jsonStr", jsonStr);
+        fetch(requestUrl.appAdd, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "token": global.Token,
+            },
+            body: formData,
+        }).then((response) => response.json()).then((responseData) => {
+            console.log('responseData', responseData);
+            if (responseData.code == 20000) {
+                // 添加账户
+                this.addWeChatAccount(responseData.result.openid);
+            } else {
+                this.setState({
+                    isLoading: false,
+                    ErrorPromptFlag: true,
+                    ErrorPromptText: '绑定失败，请重试',
+                    ErrorPromptImg: require('../images/error.png'),
+                })
+                clearTimeout(this.timer)
+                this.timer = setTimeout(() => {
+                    this.setState({
+                        ErrorPromptFlag: false,
+                    })
+                }, global.TimingCount)
+            }
+        }).catch((error) => {
+            console.log('error', error);
+        });
+    }
+    // 添加账户
+    addWeChatAccount(openid) {
+        let formData = new FormData();
+        formData.append("accountNumber", openid);
         fetch(requestUrl.addWeChatAccount, {
             method: 'POST',
             headers: {
@@ -554,23 +635,6 @@ export default class CashManagement extends Component {
         }).catch((error) => {
             console.log('error', error);
         });
-        // console.log(WeChat)
-        // WeChat.isWXAppInstalled().then((isInstalled) => {
-        //     if (isInstalled) {
-        //         let scope = 'snsapi_base';//snsapi_base snsapi_userinfo
-        //         let state = 'wechat_sdk_demo';
-        //         // 65131551996b322bd12bde7140b06ecd
-        //         // WeChat.openWXApp().then((res) => {
-        //         //     console.log(res)
-        //         // })
-        //         WeChat.sendAuthRequest(scope, state).then((res) => {
-        //             console.log(res)
-        //         });
-        //     } else {
-        //         // 未安装微信
-        //         global.Alert.alert("", '没有安装微信，请您安装微信之后再试');
-        //     }
-        // });
     }
     // 删除账户
     deleteWeChat() {
