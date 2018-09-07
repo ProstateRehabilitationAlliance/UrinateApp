@@ -23,6 +23,7 @@ export default class ErrorPrompt extends Component {
 }
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         width: global.SCREEN_WIDTH,
         height: global.SCREEN_HEIGHT,
         position: "absolute",
@@ -30,9 +31,10 @@ const styles = StyleSheet.create({
         left: 0,
         zIndex: 10001,
         alignItems: 'center',
-        justifyContent: 'center',
     },
     content: {
+        position: 'absolute',
+        top: global.SCREEN_HEIGHT * .3,
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',

@@ -52,7 +52,7 @@ export default class My extends Component {
         fetch(requestUrl.getSignStatus, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -102,7 +102,7 @@ export default class My extends Component {
         fetch(requestUrl.getDoctorDetail, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -426,7 +426,7 @@ export default class My extends Component {
                         />
                     </TouchableOpacity>
                 </View> */}
-                <View style={styles.content}>
+                <View style={[styles.content, { marginBottom: global.px2dp(20) }]}>
                     <TouchableOpacity
                         style={[styles.navigateBtn, { borderBottomWidth: global.Pixel }]}
                         activeOpacity={.8}
@@ -466,7 +466,6 @@ export default class My extends Component {
                         />
                     </TouchableOpacity>
                 </View>
-                <View style={{ height: global.px2dp(20) }}></View>
                 {
                     this.state.approveMaskFlag ?
                         <TouchableOpacity
@@ -589,9 +588,10 @@ export default class My extends Component {
 
 const styles = StyleSheet.create({
     container: {
+        position: 'relative',
         flex: 1,
+        height: global.SCREEN_HEIGHT,
         backgroundColor: global.Colors.bgColor,
-        paddingBottom: global.TabBar,
     },
     linearGradient: {
         paddingTop: global.StatusBarHeight,

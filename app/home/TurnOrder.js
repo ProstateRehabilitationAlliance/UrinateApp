@@ -317,7 +317,7 @@ export default class TurnOrder extends Component {
         fetch(requestUrl.turnOrderList[screenActive] + "?pageNo=" + pageNo + "&pageSize" + this.state.pageSize, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())

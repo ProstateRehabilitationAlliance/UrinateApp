@@ -44,7 +44,7 @@ export default class TurnOrderDetails extends Component {
             fetch(requestUrl.getOrder, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                     "token": global.Token,
                 },
                 body: formData,
@@ -60,7 +60,7 @@ export default class TurnOrderDetails extends Component {
                         fetch(requestUrl.getBaseInfoById + '?patientId=' + patientId, {
                             method: 'GET',
                             headers: {
-                                'Content-Type': 'multipart/form-data',
+                                
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())
@@ -93,7 +93,7 @@ export default class TurnOrderDetails extends Component {
                         fetch(requestUrl.getByGroupNumber + '?groupNumber=' + patientArchive, {
                             method: 'GET',
                             headers: {
-                                'Content-Type': 'multipart/form-data',
+                                
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())
@@ -124,7 +124,7 @@ export default class TurnOrderDetails extends Component {
                         fetch(requestUrl.getByArchive + '?archive=' + patientArchive, {
                             method: 'GET',
                             headers: {
-                                'Content-Type': 'multipart/form-data',
+                                
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())
@@ -578,7 +578,7 @@ export default class TurnOrderDetails extends Component {
         fetch(requestUrl.rejectedOrder, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
             body: formData,
@@ -649,7 +649,7 @@ export default class TurnOrderDetails extends Component {
             fetch(requestUrl.addDraft, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                     "token": global.Token,
                 },
                 body: formData,
@@ -725,7 +725,7 @@ export default class TurnOrderDetails extends Component {
             fetch(requestUrl.addFinal, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                     "token": global.Token,
                 },
                 body: formData,
@@ -1004,6 +1004,7 @@ const styles = StyleSheet.create({
         fontSize: global.px2dp(13),
         lineHeight: global.px2dp(20),
         height: global.px2dp(198),
+        textAlignVertical: 'top',
     },
     // 输入框样式 - start
 

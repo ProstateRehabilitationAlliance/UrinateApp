@@ -39,6 +39,7 @@ export let requestUrl = {
     // 个人中心
     "getDoctorDetail": IP + "/api-user/doctor/detail/getDoctorDetail",// 医生查询个人信息
     "updateDoctorDetail": IP + "/api-user/doctor/detail/updateDoctorDetail",// 医生修改个人信息
+    // "updateDoctorDetail": IP + "/api-stata/docket/getInquiryDocketList",// 查医生服务标签
     "findDoctorList": IP + "/api-user/doctor/detail/findDoctorList",// 条件查询医生列表
     "addFeedback": IP + "/api-stata/feedback/add",// 添加反馈意见
     "queryCount": IP + "/api-goods/goods/inquiry/queryCount",// 医生问诊服务数量查询
@@ -83,7 +84,7 @@ export let requestUrl = {
     "turnOrder": IP + "/api-order/order/inquiry/turnOrder",// 申请转诊
 
     // 患者管理
-    "getLablePatientJson": IP + "/api-stata/cache/static/getLablePatientJson",// 根据token查询患者标签信息
+    "getLablePatientJson": IP + "/api-stata/docket/getPatientDocketList",// 根据token查询患者标签信息
     "findPatientList": IP + "/api-record/patient/findPatientList",// 查询患者列表
 
     "getPatientById": IP + "/api-record/patientAnamnesis/getPatientById",// 根据患者ID查询病历信息
@@ -94,8 +95,8 @@ export let requestUrl = {
     "getExaminationListByPatient": IP + "/api-assessmen/medicalExamination/getExaminationListByPatient",// 根据患者ID查询化验单解读结果列表
     "addLabel": IP + "/api-record/patient/sticker/add",// 患者标签添加
     "removeLabel": IP + "/api-record/patient/sticker/remove",// 患者标签删除
-    "creationLabel": IP + "/api-stata/lablePatient/add",// 医生添加 自定义标签
-    "deleteLabel": IP + "/api-stata/lablePatient/remove",// 医生删除 自定义标签
+    "creationLabel": IP + "/api-stata/docket/addPatientDocket",// 医生添加 自定义标签
+    "deleteLabel": IP + "/api-stata/docket/deleteCustomDocket",// 医生删除 自定义标签
     "turnPatient": IP + "/api-record/userPatient/turnPatient",// 转诊 患者
 
     // 评估详情

@@ -47,7 +47,7 @@ export default class WithdrawDeposit extends Component {
         fetch(requestUrl.getBalance, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -87,7 +87,7 @@ export default class WithdrawDeposit extends Component {
         fetch(requestUrl.getWeChatAccount, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -475,7 +475,7 @@ export default class WithdrawDeposit extends Component {
         fetch(requestUrl.checkPay, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
             body: formData,
@@ -512,7 +512,7 @@ export default class WithdrawDeposit extends Component {
         fetch(requestUrl.addOrderCash, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
             body: formData,

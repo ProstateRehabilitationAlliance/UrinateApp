@@ -152,7 +152,7 @@ export default class UpdatePayPassword extends Component {
             fetch(requestUrl.checkPay, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                     "token": global.Token,
                 },
                 body: formData,
@@ -395,7 +395,7 @@ export default class UpdatePayPassword extends Component {
             fetch(requestUrl.updatePay, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                     "token": global.Token,
                 },
                 body: formData,

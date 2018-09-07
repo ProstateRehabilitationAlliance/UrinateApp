@@ -53,7 +53,7 @@ export default class Resume extends Component {
         fetch(requestUrl.getDoctorDetail, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -195,7 +195,7 @@ export default class Resume extends Component {
             fetch(requestUrl.updateDoctorDetail, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                     "token": global.Token,
                 },
                 body: formData,

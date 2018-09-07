@@ -8,6 +8,7 @@ import ErrorPrompt from "../common/ErrorPrompt";
 import Nav from "../common/Nav";// 导航组件
 import CountDownButton from 'react-native-smscode-count-down';// 倒计时
 import { StackActions, NavigationActions } from 'react-navigation';
+import { Storage } from "../utils/AsyncStorage";
 
 export default class SafetyCheckout extends Component {
     static navigationOptions = {
@@ -49,7 +50,7 @@ export default class SafetyCheckout extends Component {
         fetch(requestUrl.getUsername, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -247,7 +248,7 @@ export default class SafetyCheckout extends Component {
         fetch(requestUrl.passwordSms + '?passwordPhone=' + this.state.doctorPhone, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data', "token": global.Token,
+                 "token": global.Token,
             },
         })
             .then((response) => response.json())
@@ -543,7 +544,7 @@ export default class SafetyCheckout extends Component {
             fetch(requestUrl.passwordReset, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data', "token": global.Token,
+                     "token": global.Token,
                 },
                 body: formData,
             })
@@ -562,6 +563,8 @@ export default class SafetyCheckout extends Component {
                             this.setState({
                                 ErrorPrompt: true,
                             })
+                            Storage.setItem("token", '');
+                            global.Token = '';
                             const resetAction = StackActions.reset({
                                 index: 0,
                                 actions: [NavigationActions.navigate({ routeName: 'SignIn' })],

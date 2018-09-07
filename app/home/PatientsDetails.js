@@ -637,15 +637,15 @@ export default class PatientsDetails extends Component {
     // 渲染医生基础标签
     renderDoctorLabel() {
         let tempArr = [];
-        for (let key in this.state.allLabelArr) {
+        for (let i = 0; i < this.state.allLabelArr.length; i++) {
             tempArr.push(
-                <View key={key} style={styles.baseLabelItem}>
+                <View key={i} style={styles.baseLabelItem}>
                     <View style={styles.baseLabelBox}>
-                        <Text style={styles.baseLabelText}>{this.state.allLabelArr[key]}</Text>
+                        <Text style={styles.baseLabelText}>{this.state.allLabelArr[i].docketName}</Text>
                         <TouchableOpacity
                             activeOpacity={.8}
                             onPress={() => {
-                                this.deleteLabel(key)
+                                this.deleteLabel(this.state.allLabelArr[i].id)
                             }}
                             style={styles.delLabelBtn}
                         >
@@ -661,11 +661,11 @@ export default class PatientsDetails extends Component {
     // 渲染患者标签
     renderPatientLabel() {
         let tempArr = [];
-        for (const key in this.state.allLabelArr) {
+        for (let j = 0; j < this.state.allLabelArr.length; j++) {
             let flag = false;
             let id = '';
             for (let i = 0; i < this.state.patientLabelArr.length; i++) {
-                if (key == this.state.patientLabelArr[i].stickerId) {
+                if (this.state.allLabelArr[j].id == this.state.patientLabelArr[i].stickerId) {
                     flag = true;
                     id = this.state.patientLabelArr[i].id;
                 }
@@ -678,10 +678,10 @@ export default class PatientsDetails extends Component {
                         onPress={() => {
                             this.removeLabel(id);
                         }}
-                        key={key}
+                        key={j}
                     >
                         <View style={[styles.labelBox, { backgroundColor: global.Colors.color }]}>
-                            <Text style={[styles.labelText, { color: global.Colors.textfff }]}>{this.state.allLabelArr[key]}</Text>
+                            <Text style={[styles.labelText, { color: global.Colors.textfff }]}>{this.state.allLabelArr[j].docketName}</Text>
                         </View>
                     </TouchableOpacity>
                 )
@@ -691,12 +691,12 @@ export default class PatientsDetails extends Component {
                         activeOpacity={.8}
                         style={styles.labelBtn}
                         onPress={() => {
-                            this.addLabel(key);
+                            this.addLabel(this.state.allLabelArr[j].id);
                         }}
-                        key={key}
+                        key={j}
                     >
                         <View style={styles.labelBox}>
-                            <Text style={styles.labelText}>{this.state.allLabelArr[key]}</Text>
+                            <Text style={styles.labelText}>{this.state.allLabelArr[j].docketName}</Text>
                         </View>
                     </TouchableOpacity>
                 )
@@ -719,7 +719,6 @@ export default class PatientsDetails extends Component {
         fetch(requestUrl.turnPatient, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
                 "token": global.Token,
             },
             body: formData,
@@ -907,7 +906,7 @@ export default class PatientsDetails extends Component {
                 ErrorPromptImg: require('../images/loading.png'),
             })
             let formData = new FormData();
-            formData.append("lableName", this.state.lableName);
+            formData.append("docketName", this.state.lableName);
             fetch(requestUrl.creationLabel, {
                 method: 'POST',
                 headers: {
@@ -919,10 +918,10 @@ export default class PatientsDetails extends Component {
                 .then((responseData) => {
                     console.log('responseData', responseData);
                     if (responseData.code == 20000) {
-                        let tempJSON = this.state.allLabelArr;
-                        tempJSON[responseData.result] = this.state.lableName;
+                        let tempArr = this.state.allLabelArr;
+                        tempArr.push(responseData.result);
                         this.setState({
-                            allLabelArr: tempJSON,
+                            allLabelArr: tempArr,
                             lableName: '',
                             isLoading: false,
                             ErrorPromptFlag: true,
@@ -977,14 +976,14 @@ export default class PatientsDetails extends Component {
             .then((responseData) => {
                 console.log('responseData', responseData);
                 if (responseData.code == 20000) {
-                    let tempJSON = this.state.allLabelArr;
-                    for (let key in tempJSON) {
-                        if (id == key) {
-                            delete tempJSON[key];
+                    let tempArr = this.state.allLabelArr;
+                    for (let i = 0; i < tempArr.length; i++) {
+                        if (id == tempArr[i].id) {
+                            tempArr.splice(i, 1);
                         }
                     }
                     this.setState({
-                        allLabelArr: tempJSON,
+                        allLabelArr: tempArr,
                         isLoading: false,
                         ErrorPromptFlag: true,
                         ErrorPromptText: '删除成功',

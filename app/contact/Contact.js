@@ -194,7 +194,7 @@ export default class Contact extends Component {
         fetch(requestUrl.findStar + '?pageSize=' + this.state.pageSize + '&pageNo=' + pageNo, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -226,7 +226,6 @@ export default class Contact extends Component {
                     this.setState({
                         isLoading: false,
                         ErrorPromptFlag: false,
-                        doctorArr: [],
                         dataFlag: false,
                     })
                 }
@@ -242,7 +241,7 @@ export default class Contact extends Component {
         fetch(requestUrl.unFocus, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
             body: formData,

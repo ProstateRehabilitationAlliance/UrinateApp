@@ -5,7 +5,9 @@ import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";
+import { Storage } from "../utils/AsyncStorage";
 import Nav from "../common/Nav";// 导航组件
+import { StackActions, NavigationActions } from 'react-navigation';
 export default class UpdatePassword extends Component {
     static navigationOptions = {
         header: null,
@@ -329,7 +331,7 @@ export default class UpdatePassword extends Component {
             fetch(requestUrl.updatePassword, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                     "token": global.Token,
                 },
                 body: formData,
@@ -348,7 +350,13 @@ export default class UpdatePassword extends Component {
                             this.setState({
                                 ErrorPromptFlag: false,
                             })
-                            this.props.navigation.goBack();
+                            Storage.setItem("token", '');
+                            global.Token = '';
+                            const resetAction = StackActions.reset({
+                                index: 0,
+                                actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
+                            });
+                            this.props.navigation.dispatch(resetAction);
                         }, global.TimingCount)
                     } else if (responseData.code == 51001) {
                         this.setState({

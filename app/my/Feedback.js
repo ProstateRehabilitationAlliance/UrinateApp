@@ -104,7 +104,7 @@ export default class Feedback extends Component {
             fetch(requestUrl.addFeedback, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                     "token": global.Token,
                 },
                 body: formData,

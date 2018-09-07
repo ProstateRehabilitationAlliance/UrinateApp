@@ -42,7 +42,7 @@ export default class TurnOrderReception extends Component {
             fetch(requestUrl.getOrder, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                     "token": global.Token,
                 },
                 body: formData,
@@ -58,7 +58,7 @@ export default class TurnOrderReception extends Component {
                         fetch(requestUrl.getBaseInfoById + '?patientId=' + patientId, {
                             method: 'GET',
                             headers: {
-                                'Content-Type': 'multipart/form-data',
+                                
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())
@@ -91,7 +91,7 @@ export default class TurnOrderReception extends Component {
                         fetch(requestUrl.getByGroupNumber + '?groupNumber=' + patientArchive, {
                             method: 'GET',
                             headers: {
-                                'Content-Type': 'multipart/form-data',
+                                
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())
@@ -402,7 +402,7 @@ export default class TurnOrderReception extends Component {
         fetch(requestUrl.acceptedOrder, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
             body: formData,
@@ -456,7 +456,7 @@ export default class TurnOrderReception extends Component {
         fetch(requestUrl.rejectedOrder, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
             body: formData,

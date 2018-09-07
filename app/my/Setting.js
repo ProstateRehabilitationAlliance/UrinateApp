@@ -40,7 +40,7 @@ export default class Setting extends Component {
         fetch(requestUrl.getUsername, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -166,7 +166,7 @@ export default class Setting extends Component {
         fetch(requestUrl.logOut, {
             method: 'POST',
             headers: {
-                // 'Content-Type': 'multipart/form-data',
+                // 
                 "token": global.Token,
             },
         }).then((response) => response.json())

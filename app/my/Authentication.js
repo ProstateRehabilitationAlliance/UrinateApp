@@ -54,7 +54,7 @@ export default class Authentication extends Component {
         fetch(requestUrl.getSignStatus, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -74,6 +74,7 @@ export default class Authentication extends Component {
                         ErrorPromptFlag: false,
                         isLoading: false,
                     })
+                    this.getAuthentication();
                 } else if (responseData.code == 40003) {
                     // 认证信息审核失败
                     this.setState({
@@ -81,7 +82,6 @@ export default class Authentication extends Component {
                         ErrorPromptFlag: false,
                         isLoading: false,
                     })
-                    this.getAuthentication();
                 } else if (responseData.code == 40004) {
                     // 认证信息未填写
                     this.setState({
@@ -106,7 +106,7 @@ export default class Authentication extends Component {
         fetch(requestUrl.getIdCardInfo, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -166,7 +166,7 @@ export default class Authentication extends Component {
         fetch(requestUrl.getAuthentication, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())

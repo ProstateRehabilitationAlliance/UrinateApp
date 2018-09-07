@@ -514,7 +514,7 @@ export default class SignUp extends Component {
             fetch(requestUrl.registerSms + '?registerPhone=' + this.state.doctorPhone, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                 },
             })
                 .then((response) => response.json())
@@ -701,7 +701,7 @@ export default class SignUp extends Component {
             fetch(requestUrl.register, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                 },
                 body: formData,
             })
@@ -728,7 +728,7 @@ export default class SignUp extends Component {
                             ErrorPrompt: false,
                             smsCodeReg: false,
                             ErrorText: '验证码错误',
-                            ErrorImg: require('../images/succeed.png'),
+                            ErrorImg: require('../images/error.png'),
                         })
                         clearTimeout(this.timer);
                         this.timer = setTimeout(() => {
@@ -741,7 +741,7 @@ export default class SignUp extends Component {
                             isLoading: false,
                             ErrorPrompt: false,
                             ErrorText: '注册失败',
-                            ErrorImg: require('../images/succeed.png'),
+                            ErrorImg: require('../images/error.png'),
                         })
                         clearTimeout(this.timer);
                         this.timer = setTimeout(() => {

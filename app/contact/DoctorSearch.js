@@ -62,7 +62,7 @@ export default class DoctorSearch extends Component {
         fetch(requestUrl.getDoctorDetail, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -341,7 +341,7 @@ export default class DoctorSearch extends Component {
         fetch(url, {
             method: 'GET',
             headers: {
-                // 'Content-Type': 'multipart/form-data',
+                // 
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -392,7 +392,7 @@ export default class DoctorSearch extends Component {
         fetch(requestUrl.focus, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
             body: formData,
@@ -446,7 +446,7 @@ export default class DoctorSearch extends Component {
         fetch(requestUrl.unFocus, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
             body: formData,

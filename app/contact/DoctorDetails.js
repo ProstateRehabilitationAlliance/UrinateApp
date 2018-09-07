@@ -45,7 +45,7 @@ export default class DoctorDetails extends Component {
             fetch(requestUrl.getDoctorDetailById + '?doctorId=' + doctorId, {
                 method: 'GET',
                 headers: {
-                    // 'Content-Type': 'multipart/form-data',
+                    // 
                     "token": global.Token,
                 },
             }).then((response) => response.json())
@@ -81,7 +81,7 @@ export default class DoctorDetails extends Component {
             fetch(requestUrl.queryListByDoctor + '?doctorId=' + doctorId, {
                 method: 'GET',
                 headers: {
-                    // 'Content-Type': 'multipart/form-data',
+                    // 
                     "token": global.Token,
                 },
             }).then((response) => response.json())
@@ -349,7 +349,7 @@ export default class DoctorDetails extends Component {
         fetch(requestUrl.focus, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
             body: formData,
@@ -399,7 +399,7 @@ export default class DoctorDetails extends Component {
         fetch(requestUrl.unFocus, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
             body: formData,

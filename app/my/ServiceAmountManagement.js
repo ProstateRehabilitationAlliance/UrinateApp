@@ -34,7 +34,7 @@ export default class ServiceAmountManagement extends Component {
         fetch(requestUrl.getPriceDocketList, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -81,7 +81,7 @@ export default class ServiceAmountManagement extends Component {
         fetch(requestUrl.getPriceInquiryPictureByParams, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -326,7 +326,7 @@ export default class ServiceAmountManagement extends Component {
             fetch(requestUrl.addPriceDocket, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                     "token": global.Token,
                 },
                 body: formData,
@@ -405,7 +405,7 @@ export default class ServiceAmountManagement extends Component {
         fetch(requestUrl.deleteCustomDocket, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
             body: formData,

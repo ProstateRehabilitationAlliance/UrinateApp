@@ -24,6 +24,7 @@ export let global = {
     Colors: Colors,// 常用颜色
     px2dp: Px2dp,// 屏幕适配
     Alert: Alert,// 弹出框
+    AndroidCurrentHeight: StatusBar.currentHeight,// android 状态栏高度
     StatusBarHeight: Platform.OS === 'ios' ? (isIphoneX() ? 44 : 20) : 0,//状态栏高度
     NavHeight: Platform.OS === 'ios' ? (isIphoneX() ? 88 : 64) : 44,// 导航高度
     TabBar: isIphoneX() ? 34 : 0,// tabBar 高度
@@ -33,6 +34,6 @@ export let global = {
     doctorInfo: {},
     stateKey: '',
     serviceTel: "010-6378-6220",// 客服电话
-    versionNum: "1.0.7",// 版本号
+    versionNum: "1.0.8",// 版本号
 };
 

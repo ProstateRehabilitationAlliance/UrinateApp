@@ -316,7 +316,7 @@ export default class SignIn extends Component {
             fetch(requestUrl.login, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                 },
                 body: formData,
             })

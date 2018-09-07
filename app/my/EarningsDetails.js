@@ -107,7 +107,7 @@ export default class EarningsDetails extends Component {
         fetch(requestUrl.getBalanceList + "?pageNo=" + pageNo + "&pageSize" + this.state.pageSize, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())

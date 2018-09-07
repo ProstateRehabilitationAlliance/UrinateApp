@@ -40,7 +40,7 @@ export default class ReadDetails extends Component {
             fetch(requestUrl.getExaminationDetails + "?id=" + this.props.navigation.state.params.id, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                     "token": global.Token,
                 },
             }).then((response) => response.json())

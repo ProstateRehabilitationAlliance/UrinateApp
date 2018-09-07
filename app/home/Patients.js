@@ -34,6 +34,9 @@ export default class Patients extends Component {
         // 1初始化state
     }
     componentWillMount() {
+        // this.getLablePatientJson();
+    }
+    getLablePatientJson() {
         // 查询搜索标签 - start
         this.setState({
             isLoading: true,
@@ -44,7 +47,7 @@ export default class Patients extends Component {
         fetch(requestUrl.getLablePatientJson, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -75,28 +78,27 @@ export default class Patients extends Component {
                 console.log('error', error);
             });
         // 查询搜索标签 - end
-
     }
     renderSearchLabel() {
         let tempArr = [];
-        for (const key in this.state.searchLabel) {
+        for (let i = 0; i < this.state.searchLabel.length; i++) {
             tempArr.push(
                 <TouchableOpacity
                     activeOpacity={.8}
                     onPress={() => {
                         this.setState({
-                            stickerId: key,
+                            stickerId: this.state.searchLabel[i].id,
                             patientArr: [],
                             pageNo: 1,
                         })
                         this.renderSearchLabel();
-                        this.findPatientList(1, key);
+                        this.findPatientList(1, this.state.searchLabel[i].id);
                     }}
                     style={styles.serachLabelBtn}
-                    key={key}
+                    key={i}
                 >
-                    <View style={[styles.searchLabelItem, this.state.stickerId == key ? { backgroundColor: global.Colors.color } : null]}>
-                        <Text style={[styles.searchLabelText, this.state.stickerId == key ? { color: global.Colors.textfff } : null]}>{this.state.searchLabel[key]}</Text>
+                    <View style={[styles.searchLabelItem, this.state.stickerId == this.state.searchLabel[i].id ? { backgroundColor: global.Colors.color } : null]}>
+                        <Text style={[styles.searchLabelText, this.state.stickerId == this.state.searchLabel[i].id ? { color: global.Colors.textfff } : null]}>{this.state.searchLabel[i].docketName}</Text>
                     </View>
                 </TouchableOpacity>
             )
@@ -128,6 +130,7 @@ export default class Patients extends Component {
                             patientArr: [],
                             pageNo: 1,
                         })
+                        this.getLablePatientJson();
                         this.findPatientList(1, this.state.stickerId);
                     }}
                 />
@@ -324,7 +327,7 @@ export default class Patients extends Component {
         fetch(url, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+
                 "token": global.Token,
             },
         }).then((response) => response.json())

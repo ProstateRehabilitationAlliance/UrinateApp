@@ -8,6 +8,7 @@ import Nav from "../common/Nav";
 import UpFile from "../common/UpFile";
 import ErrorPrompt from "../common/ErrorPrompt";
 import SubmitPrompt from "../common/SubmitPrompt";
+import { StackActions, NavigationActions } from 'react-navigation';
 
 export default class Approve extends Component {
     static navigationOptions = {
@@ -63,14 +64,87 @@ export default class Approve extends Component {
         // 2仅调用一次在 render 前
     }
     componentDidMount() {
-        
+        // 查医院信息
+        fetch(requestUrl.getHospitalJson, {
+            method: 'GET',
+            headers: {
+                
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                let temp = [];
+                for (const key in responseData.result) {
+                    temp.push({
+                        id: key,
+                        hospitalName: responseData.result[key],
+                    })
+                }
+                this.setState({
+                    hospitalData: temp,
+                })
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+        // 查职称信息
+        fetch(requestUrl.getBranchServiceJson, {
+            method: 'GET',
+            headers: {
+                
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                let temp = [];
+                for (const key in responseData.result) {
+                    temp.push({
+                        id: key,
+                        branchName: responseData.result[key],
+                    })
+                }
+                this.setState({
+                    branchData: temp,
+                })
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+        // 查职称信息
+        fetch(requestUrl.getDoctorTitleJson, {
+            method: 'GET',
+            headers: {
+                
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                let temp = [];
+                for (const key in responseData.result) {
+                    temp.push({
+                        id: key,
+                        titleName: responseData.result[key],
+                    })
+                }
+                this.setState({
+                    titleData: temp,
+                })
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+        // 查询认证信息
+        this.getAuthentication();
     }
     // 获取认证信息
     getAuthentication() {
         fetch(requestUrl.getAuthentication, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -79,18 +153,17 @@ export default class Approve extends Component {
                 if (responseData.code == 20000) {
                     this.setState({
                         signFlag: false,
-                        hospitalId: responseData.result.hospitalId,// 医院id
-                        branchId: responseData.result.branchId,// 科室id
-                        titleId: responseData.result.titleId,// 职称id
+                        hospitalId: responseData.result.hospitalId,
+                        hospitalName: responseData.result.hospitalName,
+                        branchId: responseData.result.branchId,
+                        branchName: responseData.result.branchName,
+                        titleId: responseData.result.titleId,
+                        titleName: responseData.result.titleName,
                         idCardFrontUrl: responseData.result.idCardFront,// 身份证正面
                         doctorCardFrontUrl: responseData.result.doctorCardFront,// 医生执业证 正面
                         workCardUrl: responseData.result.workCard,// 手持工牌
                     })
-                    this.idToName();
-                } else if (responseData.code == 40001) {
-
-                } else {
-                    // 50000 系统错误 
+                } else if (responseData.code == 50000) {
                     this.setState({
                         ErrorPrompt: true,// 提示框 是否显示
                         ErrorText: '认证信息获取失败，请重试',// 提示框文字
@@ -102,7 +175,6 @@ export default class Approve extends Component {
                 console.log('error', error);
             });
     }
-    // 根据 id 查 对应的名字
     render() {
         const { navigate, goBack } = this.props.navigation;
         return (
@@ -593,7 +665,11 @@ export default class Approve extends Component {
         this.setState({
             SubmitPromptFlag: false,
         });
-        this.props.navigation.goBack();
+        const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: 'Home' })],
+        });
+        this.props.navigation.dispatch(resetAction);
     }
     // 后退事件
     goBack() {
@@ -704,7 +780,7 @@ export default class Approve extends Component {
                 fetch(requestUrl.addAuthentication, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        
                         "token": global.Token,
                     },
                     body: formData,
@@ -779,7 +855,7 @@ export default class Approve extends Component {
                 fetch(requestUrl.updateAuthentication, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        
                         "token": global.Token,
                     },
                     body: formData,
@@ -980,7 +1056,7 @@ const styles = StyleSheet.create({
         left: 0,
         zIndex: 1000,
         width: global.SCREEN_WIDTH,
-        height: global.SCREEN_HEIGHT - global.NavHeight,
+        height: global.IOS ? global.SCREEN_HEIGHT - global.NavHeight : global.SCREEN_HEIGHT - global.NavHeight - global.AndroidCurrentHeight,
         backgroundColor: 'rgba(0,0,0,.5)',
         alignItems: 'flex-end',
     },

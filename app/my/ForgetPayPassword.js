@@ -48,7 +48,7 @@ export default class ForgetPayPassword extends Component {
         fetch(requestUrl.getUsername, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -250,7 +250,7 @@ export default class ForgetPayPassword extends Component {
         fetch(requestUrl.sendPayPasswordCode, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
             body: formData,
@@ -547,7 +547,7 @@ export default class ForgetPayPassword extends Component {
             fetch(requestUrl.paymentPasswordReset, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data', "token": global.Token,
+                     "token": global.Token,
                 },
                 body: formData,
             })

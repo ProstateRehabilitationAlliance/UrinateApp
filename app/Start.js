@@ -29,7 +29,7 @@ export default class Start extends Component {
                         fetch(requestUrl.getSignStatus, {
                             method: 'GET',
                             headers: {
-                                'Content-Type': 'multipart/form-data',
+                                
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())
@@ -69,6 +69,11 @@ export default class Start extends Component {
                 this.setState({
                     initializeFlag: true,
                 })
+                const resetAction = StackActions.reset({
+                    index: 0,
+                    actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
+                });
+                this.props.navigation.dispatch(resetAction);
             }
         })
     }
@@ -85,7 +90,7 @@ export default class Start extends Component {
                     networkActivityIndicatorVisible={this.state.isLoading}//IOS设定网络活动指示器(就是那个菊花)是否显示在状态栏。
                     statusBarStyle={"default"}//ios:白底黑字  android:黑底白字
                 />
-                {this.state.initializeFlag ?
+                {/* {this.state.initializeFlag ?
                     <ScrollView
                         horizontal={true}
                         pagingEnabled={true}
@@ -127,7 +132,7 @@ export default class Start extends Component {
                             source={{ uri: "https://m.360buyimg.com/babel/jfs/t26095/57/1041327989/55624/ccd7caf0/5b865819N416fa14a.jpg" }}
                         />
                     </View>
-                }
+                } */}
             </View>
         );
     }

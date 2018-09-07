@@ -3,7 +3,7 @@ formData.append("idCard", "1");
 fetch('url', {
     method: 'POST',
     headers: {
-        'Content-Type': 'multipart/form-data',
+        
         "token": global.Token,
     },
     body: formData,

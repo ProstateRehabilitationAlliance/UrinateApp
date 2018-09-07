@@ -36,7 +36,7 @@ export default class OrderEnd extends Component {
             fetch(requestUrl.getOrder, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    
                     "token": global.Token,
                 },
                 body: formData,
@@ -52,7 +52,7 @@ export default class OrderEnd extends Component {
                         fetch(requestUrl.getBaseInfoById + '?patientId=' + patientId, {
                             method: 'GET',
                             headers: {
-                                'Content-Type': 'multipart/form-data',
+                                
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())
@@ -85,7 +85,7 @@ export default class OrderEnd extends Component {
                         fetch(requestUrl.getByGroupNumber + '?groupNumber=' + patientArchive, {
                             method: 'GET',
                             headers: {
-                                'Content-Type': 'multipart/form-data',
+                                
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())
@@ -116,7 +116,7 @@ export default class OrderEnd extends Component {
                         fetch(requestUrl.getByArchive + '?archive=' + patientArchive, {
                             method: 'GET',
                             headers: {
-                                'Content-Type': 'multipart/form-data',
+                                
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())

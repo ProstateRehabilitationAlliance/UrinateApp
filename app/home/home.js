@@ -39,7 +39,7 @@ export default class Home extends Component {
         fetch(requestUrl.getSignStatus, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -91,7 +91,7 @@ export default class Home extends Component {
         fetch(requestUrl.getDoctorDetail, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -165,7 +165,7 @@ export default class Home extends Component {
         fetch(requestUrl.addGoods, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
             body: formData,
@@ -211,7 +211,7 @@ export default class Home extends Component {
         fetch(requestUrl.getPriceInquiryPictureByParams, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -225,7 +225,7 @@ export default class Home extends Component {
                     fetch(requestUrl.getPriceDocketList, {
                         method: 'GET',
                         headers: {
-                            'Content-Type': 'multipart/form-data',
+                            
                             "token": global.Token,
                         },
                     }).then((response) => response.json())
@@ -310,7 +310,7 @@ export default class Home extends Component {
                         this.props.navigation.navigate('Approve');
                     }}
                 >
-                    <Text style={styles.headText}>认证失败，请重新认证 <Text style={{ color: global.Colors.color347fc2 }}>去认证</Text></Text>
+                    <Text style={styles.headText}>认证失败，请重新 <Text style={{ color: global.Colors.color347fc2 }}>去认证</Text></Text>
                 </TouchableOpacity>
             )
         } else if (this.state.signStatus == "AUTHENTICATION_PROGRESS") {
@@ -348,7 +348,7 @@ export default class Home extends Component {
         fetch(requestUrl.getClickAndInquiry, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -600,7 +600,7 @@ export default class Home extends Component {
                                 </View>
                                 <View style={styles.QRImgBox}>
                                     <QRCode
-                                        value={"http://www.yilaiyiwang.com/chestnut/doctorDetails/DoctorDetails.html?" + global.Token}
+                                        value={"http://www.qlxlm.com/chestnut/doctorDetails/DoctorDetails.html?" + global.Token}
                                         size={140}
                                         bgColor='#000'
                                         fgColor='white' />
@@ -728,6 +728,7 @@ const styles = StyleSheet.create({
     container: {
         position: 'relative',
         flex: 1,
+        height: global.SCREEN_HEIGHT,
         backgroundColor: global.Colors.textfff,
     },
     linearGradient: {

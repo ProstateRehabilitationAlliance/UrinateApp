@@ -36,7 +36,7 @@ export default class Earnings extends Component {
         fetch(requestUrl.getTotleIncome, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -68,7 +68,7 @@ export default class Earnings extends Component {
         fetch(requestUrl.getPriceInquiryPictureByParams, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -112,7 +112,7 @@ export default class Earnings extends Component {
         fetch(requestUrl.getBalance, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -164,7 +164,7 @@ export default class Earnings extends Component {
                         fetch(requestUrl.getPriceDocketList, {
                             method: 'GET',
                             headers: {
-                                'Content-Type': 'multipart/form-data',
+                                
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())
@@ -370,10 +370,12 @@ export default class Earnings extends Component {
                         activeOpacity={.8}
                         style={styles.serviceBtn}
                         onPress={() => {
-                            this.setState({
-                                servicePic: this.state.serviceLabelArr[i].docketValue,
-                                switchServiceFlag: !this.state.switchServiceFlag,
-                            })
+                            this.state.servicePicActive == this.state.serviceLabelArr[i].docketValue ?
+                                null :
+                                this.setState({
+                                    servicePic: this.state.serviceLabelArr[i].docketValue,
+                                    switchServiceFlag: !this.state.switchServiceFlag,
+                                })
                         }}
                         key={i}
                     >
@@ -402,7 +404,7 @@ export default class Earnings extends Component {
         fetch(requestUrl.addGoods, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
             body: formData,

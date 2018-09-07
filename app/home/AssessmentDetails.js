@@ -44,7 +44,7 @@ export default class AssessmentDetails extends Component {
                 fetch(requestUrl.nihAnswer, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        
                         "token": global.Token,
                     },
                     body: formData,
@@ -58,7 +58,7 @@ export default class AssessmentDetails extends Component {
                             fetch(requestUrl.nihTopic, {
                                 method: 'GET',
                                 headers: {
-                                    // 'Content-Type': 'multipart/form-data',
+                                    // 
                                     "token": global.Token,
                                 },
                             }).then((response) => response.json())
@@ -187,7 +187,7 @@ export default class AssessmentDetails extends Component {
                 fetch(requestUrl.ipssAnswer, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        
                         "token": global.Token,
                     },
                     body: formData,
@@ -201,7 +201,7 @@ export default class AssessmentDetails extends Component {
                             fetch(requestUrl.ipssTopic, {
                                 method: 'GET',
                                 headers: {
-                                    // 'Content-Type': 'multipart/form-data',
+                                    // 
                                     "token": global.Token,
                                 },
                             }).then((response) => response.json())

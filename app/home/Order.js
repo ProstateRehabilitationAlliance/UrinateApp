@@ -324,7 +324,7 @@ export default class Order extends Component {
         fetch(requestUrl.inquiryOrder[screenActive] + "?pageNo=" + pageNo + "&pageSize" + this.state.pageSize, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                
                 "token": global.Token,
             },
         }).then((response) => response.json())

@@ -26,7 +26,39 @@ export default class PersonalInfo extends Component {
         // 1初始化state
     }
     componentWillMount() {
-        // 2仅调用一次在 render 前
+        // 查询服务标签
+        // fetch(requestUrl.getInquiryDocketList, {
+        //     method: 'GET',
+        //     headers: {
+        //         "token": global.Token,
+        //     },
+        // }).then((response) => response.json())
+        //     .then((responseData) => {
+        //         console.log('responseData', responseData);
+        //         if (responseData.code == 20000) {
+        //             this.setState({
+        //                 isLoading: false,
+        //                 ErrorPromptFlag: false,
+        //                 userInfo: responseData.result,
+        //             });
+        //         } else {
+        //             this.setState({
+        //                 isLoading: false,
+        //                 ErrorPromptFlag: true,
+        //                 ErrorPromptText: '服务器繁忙',
+        //                 ErrorPromptImg: require('../images/error.png'),
+        //             })
+        //             clearTimeout(this.timer)
+        //             this.timer = setTimeout(() => {
+        //                 this.setState({
+        //                     ErrorPromptFlag: false,
+        //                 })
+        //             }, global.TimingCount)
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         console.log('error', error);
+        //     });
     }
     componentDidMount() {
         Storage.getItem("userInfo", (data) => {
@@ -50,7 +82,7 @@ export default class PersonalInfo extends Component {
         fetch(requestUrl.getDoctorDetail, {
             method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data',
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -190,20 +222,28 @@ export default class PersonalInfo extends Component {
                             <Image source={require('../images/arrow_right_grey.png')} />
                         </TouchableOpacity>
                         <View style={styles.labelContent}>
-                            {/* <TouchableOpacity
-                                style={styles.labelBtn}
-                                activeOpacity={.8}
-                                onPress={() => { }}>
-                                <View style={[styles.labelItem, { backgroundColor: global.Colors.color749ece }]}>
-                                    <Text style={[styles.labelText, { color: global.Colors.text666, }]}>图文</Text>
-                                </View>
-                            </TouchableOpacity> */}
                             <TouchableOpacity
                                 style={styles.labelBtn}
                                 activeOpacity={.8}
                                 onPress={() => { }}>
                                 <View style={styles.labelItem}>
                                     <Text style={styles.labelText}>图文</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.labelBtn}
+                                activeOpacity={.8}
+                                onPress={() => { }}>
+                                <View style={[styles.labelItem, { backgroundColor: global.Colors.color749ece }]}>
+                                    <Text style={[styles.labelText, { color: global.Colors.text666, }]}>电话</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.labelBtn}
+                                activeOpacity={.8}
+                                onPress={() => { }}>
+                                <View style={[styles.labelItem, { backgroundColor: global.Colors.color749ece }]}>
+                                    <Text style={[styles.labelText, { color: global.Colors.text666, }]}>视频</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -241,7 +281,7 @@ export default class PersonalInfo extends Component {
             fetch(requestUrl.addFeedback, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+
                     "token": global.Token,
                 },
                 body: formData,
