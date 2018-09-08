@@ -45,7 +45,7 @@ export default class DoctorSearch extends Component {
                     userInfo: data,
                     signStatus: 'AUTHENTICATION_SUCCESS',
                 })
-                this.findDoctorList(this.state.searchText, 1);
+                this.findDoctorList(this.state.searchText, 1, this.state.hospitalId);
             } else {
                 this.setState({
                     isLoading: true,
@@ -62,7 +62,7 @@ export default class DoctorSearch extends Component {
         fetch(requestUrl.getDoctorDetail, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -162,7 +162,7 @@ export default class DoctorSearch extends Component {
                                         doctorArr: [],
                                         pageNo: 1,
                                     })
-                                    this.findDoctorList(this.state.searchText, 1);
+                                    this.findDoctorList(this.state.searchText, 1, this.state.hospitalId);
                                 }}
                                 defaultValue={this.state.searchText}
                                 underlineColorAndroid={'transparent'}
@@ -193,7 +193,7 @@ export default class DoctorSearch extends Component {
                                 doctorArr: [],
                                 pageNo: 1,
                             })
-                            this.findDoctorList(this.state.searchText, 1);
+                            this.findDoctorList(this.state.searchText, 1, '');
                         }}
                         style={styles.itemBtn}
                     >
@@ -209,7 +209,7 @@ export default class DoctorSearch extends Component {
                                 doctorArr: [],
                                 pageNo: 1,
                             })
-                            this.findDoctorList(this.state.searchText, 1);
+                            this.findDoctorList(this.state.searchText, 1, this.state.userInfo.hospitalId);
                         }}
                         style={styles.itemBtn}
                     >
@@ -242,7 +242,7 @@ export default class DoctorSearch extends Component {
                             doctorArr: [],
                             pageNo: 1,
                         })
-                        this.findDoctorList(this.state.searchText, 1);
+                        this.findDoctorList(this.state.searchText, 1, this.state.hospitalId);
                     }}//头部刷新组件
                     refreshing={this.state.isRefresh}//加载图标
                     onEndReached={() => this.onEndReached()} // 加载更多
@@ -320,28 +320,27 @@ export default class DoctorSearch extends Component {
     // 加载更多
     onEndReached() {
         if (this.state.dataFlag) {
-            this.findDoctorList(this.state.searchText, this.state.pageNo * 1 + 1 + '');
+            this.findDoctorList(this.state.searchText, this.state.pageNo * 1 + 1 + '', this.state.hospitalId);
             this.setState({ pageNo: this.state.pageNo * 1 + 1 + '' });
         }
     }
 
     // 查医生列表
-    findDoctorList(searchText, pageNo) {
+    findDoctorList(searchText, pageNo, hospitalId) {
         this.setState({
             isLoading: true,
             ErrorPromptFlag: true,
             ErrorPromptText: '加载中...',
             ErrorPromptImg: require('../images/loading.png'),
         })
-        if (this.state.hospitalId) {
-            var url = requestUrl.findDoctorList + '?doctorName=' + searchText + '&pageSize=' + this.state.pageSize + '&pageNo=' + pageNo + '&hospitalId=' + this.state.hospitalId;
+        if (hospitalId) {
+            var url = requestUrl.findDoctorList + '?doctorName=' + searchText + '&pageSize=' + this.state.pageSize + '&pageNo=' + pageNo + '&hospitalId=' + hospitalId;
         } else {
             var url = requestUrl.findDoctorList + '?doctorName=' + searchText + '&pageSize=' + this.state.pageSize + '&pageNo=' + pageNo;
         }
         fetch(url, {
             method: 'GET',
             headers: {
-                // 
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -392,7 +391,7 @@ export default class DoctorSearch extends Component {
         fetch(requestUrl.focus, {
             method: 'POST',
             headers: {
-                
+
                 "token": global.Token,
             },
             body: formData,
@@ -446,7 +445,7 @@ export default class DoctorSearch extends Component {
         fetch(requestUrl.unFocus, {
             method: 'POST',
             headers: {
-                
+
                 "token": global.Token,
             },
             body: formData,

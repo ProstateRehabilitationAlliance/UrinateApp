@@ -6,6 +6,8 @@ import { global } from '../utils/Global';// 常量
 import ErrorPrompt from "../common/ErrorPrompt";
 import Nav from "../common/Nav";// 导航组件
 import { BoxShadow } from 'react-native-shadow';
+import { NavigationEvents } from "react-navigation";
+
 export default class TurnOrder extends Component {
     static navigationOptions = {
         header: null,
@@ -34,7 +36,7 @@ export default class TurnOrder extends Component {
     }
     componentWillMount() {
         // 2仅调用一次在 render 前
-        this.getOrderList(1, this.state.screenActive);
+        // this.getOrderList(1, this.state.screenActive);
     }
     componentDidMount() {
         // 4获取数据 在 render 后
@@ -43,6 +45,15 @@ export default class TurnOrder extends Component {
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container}>
+                <NavigationEvents
+                    onWillFocus={() => {
+                        this.setState({
+                            orderArr: [],
+                            pageNo: 1,
+                        })
+                        this.getOrderList(1, this.state.screenActive);
+                    }}
+                />
                 <Nav
                     isLoading={this.state.isLoading}
                     title={"转诊订单"}

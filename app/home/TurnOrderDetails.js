@@ -311,7 +311,7 @@ export default class TurnOrderDetails extends Component {
                     </View>
                 </LinearGradient>
                 <ScrollView
-                    style={[styles.scrollView, { height: global.IOS ? global.SCREEN_HEIGHT - global.NavHeight - this.state.keyHeight : global.SCREEN_HEIGHT - global.NavHeight - this.state.keyHeight - global.AndroidCurrentHeight, }]}
+                    style={[styles.scrollView, { height: global.IOS ? global.SCREEN_HEIGHT - global.NavHeight - this.state.keyHeight : global.SCREEN_HEIGHT - global.NavHeight - this.state.keyHeight - global.AndroidCurrentHeight }]}
                     ref={(scrollView) => {
                         _scrollView = scrollView;
                     }}
