@@ -36,7 +36,7 @@ export default class OrderDecline extends Component {
             fetch(requestUrl.getOrder, {
                 method: 'POST',
                 headers: {
-                    
+
                     "token": global.Token,
                 },
                 body: formData,
@@ -52,7 +52,7 @@ export default class OrderDecline extends Component {
                         fetch(requestUrl.getBaseInfoById + '?patientId=' + patientId, {
                             method: 'GET',
                             headers: {
-                                
+
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())
@@ -85,7 +85,7 @@ export default class OrderDecline extends Component {
                         fetch(requestUrl.getByGroupNumber + '?groupNumber=' + patientArchive, {
                             method: 'GET',
                             headers: {
-                                
+
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())
@@ -271,7 +271,7 @@ export default class OrderDecline extends Component {
                             <BoxShadow
                                 setting={rowShadow}>
                                 <View style={styles.lastItem}>
-                                    <Text style={styles.picText}>￥{this.state.orderInfo ? this.state.orderInfo.orderPrice : null}</Text>
+                                    <Text style={styles.picText}>￥{this.state.orderInfo ? this.state.orderInfo.orderPrice / 100 : null}</Text>
                                 </View>
                             </BoxShadow>
                         </View>
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
     scrollView: {
         position: 'absolute',
         top: global.NavHeight,
-        height: global.SCREEN_HEIGHT - global.NavHeight,
+        height: global.IOS ? global.SCREEN_HEIGHT - global.NavHeight : global.SCREEN_HEIGHT - global.NavHeight - global.AndroidCurrentHeight,
     },
     navContent: {
         position: 'relative',

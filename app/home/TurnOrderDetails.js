@@ -311,7 +311,7 @@ export default class TurnOrderDetails extends Component {
                     </View>
                 </LinearGradient>
                 <ScrollView
-                    style={[styles.scrollView, { height: global.SCREEN_HEIGHT - global.NavHeight - this.state.keyHeight, }]}
+                    style={[styles.scrollView, { height: global.IOS ? global.SCREEN_HEIGHT - global.NavHeight - this.state.keyHeight : global.SCREEN_HEIGHT - global.NavHeight - this.state.keyHeight - global.AndroidCurrentHeight, }]}
                     ref={(scrollView) => {
                         _scrollView = scrollView;
                     }}
@@ -350,7 +350,7 @@ export default class TurnOrderDetails extends Component {
                             <BoxShadow
                                 setting={rowShadow}>
                                 <View style={styles.lastItem}>
-                                    <Text style={styles.picText}>￥{this.state.orderInfo ? this.state.orderInfo.orderPrice : null}</Text>
+                                    <Text style={styles.picText}>￥{this.state.orderInfo ? this.state.orderInfo.orderPrice / 100 : null}</Text>
                                     <TouchableOpacity
                                         activeOpacity={.8}
                                         onPress={() => {
