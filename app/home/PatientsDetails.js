@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, StatusBar, TextInput, ScrollView, } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, StatusBar, TextInput, ScrollView, Keyboard, } from 'react-native';
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
@@ -51,6 +51,9 @@ export default class PatientsDetails extends Component {
             examinationPageNo: 1,// 解读结果页码
             examinationArr: [],// 解读结果数据
             examinationDataFlag: true,// 解读结果是否有下一页
+
+            keyFlag: false,
+            keyHeight: 0,
         }
     }
     getInitalState() {
@@ -150,6 +153,26 @@ export default class PatientsDetails extends Component {
                 });
 
         }
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+    }
+    componentWillUnmount() {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+    }
+    _keyboardDidShow(e) {
+        this.setState({
+            keyFlag: true,
+            keyHeight: Math.ceil(e.endCoordinates.height),
+        })
+    }
+
+    _keyboardDidHide(e) {
+        this.setState({
+            payPassFlag: false,
+            keyFlag: false,
+            keyHeight: 0,
+        })
     }
     componentDidMount() {
         // 查上传报告
@@ -514,7 +537,7 @@ export default class PatientsDetails extends Component {
                 {this.state.maskLabelFlag ?
                     <TouchableOpacity
                         activeOpacity={1}
-                        style={styles.maskLabel}
+                        style={[styles.maskLabel, { height: global.SCREEN_HEIGHT - this.state.keyHeight }]}
                         onPress={() => {
                             this.setState({
                                 maskLabelFlag: !this.state.maskLabelFlag
@@ -1089,10 +1112,10 @@ export default class PatientsDetails extends Component {
                 <TouchableOpacity
                     activeOpacity={.8}
                     onPress={() => {
-                        navigate("LookImg", {
-                            data: item.imgUrls,
-                            index: i,
-                        })
+                        // navigate("LookImg", {
+                        //     data: item.imgUrls,
+                        //     index: i,
+                        // })
                     }}
                     style={styles.imgItem}
                     key={i}
@@ -1391,7 +1414,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: global.NavHeight,
         left: 0,
-        height: global.SCREEN_HEIGHT - global.NavHeight,
+        height: global.IOS ? global.SCREEN_HEIGHT - global.NavHeight : global.SCREEN_HEIGHT - global.NavHeight - global.AndroidCurrentHeight,
     },
     baseInfoBoxShadow: {
         marginLeft: global.px2dp(15),
@@ -1543,7 +1566,7 @@ const styles = StyleSheet.create({
     },
     // 垂直滚动容器
     itemBox: {
-        maxHeight: global.px2dp(238),
+        height: global.px2dp(238),
         backgroundColor: global.Colors.colorededed,
         // paddingLeft: global.px2dp(8),
         // paddingRight: global.px2dp(8),
@@ -1702,7 +1725,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         width: global.SCREEN_WIDTH,
-        height: global.SCREEN_HEIGHT,
+
         backgroundColor: 'rgba(0,0,0,.6)',
         alignItems: 'center',
         justifyContent: 'center',
@@ -1777,6 +1800,7 @@ const styles = StyleSheet.create({
         fontSize: global.px2dp(13),
         lineHeight: global.px2dp(20),
         height: global.px2dp(72),
+        textAlignVertical: 'top'
     },
     addLabelBtn: {
     },

@@ -324,10 +324,10 @@ export default class Patients extends Component {
         } else {
             var url = requestUrl.findPatientList + "?pageSize=" + this.state.pageSize + "&pageNo=" + pageNo + "&patientName=" + this.state.searchText;
         }
+        console.log(url);
         fetch(url, {
             method: 'GET',
             headers: {
-
                 "token": global.Token,
             },
         }).then((response) => response.json())
