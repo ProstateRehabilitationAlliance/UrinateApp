@@ -8,6 +8,7 @@ import ErrorPrompt from "../common/ErrorPrompt";
 import { BoxShadow } from 'react-native-shadow';
 import { Storage } from "../utils/AsyncStorage";
 import QRCode from 'react-native-qrcode';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 export default class Home extends Component {
     constructor(props) {
@@ -39,7 +40,7 @@ export default class Home extends Component {
         fetch(requestUrl.getSignStatus, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -91,7 +92,6 @@ export default class Home extends Component {
         fetch(requestUrl.getDoctorDetail, {
             method: 'GET',
             headers: {
-                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -132,11 +132,11 @@ export default class Home extends Component {
                             ErrorPromptFlag: false,
                         })
                     }, global.TimingCount)
-                } else {
+                } else if (responseData == 40001) {
                     this.setState({
                         isLoading: false,
                         ErrorPromptFlag: true,
-                        ErrorPromptText: '服务器繁忙',
+                        ErrorPromptText: '服务器异常，请重新登录',
                         ErrorPromptImg: require('../images/error.png'),
                     })
                     clearTimeout(this.timer)
@@ -144,6 +144,11 @@ export default class Home extends Component {
                         this.setState({
                             ErrorPromptFlag: false,
                         })
+                        const resetAction = StackActions.reset({
+                            index: 0,
+                            actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
+                        });
+                        this.props.navigation.dispatch(resetAction);
                     }, global.TimingCount)
                 }
             })
@@ -165,7 +170,6 @@ export default class Home extends Component {
         fetch(requestUrl.addGoods, {
             method: 'POST',
             headers: {
-                
                 "token": global.Token,
             },
             body: formData,
@@ -211,7 +215,7 @@ export default class Home extends Component {
         fetch(requestUrl.getPriceInquiryPictureByParams, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -225,7 +229,7 @@ export default class Home extends Component {
                     fetch(requestUrl.getPriceDocketList, {
                         method: 'GET',
                         headers: {
-                            
+
                             "token": global.Token,
                         },
                     }).then((response) => response.json())
@@ -348,7 +352,7 @@ export default class Home extends Component {
         fetch(requestUrl.getClickAndInquiry, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())

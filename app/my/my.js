@@ -8,6 +8,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ErrorPrompt from "../common/ErrorPrompt";
 import Communications from 'react-native-communications';
 import { BoxShadow } from 'react-native-shadow';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 
 export default class My extends Component {
@@ -102,7 +103,6 @@ export default class My extends Component {
         fetch(requestUrl.getDoctorDetail, {
             method: 'GET',
             headers: {
-                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -113,6 +113,9 @@ export default class My extends Component {
                         isLoading: false,
                         ErrorPromptFlag: false,
                         userInfo: responseData.result,
+                    });
+                    Storage.setItem("userInfo", responseData.result, (data) => {
+                        console.log(data)
                     });
                 } else if (responseData == 40004) {
                     this.setState({
@@ -140,11 +143,11 @@ export default class My extends Component {
                             ErrorPromptFlag: false,
                         })
                     }, global.TimingCount)
-                } else {
+                } else if (responseData == 40001) {
                     this.setState({
                         isLoading: false,
                         ErrorPromptFlag: true,
-                        ErrorPromptText: '服务器繁忙',
+                        ErrorPromptText: '服务器异常，请重新登录',
                         ErrorPromptImg: require('../images/error.png'),
                     })
                     clearTimeout(this.timer)
@@ -152,6 +155,11 @@ export default class My extends Component {
                         this.setState({
                             ErrorPromptFlag: false,
                         })
+                        const resetAction = StackActions.reset({
+                            index: 0,
+                            actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
+                        });
+                        this.props.navigation.dispatch(resetAction);
                     }, global.TimingCount)
                 }
             })
