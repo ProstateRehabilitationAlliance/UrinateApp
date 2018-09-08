@@ -192,7 +192,7 @@ export default class Order extends Component {
                             return (
                                 <View style={styles.noDataBox}>
                                     <Image source={require("../images/no_order.png")} />
-                                    <Text style={styles.noDataText}>你暂无问诊订单哦</Text>
+                                    <Text style={styles.noDataText}>您暂无问诊订单</Text>
                                 </View>
                             )
                         }}

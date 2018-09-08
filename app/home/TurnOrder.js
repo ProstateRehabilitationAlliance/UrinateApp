@@ -185,7 +185,7 @@ export default class TurnOrder extends Component {
                             return (
                                 <View style={styles.noDataBox}>
                                     <Image source={require("../images/no_order.png")} />
-                                    <Text style={styles.noDataText}>你暂无问诊订单哦</Text>
+                                    <Text style={styles.noDataText}>您暂无转诊订单</Text>
                                 </View>
                             )
                         }}
@@ -317,7 +317,7 @@ export default class TurnOrder extends Component {
         fetch(requestUrl.turnOrderList[screenActive] + "?pageNo=" + pageNo + "&pageSize" + this.state.pageSize, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())

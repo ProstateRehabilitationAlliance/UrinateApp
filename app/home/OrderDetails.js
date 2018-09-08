@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView, TextInput, Keyboard } from 'react-native';
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
@@ -33,6 +33,9 @@ export default class OrderDetails extends Component {
             draftInfo: {},// 草稿信息
             replyText: '',// 回复信息
             doctorInfo: {},
+
+            keyFlag: false,
+            keyHeight: 0,
         }
     }
     getInitalState() {
@@ -47,7 +50,6 @@ export default class OrderDetails extends Component {
             fetch(requestUrl.getOrder, {
                 method: 'POST',
                 headers: {
-                    
                     "token": global.Token,
                 },
                 body: formData,
@@ -63,7 +65,6 @@ export default class OrderDetails extends Component {
                         fetch(requestUrl.getBaseInfoById + '?patientId=' + patientId, {
                             method: 'GET',
                             headers: {
-                                
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())
@@ -96,7 +97,6 @@ export default class OrderDetails extends Component {
                         fetch(requestUrl.getByGroupNumber + '?groupNumber=' + patientArchive, {
                             method: 'GET',
                             headers: {
-                                
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())
@@ -127,7 +127,7 @@ export default class OrderDetails extends Component {
                         fetch(requestUrl.getByArchive + '?archive=' + patientArchive, {
                             method: 'GET',
                             headers: {
-                                
+
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())
@@ -165,8 +165,31 @@ export default class OrderDetails extends Component {
                 });
             // 查询订单信息 - end
         }
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
     }
-    componentDidMount() {
+    componentWillUnmount() {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+    }
+    _keyboardDidShow(e) {
+        this.setState({
+            keyFlag: true,
+            keyHeight: Math.ceil(e.endCoordinates.height),
+        })
+        setTimeout(() => {
+            _scrollView.scrollToEnd({
+                animated: true
+            });
+        })
+    }
+
+    _keyboardDidHide(e) {
+        this.setState({
+            payPassFlag: false,
+            keyFlag: false,
+            keyHeight: 0,
+        })
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
@@ -301,7 +324,12 @@ export default class OrderDetails extends Component {
                         <Text style={styles.navTitle}>订单详情</Text>
                     </View>
                 </LinearGradient>
-                <ScrollView style={styles.scrollView}>
+                <ScrollView
+                    style={[styles.scrollView, { height: global.SCREEN_HEIGHT - global.NavHeight - this.state.keyHeight, }]}
+                    ref={(scrollView) => {
+                        _scrollView = scrollView;
+                    }}
+                >
                     {/* 基本信息 - start */}
                     <BoxShadow
                         setting={infoShadow}>
@@ -576,7 +604,7 @@ export default class OrderDetails extends Component {
         fetch(requestUrl.turnOrder, {
             method: 'POST',
             headers: {
-                
+
                 "token": global.Token,
             },
             body: formData,
@@ -632,7 +660,7 @@ export default class OrderDetails extends Component {
         fetch(requestUrl.rejectedOrder, {
             method: 'POST',
             headers: {
-                
+
                 "token": global.Token,
             },
             body: formData,
@@ -703,7 +731,7 @@ export default class OrderDetails extends Component {
             fetch(requestUrl.addDraft, {
                 method: 'POST',
                 headers: {
-                    
+
                     "token": global.Token,
                 },
                 body: formData,
@@ -779,7 +807,7 @@ export default class OrderDetails extends Component {
             fetch(requestUrl.addFinal, {
                 method: 'POST',
                 headers: {
-                    
+
                     "token": global.Token,
                 },
                 body: formData,
@@ -836,7 +864,6 @@ const styles = StyleSheet.create({
     scrollView: {
         position: 'absolute',
         top: global.NavHeight,
-        height: global.SCREEN_HEIGHT - global.NavHeight,
     },
     navContent: {
         position: 'relative',

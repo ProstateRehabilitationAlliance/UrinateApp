@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         zIndex: 10001,
         width: global.SCREEN_WIDTH,
         height: global.SCREEN_HEIGHT,
-        backgroundColor: 'rgba(0,0,0,.5)',
+        backgroundColor: 'rgba(0,0,0,0)',
         alignItems: 'center',
         justifyContent: 'center',
     },
