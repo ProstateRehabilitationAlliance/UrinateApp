@@ -53,7 +53,7 @@ export default class My extends Component {
         fetch(requestUrl.getSignStatus, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -83,6 +83,13 @@ export default class My extends Component {
                     // 认证信息未填写
                     this.setState({
                         signStatus: 'AUTHENTICATION_EMPTY',
+                        ErrorPromptFlag: false,
+                        isLoading: false,
+                    })
+                } else if (responseData.status == 500) {
+                    // 服务器异常
+                    this.setState({
+                        signStatus: 'SERVICE_ERROR',
                         ErrorPromptFlag: false,
                         isLoading: false,
                     })
@@ -215,7 +222,7 @@ export default class My extends Component {
                     </TouchableOpacity>
                 </View>
             )
-        } else {
+        } else if (this.state.signStatus == "AUTHENTICATION_FAILED") {
             return (
                 <View style={styles.navBox}>
                     <Text style={styles.topText}>认证失败</Text>
@@ -231,6 +238,23 @@ export default class My extends Component {
                             source={require('../images/arrow_right_white.png')}
                         />
                     </TouchableOpacity>
+                </View>
+            )
+        } else {
+            return (
+                <View style={styles.navBox}>
+                    <Text style={styles.topText}>系统维护中...</Text>
+                    {/* <TouchableOpacity
+                        style={styles.authenticationBtn}
+                        activeOpacity={.8}
+                        onPress={() => {
+                        }}>
+                        <Text style={styles.bottomText}>系统维护中...</Text>
+                        <Image
+                            style={styles.arrowRightImg}
+                            source={require('../images/arrow_right_white.png')}
+                        />
+                    </TouchableOpacity> */}
                 </View>
             )
         }
@@ -284,11 +308,25 @@ export default class My extends Component {
                         onPress={() => {
                             if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
                                 // 不是 认证成功
-                                this.setState({
-                                    approveMaskFlag: !this.state.approveMaskFlag,
-                                })
+                                if (this.state.signStatus == "SERVICE_ERROR") {
+                                    this.setState({
+                                        isLoading: false,
+                                        ErrorPromptFlag: true,
+                                        ErrorPromptText: '服务器维护中...',
+                                        ErrorPromptImg: require('../images/error.png'),
+                                    })
+                                    clearTimeout(this.timer)
+                                    this.timer = setTimeout(() => {
+                                        this.setState({
+                                            ErrorPromptFlag: false,
+                                        })
+                                    }, global.TimingCount)
+                                } else {
+                                    this.setState({
+                                        approveMaskFlag: !this.state.approveMaskFlag,
+                                    })
+                                }
                             } else {
-                                // global.Alert.alert("努力开发中...");
                                 navigate("Earnings");
                             }
                         }}>
@@ -312,9 +350,24 @@ export default class My extends Component {
                         onPress={() => {
                             if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
                                 // 不是 认证成功
-                                this.setState({
-                                    approveMaskFlag: !this.state.approveMaskFlag,
-                                })
+                                if (this.state.signStatus == "SERVICE_ERROR") {
+                                    this.setState({
+                                        isLoading: false,
+                                        ErrorPromptFlag: true,
+                                        ErrorPromptText: '服务器维护中...',
+                                        ErrorPromptImg: require('../images/error.png'),
+                                    })
+                                    clearTimeout(this.timer)
+                                    this.timer = setTimeout(() => {
+                                        this.setState({
+                                            ErrorPromptFlag: false,
+                                        })
+                                    }, global.TimingCount)
+                                } else {
+                                    this.setState({
+                                        approveMaskFlag: !this.state.approveMaskFlag,
+                                    })
+                                }
                             } else {
                                 navigate("Followee");
                             }
@@ -337,9 +390,24 @@ export default class My extends Component {
                         onPress={() => {
                             if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
                                 // 不是 认证成功
-                                this.setState({
-                                    approveMaskFlag: !this.state.approveMaskFlag,
-                                })
+                                if (this.state.signStatus == "SERVICE_ERROR") {
+                                    this.setState({
+                                        isLoading: false,
+                                        ErrorPromptFlag: true,
+                                        ErrorPromptText: '服务器维护中...',
+                                        ErrorPromptImg: require('../images/error.png'),
+                                    })
+                                    clearTimeout(this.timer)
+                                    this.timer = setTimeout(() => {
+                                        this.setState({
+                                            ErrorPromptFlag: false,
+                                        })
+                                    }, global.TimingCount)
+                                } else {
+                                    this.setState({
+                                        approveMaskFlag: !this.state.approveMaskFlag,
+                                    })
+                                }
                             } else {
                                 navigate("PersonalInfo");
                             }
@@ -362,9 +430,24 @@ export default class My extends Component {
                         onPress={() => {
                             if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
                                 // 不是 认证成功
-                                this.setState({
-                                    approveMaskFlag: !this.state.approveMaskFlag,
-                                })
+                                if (this.state.signStatus == "SERVICE_ERROR") {
+                                    this.setState({
+                                        isLoading: false,
+                                        ErrorPromptFlag: true,
+                                        ErrorPromptText: '服务器维护中...',
+                                        ErrorPromptImg: require('../images/error.png'),
+                                    })
+                                    clearTimeout(this.timer)
+                                    this.timer = setTimeout(() => {
+                                        this.setState({
+                                            ErrorPromptFlag: false,
+                                        })
+                                    }, global.TimingCount)
+                                } else {
+                                    this.setState({
+                                        approveMaskFlag: !this.state.approveMaskFlag,
+                                    })
+                                }
                             } else {
                                 navigate('Authentication');
                             }
@@ -389,9 +472,24 @@ export default class My extends Component {
                         onPress={() => {
                             if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
                                 // 不是 认证成功
-                                this.setState({
-                                    approveMaskFlag: !this.state.approveMaskFlag,
-                                })
+                                if (this.state.signStatus == "SERVICE_ERROR") {
+                                    this.setState({
+                                        isLoading: false,
+                                        ErrorPromptFlag: true,
+                                        ErrorPromptText: '服务器维护中...',
+                                        ErrorPromptImg: require('../images/error.png'),
+                                    })
+                                    clearTimeout(this.timer)
+                                    this.timer = setTimeout(() => {
+                                        this.setState({
+                                            ErrorPromptFlag: false,
+                                        })
+                                    }, global.TimingCount)
+                                } else {
+                                    this.setState({
+                                        approveMaskFlag: !this.state.approveMaskFlag,
+                                    })
+                                }
                             } else {
                                 // navigate();
                             }
@@ -414,9 +512,24 @@ export default class My extends Component {
                         onPress={() => {
                             if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
                                 // 不是 认证成功
-                                this.setState({
-                                    approveMaskFlag: !this.state.approveMaskFlag,
-                                })
+                                if (this.state.signStatus == "SERVICE_ERROR") {
+                                    this.setState({
+                                        isLoading: false,
+                                        ErrorPromptFlag: true,
+                                        ErrorPromptText: '服务器维护中...',
+                                        ErrorPromptImg: require('../images/error.png'),
+                                    })
+                                    clearTimeout(this.timer)
+                                    this.timer = setTimeout(() => {
+                                        this.setState({
+                                            ErrorPromptFlag: false,
+                                        })
+                                    }, global.TimingCount)
+                                } else {
+                                    this.setState({
+                                        approveMaskFlag: !this.state.approveMaskFlag,
+                                    })
+                                }
                             } else {
                                 // navigate();
                             }

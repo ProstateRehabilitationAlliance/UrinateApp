@@ -75,6 +75,13 @@ export default class Home extends Component {
                         ErrorPromptFlag: false,
                         isLoading: false,
                     })
+                } else if (responseData.status == 500) {
+                    // 服务器异常
+                    this.setState({
+                        signStatus: 'SERVICE_ERROR',
+                        ErrorPromptFlag: false,
+                        isLoading: false,
+                    })
                 } else {
                     this.setState({
                         signStatus: 'AUTHENTICATION_EMPTY',
@@ -319,6 +326,8 @@ export default class Home extends Component {
             )
         } else if (this.state.signStatus == "AUTHENTICATION_PROGRESS") {
             return (<Text style={styles.headText}>认证信息审核中...</Text>)
+        } else if (this.state.signStatus == "SERVICE_ERROR") {
+            return (<Text style={styles.headText}>服务器维护中...</Text>)
         }
     }
     // 渲染服务标签
@@ -417,9 +426,24 @@ export default class Home extends Component {
                             onPress={() => {
                                 if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
                                     // 不是 认证成功
-                                    this.setState({
-                                        approveMaskFlag: !this.state.approveMaskFlag,
-                                    })
+                                    if (this.state.signStatus == "SERVICE_ERROR") {
+                                        this.setState({
+                                            isLoading: false,
+                                            ErrorPromptFlag: true,
+                                            ErrorPromptText: '服务器维护中...',
+                                            ErrorPromptImg: require('../images/error.png'),
+                                        })
+                                        clearTimeout(this.timer)
+                                        this.timer = setTimeout(() => {
+                                            this.setState({
+                                                ErrorPromptFlag: false,
+                                            })
+                                        }, global.TimingCount)
+                                    } else {
+                                        this.setState({
+                                            approveMaskFlag: !this.state.approveMaskFlag,
+                                        })
+                                    }
                                 } else {
                                     this.setState({
                                         QRCodeContentFlag: !this.state.QRCodeContentFlag
@@ -471,9 +495,24 @@ export default class Home extends Component {
                                 onPress={() => {
                                     if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
                                         // 不是 认证成功
-                                        this.setState({
-                                            approveMaskFlag: !this.state.approveMaskFlag,
-                                        })
+                                        if (this.state.signStatus == "SERVICE_ERROR") {
+                                            this.setState({
+                                                isLoading: false,
+                                                ErrorPromptFlag: true,
+                                                ErrorPromptText: '服务器维护中...',
+                                                ErrorPromptImg: require('../images/error.png'),
+                                            })
+                                            clearTimeout(this.timer)
+                                            this.timer = setTimeout(() => {
+                                                this.setState({
+                                                    ErrorPromptFlag: false,
+                                                })
+                                            }, global.TimingCount)
+                                        } else {
+                                            this.setState({
+                                                approveMaskFlag: !this.state.approveMaskFlag,
+                                            })
+                                        }
                                     } else {
                                         navigate('Order');
                                     }
@@ -493,9 +532,24 @@ export default class Home extends Component {
                                 onPress={() => {
                                     if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
                                         // 不是 认证成功
-                                        this.setState({
-                                            approveMaskFlag: !this.state.approveMaskFlag,
-                                        })
+                                        if (this.state.signStatus == "SERVICE_ERROR") {
+                                            this.setState({
+                                                isLoading: false,
+                                                ErrorPromptFlag: true,
+                                                ErrorPromptText: '服务器维护中...',
+                                                ErrorPromptImg: require('../images/error.png'),
+                                            })
+                                            clearTimeout(this.timer)
+                                            this.timer = setTimeout(() => {
+                                                this.setState({
+                                                    ErrorPromptFlag: false,
+                                                })
+                                            }, global.TimingCount)
+                                        } else {
+                                            this.setState({
+                                                approveMaskFlag: !this.state.approveMaskFlag,
+                                            })
+                                        }
                                     } else {
                                         navigate('Patients');
                                     }
@@ -515,9 +569,24 @@ export default class Home extends Component {
                                 onPress={() => {
                                     if (this.state.signStatus != "AUTHENTICATION_SUCCESS") {
                                         // 不是 认证成功
-                                        this.setState({
-                                            approveMaskFlag: !this.state.approveMaskFlag,
-                                        })
+                                        if (this.state.signStatus == "SERVICE_ERROR") {
+                                            this.setState({
+                                                isLoading: false,
+                                                ErrorPromptFlag: true,
+                                                ErrorPromptText: '服务器维护中...',
+                                                ErrorPromptImg: require('../images/error.png'),
+                                            })
+                                            clearTimeout(this.timer)
+                                            this.timer = setTimeout(() => {
+                                                this.setState({
+                                                    ErrorPromptFlag: false,
+                                                })
+                                            }, global.TimingCount)
+                                        } else {
+                                            this.setState({
+                                                approveMaskFlag: !this.state.approveMaskFlag,
+                                            })
+                                        }
                                     } else {
                                         navigate('TurnOrder');
                                     }
