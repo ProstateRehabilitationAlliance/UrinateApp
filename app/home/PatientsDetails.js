@@ -576,7 +576,7 @@ export default class PatientsDetails extends Component {
                                     multiline={true}
                                     onChangeText={(text) => {
                                         this.setState({
-                                            lableName: text,
+                                            lableName: text.replace(/(^\s*)|(\s*$)/g, ""),
                                         })
                                     }}
                                     defaultValue={this.state.lableName}
@@ -665,16 +665,16 @@ export default class PatientsDetails extends Component {
                 <View key={i} style={styles.baseLabelItem}>
                     <View style={styles.baseLabelBox}>
                         <Text style={styles.baseLabelText}>{this.state.allLabelArr[i].docketName}</Text>
-                        <TouchableOpacity
-                            activeOpacity={.8}
-                            onPress={() => {
-                                this.deleteLabel(this.state.allLabelArr[i].id)
-                            }}
-                            style={styles.delLabelBtn}
-                        >
-                            <Image source={require('../images/del_img.png')} />
-                        </TouchableOpacity>
                     </View>
+                    <TouchableOpacity
+                        activeOpacity={.8}
+                        onPress={() => {
+                            this.deleteLabel(this.state.allLabelArr[i].id)
+                        }}
+                        style={styles.delLabelBtn}
+                    >
+                        <Image source={require('../images/del_img.png')} />
+                    </TouchableOpacity>
                 </View>
             )
         }
@@ -1020,7 +1020,7 @@ export default class PatientsDetails extends Component {
                             ErrorPromptFlag: false,
                         })
                     }, global.TimingCount)
-                } else if (responseData.code == 60001) {
+                } else if (responseData.code == 50003) {
                     this.setState({
                         isLoading: false,
                         ErrorPromptFlag: true,
@@ -1760,11 +1760,14 @@ const styles = StyleSheet.create({
         paddingTop: global.px2dp(5),
     },
     baseLabelItem: {
+        position: 'relative',
         paddingRight: global.px2dp(12),
         paddingTop: global.px2dp(12),
     },
     baseLabelBox: {
         position: 'relative',
+        left: 0,
+        bottom: 0,
         alignItems: 'center',
         justifyContent: 'center',
         paddingLeft: global.px2dp(15),
@@ -1774,9 +1777,9 @@ const styles = StyleSheet.create({
     },
     delLabelBtn: {
         position: 'absolute',
-        top: 0,
-        right: 0,
-        transform: [{ translateY: -9 }, { translateX: 9 }],
+        top: global.px2dp(3),
+        right: global.px2dp(3),
+        zIndex: 1,
     },
     baseLabelText: {
         fontSize: global.px2dp(),
