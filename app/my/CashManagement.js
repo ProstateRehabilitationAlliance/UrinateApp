@@ -67,7 +67,6 @@ export default class CashManagement extends Component {
         fetch(requestUrl.isExist, {
             method: 'GET',
             headers: {
-                
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -100,7 +99,7 @@ export default class CashManagement extends Component {
         fetch(requestUrl.getWeChatAccount, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -458,7 +457,7 @@ export default class CashManagement extends Component {
         fetch(requestUrl.savePay, {
             method: 'POST',
             headers: {
-                
+
                 "token": global.Token,
             },
             body: formData,
@@ -561,7 +560,7 @@ export default class CashManagement extends Component {
         fetch(requestUrl.appAdd, {
             method: 'POST',
             headers: {
-                
+
                 "token": global.Token,
             },
             body: formData,
@@ -595,7 +594,7 @@ export default class CashManagement extends Component {
         fetch(requestUrl.addWeChatAccount, {
             method: 'POST',
             headers: {
-                
+
                 "token": global.Token,
             },
             body: formData,
@@ -649,7 +648,7 @@ export default class CashManagement extends Component {
         fetch(requestUrl.deleteWeChatAccount, {
             method: 'POST',
             headers: {
-                
+
                 "token": global.Token,
             },
             body: formData,

@@ -47,7 +47,7 @@ export default class WithdrawDeposit extends Component {
         fetch(requestUrl.getBalance, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -87,7 +87,7 @@ export default class WithdrawDeposit extends Component {
         fetch(requestUrl.getWeChatAccount, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -179,11 +179,17 @@ export default class WithdrawDeposit extends Component {
                     style={styles.scrollView}>
                     <BoxShadow
                         setting={shadowOpt}>
-                        <View style={styles.accountContent}>
-                            <Image source={require('../images/wechat.png')} />
-                            <Text style={styles.accountText}>微信账户</Text>
-                            <Image source={require('../images/arrow_right_grey.png')} />
-                        </View>
+                        {this.state.accountFlag ?
+                            <View style={styles.accountContent}>
+                                <Image source={require('../images/wechat.png')} />
+                                <Text style={styles.accountText}>微信账户</Text>
+                                <Image source={require('../images/arrow_right_grey.png')} />
+                            </View>
+                            :
+                            <View style={styles.accountContent}>
+                                <Text style={styles.accountText}>您还没有添加提现账户</Text>
+                            </View>
+                        }
                     </BoxShadow>
                     <BoxShadow
                         setting={withdrawalShadowOpt}>
@@ -410,7 +416,19 @@ export default class WithdrawDeposit extends Component {
     }
     // 提交调出输入支付密码框
     submit() {
-        if (!this.state.pic) {
+        if (!this.state.accountFlag) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '请先去添加提现账户',
+                ErrorPromptImg: require('../images/error.png'),
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (!this.state.pic) {
             this.setState({
                 ErrorPromptFlag: true,
                 ErrorPromptText: '请输入提现金额',
@@ -475,7 +493,7 @@ export default class WithdrawDeposit extends Component {
         fetch(requestUrl.checkPay, {
             method: 'POST',
             headers: {
-                
+
                 "token": global.Token,
             },
             body: formData,
@@ -512,7 +530,6 @@ export default class WithdrawDeposit extends Component {
         fetch(requestUrl.addOrderCash, {
             method: 'POST',
             headers: {
-                
                 "token": global.Token,
             },
             body: formData,
