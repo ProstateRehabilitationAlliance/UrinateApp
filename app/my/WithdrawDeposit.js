@@ -384,10 +384,22 @@ export default class WithdrawDeposit extends Component {
     }
     // 金额输入框失去焦点
     picBlur() {
-        if (!Number(this.state.pic)) {
+        if (!this.state.pic) {
             this.setState({
                 ErrorPromptFlag: true,
-                ErrorPromptText: '请输入内容不合法',
+                ErrorPromptText: '请输入提现金额',
+                ErrorPromptImg: require('../images/error.png'),
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (!Number(this.state.pic)) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '输入内容不合法',
                 ErrorPromptImg: require('../images/error.png'),
             })
             clearTimeout(this.timer)
