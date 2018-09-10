@@ -56,6 +56,7 @@ export default class TurnDoctorSearch extends Component {
                 this.getDoctorDetail();
             }
         })
+        this.findDoctorList(this.state.searchText, 1, '');
     }
     // 获取个人信息
     getDoctorDetail() {
