@@ -428,7 +428,7 @@ export default class PatientsDetails extends Component {
                                             reportPageNo: 1,
                                             reportArr: [],
                                         })
-                                        this.getOrderListByPatient(1);
+                                        this.getMedicalReportList(1);
                                     }}//头部刷新组件
                                     refreshing={this.state.isRefresh}//加载图标
                                     onEndReached={() => this.onEndReachedReport()} // 加载更多
@@ -1107,15 +1107,16 @@ export default class PatientsDetails extends Component {
     renderReportItem = (item) => {
         let { navigate, goBack } = this.props.navigation;
         let tempArr = [];
-        for (var i = 0; i < item.imgUrls.length; i++) {
+        for (let i = 0; i < item.imgUrls.length; i++) {
+            let _index = i;
             tempArr.push(
                 <TouchableOpacity
                     activeOpacity={.8}
                     onPress={() => {
-                        // navigate("LookImg", {
-                        //     data: item.imgUrls,
-                        //     index: i,
-                        // })
+                        navigate("LookImg", {
+                            data: item.imgUrls,
+                            index: _index,
+                        })
                     }}
                     style={styles.imgItem}
                     key={i}

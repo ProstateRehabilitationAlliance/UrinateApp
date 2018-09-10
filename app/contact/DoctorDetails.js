@@ -23,61 +23,65 @@ export default class DoctorDetails extends Component {
             resumeFlag: false,
             gootAtFlag: false,
 
+            doctorId: '',
             userInfo: {},
             picturePrice: 0,
             phonePrice: 0,
             videoPrice: 0,
         }
     }
+    // 通过id查医生详情
+    getDoctorDetailById(doctorId) {
+        fetch(requestUrl.getDoctorDetailById + '?doctorId=' + doctorId, {
+            method: 'GET',
+            headers: {
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: false,
+                        userInfo: responseData.result,
+                    })
+                } else if (responseData.code == 40001) {
+                    this.props.navigation.navigate('SignIn');
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '查询失败',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer);
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            isLoading: false,
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
     componentWillMount() {
         if (this.props.navigation.state.params) {
+            let doctorId = this.props.navigation.state.params.doctorId;
             this.setState({
+                doctorId: doctorId,// 医生id
                 isLoading: true,
                 ErrorPromptFlag: true,
                 ErrorPromptText: '加载中...',
                 ErrorPromptImg: require('../images/loading.png'),
             })
-            let doctorId = this.props.navigation.state.params.doctorId;
-            fetch(requestUrl.getDoctorDetailById + '?doctorId=' + doctorId, {
-                method: 'GET',
-                headers: {
-                    // 
-                    "token": global.Token,
-                },
-            }).then((response) => response.json())
-                .then((responseData) => {
-                    console.log('responseData', responseData);
-                    if (responseData.code == 20000) {
-                        this.setState({
-                            isLoading: false,
-                            ErrorPromptFlag: false,
-                            userInfo: responseData.result,
-                        })
-                    } else if (responseData.code == 40001) {
-                        this.props.navigation.navigate('SignIn');
-                    } else {
-                        this.setState({
-                            isLoading: false,
-                            ErrorPromptFlag: true,
-                            ErrorPromptText: '查询失败',
-                            ErrorPromptImg: require('../images/error.png'),
-                        })
-                        clearTimeout(this.timer);
-                        this.timer = setTimeout(() => {
-                            this.setState({
-                                isLoading: false,
-                                ErrorPromptFlag: false,
-                            })
-                        }, global.TimingCount)
-                    }
-                })
-                .catch((error) => {
-                    console.log('error', error);
-                });
+            this.getDoctorDetailById(doctorId);
             fetch(requestUrl.queryListByDoctor + '?doctorId=' + doctorId, {
                 method: 'GET',
                 headers: {
-                    // 
                     "token": global.Token,
                 },
             }).then((response) => response.json())
@@ -282,23 +286,26 @@ export default class DoctorDetails extends Component {
                             <Text style={styles.titleText}>擅长</Text>
                         </View>
                         <Text style={styles.Value}>{this.state.userInfo.doctorStrong}</Text>
-                        <TouchableOpacity
-                            style={[styles.foldBtn, this.state.gootAtFlag ? null : { position: 'absolute' }]}
-                            onPress={() => {
-                                this.setState({
-                                    gootAtFlag: !this.state.gootAtFlag
-                                })
-                            }}
-                            activeOpacity={1}
-                        >
-                            <BoxShadow
-                                setting={flodOpt}>
-                                <View style={styles.foldBox}>
-                                    <Text style={styles.foldText}>查看全部</Text>
-                                    <Image source={require('../images/fold.png')} style={styles.foldImg} />
-                                </View>
-                            </BoxShadow>
-                        </TouchableOpacity>
+                        {this.state.userInfo.doctorStrong && this.state.userInfo.doctorStrong.length > 50 ?
+                            <TouchableOpacity
+                                style={[styles.foldBtn, this.state.gootAtFlag ? null : { position: 'absolute' }]}
+                                onPress={() => {
+                                    this.setState({
+                                        gootAtFlag: !this.state.gootAtFlag
+                                    })
+                                }}
+                                activeOpacity={1}
+                            >
+                                <BoxShadow
+                                    setting={flodOpt}>
+                                    <View style={styles.foldBox}>
+                                        <Text style={styles.foldText}>查看全部</Text>
+                                        <Image source={require('../images/fold.png')} style={styles.foldImg} />
+                                    </View>
+                                </BoxShadow>
+                            </TouchableOpacity>
+                            : null}
+
                     </View>
                     <View style={[styles.content, this.state.resumeFlag ? null : { maxHeight: global.px2dp(145), }]}>
                         <View style={styles.titleBox}>
@@ -308,23 +315,25 @@ export default class DoctorDetails extends Component {
                             <Text style={styles.titleText}>简介</Text>
                         </View>
                         <Text style={styles.Value}>{this.state.userInfo.doctorResume}</Text>
-                        <TouchableOpacity
-                            style={[styles.foldBtn, this.state.resumeFlag ? null : { position: 'absolute' }]}
-                            onPress={() => {
-                                this.setState({
-                                    resumeFlag: !this.state.resumeFlag
-                                })
-                            }}
-                            activeOpacity={1}
-                        >
-                            <BoxShadow
-                                setting={flodOpt}>
-                                <View style={styles.foldBox}>
-                                    <Text style={styles.foldText}>查看全部</Text>
-                                    <Image source={require('../images/fold.png')} style={styles.foldImg} />
-                                </View>
-                            </BoxShadow>
-                        </TouchableOpacity>
+                        {this.state.userInfo.doctorResume && this.state.userInfo.doctorResume.length > 50 ?
+                            <TouchableOpacity
+                                style={[styles.foldBtn, this.state.resumeFlag ? null : { position: 'absolute' }]}
+                                onPress={() => {
+                                    this.setState({
+                                        resumeFlag: !this.state.resumeFlag
+                                    })
+                                }}
+                                activeOpacity={1}
+                            >
+                                <BoxShadow
+                                    setting={flodOpt}>
+                                    <View style={styles.foldBox}>
+                                        <Text style={styles.foldText}>查看全部</Text>
+                                        <Image source={require('../images/fold.png')} style={styles.foldImg} />
+                                    </View>
+                                </BoxShadow>
+                            </TouchableOpacity>
+                            : null}
                     </View>
                     <View style={{ height: global.px2dp(15) }}></View>
                 </ScrollView>
@@ -345,7 +354,7 @@ export default class DoctorDetails extends Component {
         fetch(requestUrl.focus, {
             method: 'POST',
             headers: {
-                
+
                 "token": global.Token,
             },
             body: formData,
@@ -362,6 +371,7 @@ export default class DoctorDetails extends Component {
                         ErrorPromptImg: require('../images/succeed.png'),
                         userInfo: tempJSON,
                     })
+                    this.getDoctorDetailById(this.state.doctorId);
                     clearTimeout(this.timer);
                     this.timer = setTimeout(() => {
                         this.setState({
@@ -395,7 +405,7 @@ export default class DoctorDetails extends Component {
         fetch(requestUrl.unFocus, {
             method: 'POST',
             headers: {
-                
+
                 "token": global.Token,
             },
             body: formData,
@@ -412,6 +422,7 @@ export default class DoctorDetails extends Component {
                         ErrorPromptImg: require('../images/succeed.png'),
                         userInfo: tempJSON,
                     })
+                    this.getDoctorDetailById(this.state.doctorId);
                     clearTimeout(this.timer);
                     this.timer = setTimeout(() => {
                         this.setState({
