@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView,
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
-import Button from "../common/Button";// 按钮组件
 import ErrorPrompt from "../common/ErrorPrompt";
 import LinearGradient from 'react-native-linear-gradient';
 import { BoxShadow } from 'react-native-shadow';
@@ -29,9 +28,6 @@ export default class DoctorDetails extends Component {
             phonePrice: 0,
             videoPrice: 0,
         }
-    }
-    getInitalState() {
-        // 1初始化state
     }
     componentWillMount() {
         if (this.props.navigation.state.params) {
