@@ -22,6 +22,7 @@ export default class Start extends Component {
             if (data) {
                 // 非第一次启动
                 // 判断登录状态
+                Storage.removeItem("userInfo", () => { })
                 Storage.getItem('token', (data) => {
                     if (data) {
                         global.Token = data;
@@ -29,7 +30,6 @@ export default class Start extends Component {
                         fetch(requestUrl.getSignStatus, {
                             method: 'GET',
                             headers: {
-                                
                                 "token": global.Token,
                             },
                         }).then((response) => response.json())

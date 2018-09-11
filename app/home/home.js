@@ -8,7 +8,7 @@ import ErrorPrompt from "../common/ErrorPrompt";
 import { BoxShadow } from 'react-native-shadow';
 import { Storage } from "../utils/AsyncStorage";
 import QRCode from 'react-native-qrcode';
-import { StackActions, NavigationActions } from 'react-navigation';
+import { StackActions, NavigationActions, NavigationEvents } from 'react-navigation';
 
 export default class Home extends Component {
     constructor(props) {
@@ -32,6 +32,9 @@ export default class Home extends Component {
 
             clickCount: 0,// 访问量
             inquiryCount: 0,// 帮助患者量
+            acceptedOrderCount: 0,//待接受 问诊订单 数量  
+            acceptedTurnOrderCount: 0,// 待接受 转诊订单 数量
+            acceptedTurnPatientCount: 0,// 待接受 转诊患者 数量
         }
     }
 
@@ -51,8 +54,11 @@ export default class Home extends Component {
                     this.setState({
                         signStatus: 'AUTHENTICATION_SUCCESS'
                     })
+                    // 查询当前所选服务金额
                     this.getPriceInquiryPictureByParams();
+                    // 获取个人信息
                     this.getDoctorDetail();
+                    // 查询服务量
                     this.getClickAndInquiry();
                 } else if (responseData.code == 40002) {
                     // 认证中
@@ -61,6 +67,7 @@ export default class Home extends Component {
                         ErrorPromptFlag: false,
                         isLoading: false,
                     })
+                    Storage.removeItem("userInfo", () => { })
                 } else if (responseData.code == 40003) {
                     // 认证信息审核失败
                     this.setState({
@@ -68,6 +75,7 @@ export default class Home extends Component {
                         ErrorPromptFlag: false,
                         isLoading: false,
                     })
+                    Storage.removeItem("userInfo", () => { })
                 } else if (responseData.code == 40004) {
                     // 认证信息未填写
                     this.setState({
@@ -75,6 +83,7 @@ export default class Home extends Component {
                         ErrorPromptFlag: false,
                         isLoading: false,
                     })
+                    Storage.removeItem("userInfo", () => { })
                 } else if (responseData.status == 500) {
                     // 服务器异常
                     this.setState({
@@ -82,12 +91,14 @@ export default class Home extends Component {
                         ErrorPromptFlag: false,
                         isLoading: false,
                     })
+                    Storage.removeItem("userInfo", () => { })
                 } else {
                     this.setState({
                         signStatus: 'AUTHENTICATION_EMPTY',
                         ErrorPromptFlag: false,
                         isLoading: false,
                     })
+                    Storage.removeItem("userInfo", () => { })
                 }
             })
             .catch((error) => {
@@ -272,29 +283,10 @@ export default class Home extends Component {
                 console.log('error', error);
             });
     }
-    componentDidMount() {
-        Storage.removeItem("userInfo", () => { })
-        Storage.getItem("userInfo", (data) => {
-            if (data) {
-                this.setState({
-                    userInfo: data,
-                    signStatus: 'AUTHENTICATION_SUCCESS',
-                })
-
-            } else {
-                this.setState({
-                    isLoading: true,
-                    ErrorPromptFlag: true,
-                    ErrorPromptText: '加载中...',
-                    ErrorPromptImg: require('../images/loading.png'),
-                });
-                this.getSignStates();
-            }
-        })
-    }
+    // 横幅 医院 科室 信息
     scrollText() {
         if (this.state.signStatus == "AUTHENTICATION_SUCCESS") {
-            return (<Text style={styles.scrollText}>{this.state.userInfo.hospitalName}{this.state.userInfo.branchName}</Text>)
+            return (<Text style={styles.scrollText}>{this.state.userInfo.hospitalName} {this.state.userInfo.branchName}</Text>)
         } else {
             return (<Text style={styles.scrollText}>你好！欢迎来到栗子医学</Text>)
         }
@@ -361,7 +353,6 @@ export default class Home extends Component {
         fetch(requestUrl.getClickAndInquiry, {
             method: 'GET',
             headers: {
-
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -371,6 +362,9 @@ export default class Home extends Component {
                     this.setState({
                         clickCount: responseData.result.clickCount,
                         inquiryCount: responseData.result.inquiryCount,
+                        acceptedOrderCount: responseData.result.acceptedOrderCount,//待接受 问诊订单 数量  
+                        acceptedTurnOrderCount: responseData.result.acceptedTurnOrderCount,// 待接受 转诊订单 数量
+                        acceptedTurnPatientCount: responseData.result.acceptedTurnPatientCount,// 待接受 转诊患者 数量
                     })
                 }
             })
@@ -378,6 +372,7 @@ export default class Home extends Component {
                 console.log('error', error);
             });
     }
+    // 查询三模块角标
 
     render() {
         const shadowOpt = {
@@ -398,6 +393,28 @@ export default class Home extends Component {
                 alwaysBounceVertical={true}// ios不满一屏时弹性
                 bounces={false}// ios弹性
             >
+                <NavigationEvents
+                    onWillFocus={() => {
+                        Storage.getItem("userInfo", (data) => {
+                            if (data) {
+                                this.setState({
+                                    userInfo: data,
+                                    signStatus: 'AUTHENTICATION_SUCCESS',
+                                })
+                                // 查询服务量
+                                this.getClickAndInquiry();
+                            } else {
+                                this.setState({
+                                    isLoading: true,
+                                    ErrorPromptFlag: true,
+                                    ErrorPromptText: '加载中...',
+                                    ErrorPromptImg: require('../images/loading.png'),
+                                });
+                                this.getSignStates();
+                            }
+                        })
+                    }}
+                />
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏
@@ -482,7 +499,7 @@ export default class Home extends Component {
                             <View style={styles.statisticsLine}></View>
                             <View style={styles.statisticsItem}>
                                 <Text style={[styles.statisticsNum, { color: this.state.signStatus == "AUTHENTICATION_SUCCESS" ? global.Colors.color : global.Colors.text555, fontSize: this.state.signStatus == "AUTHENTICATION_SUCCESS" ? global.px2dp(20) : global.px2dp(12) }]}>{this.state.signStatus == "AUTHENTICATION_SUCCESS" ? this.state.inquiryCount : "暂无数据"}</Text>
-                                <Text style={styles.statisticsText}>已帮助位患者</Text>
+                                <Text style={styles.statisticsText}>已帮助患者</Text>
                             </View>
                         </View>
                         {/* 统计部分-end */}
@@ -522,9 +539,9 @@ export default class Home extends Component {
                                     source={require('../images/inquiry.png')}
                                 />
                                 <Text style={styles.moduleText}>问诊</Text>
-                                {/* {this.state.signStatus == "AUTHENTICATION_SUCCESS" ? <View style={styles.countBox}>
-                                    <Text style={styles.countText}>99+</Text>
-                                </View> : null} */}
+                                {this.state.acceptedOrderCount > 0 ? <View style={styles.countBox}>
+                                    <Text style={styles.countText}>{this.state.acceptedOrderCount > 99 ? "99+" : this.state.acceptedOrderCount}</Text>
+                                </View> : null}
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={styles.moduleBtn}
@@ -559,9 +576,9 @@ export default class Home extends Component {
                                     source={require('../images/patient.png')}
                                 />
                                 <Text style={styles.moduleText}>患者管理</Text>
-                                {/* {this.state.signStatus == "AUTHENTICATION_SUCCESS" ? <View style={styles.countBox}>
-                                    <Text style={styles.countText}>99+</Text>
-                                </View> : null} */}
+                                {this.state.acceptedTurnPatientCount > 0 ? <View style={styles.countBox}>
+                                    <Text style={styles.countText}>{this.state.acceptedTurnPatientCount > 99 ? "99+" : this.state.acceptedTurnPatientCount}</Text>
+                                </View> : null}
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={styles.moduleBtn}
@@ -596,9 +613,9 @@ export default class Home extends Component {
                                     source={require('../images/shift_examine.png')}
                                 />
                                 <Text style={styles.moduleText}>转诊管理</Text>
-                                {/* {this.state.signStatus == "AUTHENTICATION_SUCCESS" ? <View style={styles.countBox}>
-                                    <Text style={styles.countText}>99+</Text>
-                                </View> : null} */}
+                                {this.state.acceptedTurnOrderCount > 0 ? <View style={styles.countBox}>
+                                    <Text style={styles.countText}>{this.state.acceptedTurnOrderCount > 99 ? "99+" : this.state.acceptedTurnOrderCount}</Text>
+                                </View> : null}
                             </TouchableOpacity>
                         </View>
                         {/* 三大模块-end */}
@@ -668,7 +685,7 @@ export default class Home extends Component {
                                     <View style={styles.countLine}></View>
                                     <View style={styles.countItem}>
                                         <Text>{this.state.inquiryCount}</Text>
-                                        <Text>已帮助位患者</Text>
+                                        <Text>已帮助患者</Text>
                                     </View>
                                 </View>
                                 <View style={styles.QRImgBox}>
@@ -860,6 +877,7 @@ const styles = StyleSheet.create({
         marginLeft: global.px2dp(-5),
         marginTop: global.px2dp(12),
         backgroundColor: global.Colors.color347fc2,
+        overflow: 'hidden',
     },
     scrollText: {
         paddingLeft: global.px2dp(13),
