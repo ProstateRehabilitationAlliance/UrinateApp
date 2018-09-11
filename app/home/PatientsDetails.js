@@ -962,7 +962,7 @@ export default class PatientsDetails extends Component {
                         this.setState({
                             isLoading: false,
                             ErrorPromptFlag: true,
-                            ErrorPromptText: '删除失败，请重试',
+                            ErrorPromptText: '创建失败，请重试',
                             ErrorPromptImg: require('../images/error.png'),
                         })
                         clearTimeout(this.timer)

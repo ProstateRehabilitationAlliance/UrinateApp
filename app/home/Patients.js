@@ -28,16 +28,168 @@ export default class Patients extends Component {
             searchText: '',// 搜索内容
             pageNo: 1,
             pageSize: 10,
+
+            receiveFlag: false,
+            receiveArr: [],
         }
     }
-    getInitalState() {
-        // 1初始化state
-    }
     componentWillMount() {
-        // this.getLablePatientJson();
     }
+    // 查询 待接收 转诊 患者列表
+    getAcceptedTurnPatientList() {
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '加载中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        })
+        fetch(requestUrl.getAcceptedTurnPatientList, {
+            method: 'GET',
+            headers: {
+                "token": global.Token,
+            },
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    this.setState({
+                        receiveFlag: true,
+                        receiveArr: responseData.result,
+                    })
+                } else {
+
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
+    // 接收转诊患者 同意 事件
+    acceptedPatient(id) {
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '提交中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        })
+        let formData = new FormData();
+        formData.append("id", id);
+        fetch(requestUrl.acceptedPatient, {
+            method: 'POST',
+            headers: {
+                "token": global.Token,
+            },
+            body: formData,
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    let temp = this.state.receiveArr;
+                    temp.shift();
+                    if (temp.length <= 0) {
+                        this.setState({
+                            receiveFlag: false,
+                            patientArr: [],
+                            pageNo: 1,
+                        })
+                        this.findPatientList(1, this.state.stickerId);
+                    }
+                    this.setState({
+                        receiveArr: temp,
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '接收成功',
+                        ErrorPromptImg: require('../images/succeed.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '接收失败，请重试',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
+    // 接收转诊患者 拒绝 事件
+    rejectedPatient(id) {
+        this.setState({
+            isLoading: true,
+            ErrorPromptFlag: true,
+            ErrorPromptText: '提交中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        })
+        let formData = new FormData();
+        formData.append("id", id);
+        fetch(requestUrl.rejectedPatient, {
+            method: 'POST',
+            headers: {
+                "token": global.Token,
+            },
+            body: formData,
+        }).then((response) => response.json())
+            .then((responseData) => {
+                console.log('responseData', responseData);
+                if (responseData.code == 20000) {
+                    let temp = this.state.receiveArr;
+                    temp.shift();
+                    if (temp.length <= 0) {
+                        this.setState({
+                            receiveFlag: false,
+                            patientArr: [],
+                            pageNo: 1,
+                        })
+                        this.findPatientList(1, this.state.stickerId);
+                    }
+                    this.setState({
+                        receiveArr: temp,
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '拒绝成功',
+                        ErrorPromptImg: require('../images/succeed.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '拒绝失败，请重试',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
+                }
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+    }
+    // 查询搜索标签 - start
     getLablePatientJson() {
-        // 查询搜索标签 - start
         this.setState({
             isLoading: true,
             ErrorPromptFlag: true,
@@ -77,8 +229,9 @@ export default class Patients extends Component {
             .catch((error) => {
                 console.log('error', error);
             });
-        // 查询搜索标签 - end
     }
+    // 查询搜索标签 - end
+    // 渲染标签
     renderSearchLabel() {
         let tempArr = [];
         for (let i = 0; i < this.state.searchLabel.length; i++) {
@@ -132,6 +285,7 @@ export default class Patients extends Component {
                         })
                         this.getLablePatientJson();
                         this.findPatientList(1, this.state.stickerId);
+                        this.getAcceptedTurnPatientList();
                     }}
                 />
                 <StatusBar
@@ -172,7 +326,6 @@ export default class Patients extends Component {
                                 style={styles.searchInput}
                                 placeholder={"请输入关键字"}
                                 placeholderTextColor={global.Colors.placeholder}
-                                autoFocus={true}
                                 onChangeText={(text) => {
                                     if (!regExp.RegNull.test(text)) {
                                         this.setState({
@@ -257,6 +410,40 @@ export default class Patients extends Component {
                         )
                     }}
                 />
+                {this.state.receiveFlag ?
+                    <TouchableOpacity
+                        onPress={() => { }}
+                        style={styles.receiveMask}
+                        activeOpacity={1}
+                    >
+                        <View style={styles.receiveContent}>
+                            <View style={styles.receiveInfoBox}>
+                                <Text style={styles.receiveInfo}>{this.state.receiveArr[0].patientName}-{this.state.receiveArr[0].patientSex}-{this.state.receiveArr[0].patientAge}岁</Text>
+                                <Text style={styles.receiveText}>是否同意接收此患者</Text>
+                            </View>
+                            <View style={styles.receiveBtnBox}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.rejectedPatient(this.state.receiveArr[0].id);
+                                    }}
+                                    style={[styles.receiveBtn, { borderRightColor: global.Colors.text999, borderRightWidth: global.Pixel }]}
+                                    activeOpacity={.8}
+                                >
+                                    <Text style={[styles.receiveBtnText, { color: global.Colors.text666 }]}>拒绝</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.acceptedPatient(this.state.receiveArr[0].id);
+                                    }}
+                                    style={styles.receiveBtn}
+                                    activeOpacity={.8}
+                                >
+                                    <Text style={[styles.receiveBtnText, { color: global.Colors.color }]}>同意</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                    : null}
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View>
         );
@@ -324,7 +511,6 @@ export default class Patients extends Component {
         } else {
             var url = requestUrl.findPatientList + "?pageSize=" + this.state.pageSize + "&pageNo=" + pageNo + "&patientName=" + this.state.searchText;
         }
-        console.log(url);
         fetch(url, {
             method: 'GET',
             headers: {
@@ -512,5 +698,54 @@ const styles = StyleSheet.create({
         color: global.Colors.text666,
     },
     // 列表-end
+
+    // 患者弹框
+    receiveMask: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: global.SCREEN_WIDTH,
+        height: global.SCREEN_HEIGHT,
+        backgroundColor: "rgba(0,0,0,.6)",
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    receiveContent: {
+        width: global.px2dp(310),
+        height: global.px2dp(152),
+        justifyContent: 'space-between',
+        backgroundColor: global.Colors.textfff,
+        borderRadius: global.px2dp(3),
+    },
+    receiveInfoBox: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    receiveInfo: {
+        fontSize: global.px2dp(17),
+        color: global.Colors.color,
+        lineHeight: global.px2dp(24),
+    },
+    receiveText: {
+        fontSize: global.px2dp(17),
+        color: global.Colors.text333,
+        lineHeight: global.px2dp(24),
+    },
+    receiveBtnBox: {
+        height: global.px2dp(45),
+        flexDirection: 'row',
+        borderTopColor: global.Colors.text999,
+        borderTopWidth: global.Pixel,
+    },
+    receiveBtn: {
+        flex: 1,
+        height: global.px2dp(45),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    receiveBtnText: {
+        fontSize: global.px2dp(17),
+    },
 });
 
