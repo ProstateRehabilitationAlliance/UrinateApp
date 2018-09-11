@@ -764,6 +764,19 @@ export default class PatientsDetails extends Component {
                         })
                         this.props.navigation.goBack();
                     }, global.TimingCount)
+                } else if (responseData.code == 60002) {
+                    this.setState({
+                        isLoading: false,
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '申请失败，该患者不能转给该意思',
+                        ErrorPromptImg: require('../images/error.png'),
+                    })
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => {
+                        this.setState({
+                            ErrorPromptFlag: false,
+                        })
+                    }, global.TimingCount)
                 } else {
                     this.setState({
                         isLoading: false,
