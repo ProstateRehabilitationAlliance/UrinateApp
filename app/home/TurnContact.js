@@ -6,6 +6,7 @@ import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import { BoxShadow } from 'react-native-shadow';
+import { NavigationEvents } from "react-navigation";
 
 export default class Contact extends Component {
     static navigationOptions = {
@@ -35,13 +36,22 @@ export default class Contact extends Component {
 
     }
     componentDidMount() {
-        this.findStar(this.state.pageNo);
+
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
         global.stateKey = this.props.navigation.state.key;
         return (
             <View style={styles.container} >
+                <NavigationEvents
+                    onWillFocus={() => {
+                        this.setState({
+                            doctorArr: [],
+                            pageNo: 1,
+                        })
+                        this.findStar(this.state.pageNo);
+                    }}
+                />
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏
@@ -76,19 +86,7 @@ export default class Contact extends Component {
                     data={this.state.doctorArr}
                     initialNumToRender={10}
                     keyExtractor={item => item.id}
-                    // ListFooterComponent={() => {
-                    // 尾部组件
-                    // }}
                     renderItem={({ item }) => this.doctorRenderItem(item)}
-                    // 分隔线
-                    // ItemSeparatorComponent={() => {
-                    //     return (
-                    //         <View style={{
-                    //             height: global.Pixel,
-                    //             backgroundColor: global.Colors.text999,
-                    //         }}></View>
-                    //     )
-                    // }}
                     onRefresh={() => {
                         this.setState({
                             pageNo: 1,
@@ -192,7 +190,7 @@ export default class Contact extends Component {
         fetch(requestUrl.findStar + '?pageSize=' + this.state.pageSize + '&pageNo=' + pageNo, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -224,7 +222,6 @@ export default class Contact extends Component {
                     this.setState({
                         isLoading: false,
                         ErrorPromptFlag: false,
-                        doctorArr: [],
                         dataFlag: false,
                     })
                 }
@@ -240,7 +237,7 @@ export default class Contact extends Component {
         fetch(requestUrl.unFocus, {
             method: 'POST',
             headers: {
-                
+
                 "token": global.Token,
             },
             body: formData,

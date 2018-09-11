@@ -87,6 +87,10 @@ export let requestUrl = {
     "getLablePatientJson": IP + "/api-stata/docket/getPatientDocketList",// 根据token查询患者标签信息
     "findPatientList": IP + "/api-record/patient/findPatientList",// 查询患者列表
 
+    "getAcceptedTurnPatientList": IP + "/api-record/userPatient/getAcceptedTurnPatientList",// 查询 带接受 转诊 患者列表
+    "acceptedPatient": IP + "/api-record/userPatient/acceptedPatient",// 同意 接受转诊 患者
+    "rejectedPatient": IP + "/api-record/userPatient/rejectedPatient",// 拒绝  接受转诊 患者
+
     "getPatientById": IP + "/api-record/patientAnamnesis/getPatientById",// 根据患者ID查询病历信息
     "getPatientLabel": IP + "/api-record/patient/sticker/get",// 患者标签查询
     "getMedicalReportList": IP + "/api-archive/medical/report/getMedicalReportList",// 根据患者id查 上传报告

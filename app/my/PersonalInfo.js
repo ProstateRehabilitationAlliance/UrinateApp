@@ -6,6 +6,7 @@ import { global } from '../utils/Global';// 常量
 import Nav from "../common/Nav";// 导航组件
 import ErrorPrompt from "../common/ErrorPrompt";
 import { Storage } from '../utils/AsyncStorage';
+import { NavigationEvents } from "react-navigation";
 export default class PersonalInfo extends Component {
     static navigationOptions = {
         header: null,
@@ -60,29 +61,11 @@ export default class PersonalInfo extends Component {
         //         console.log('error', error);
         //     });
     }
-    componentDidMount() {
-        Storage.getItem("userInfo", (data) => {
-            if (data) {
-                this.setState({
-                    userInfo: data,
-                })
-            } else {
-                this.setState({
-                    isLoading: true,
-                    ErrorPromptFlag: true,
-                    ErrorPromptText: '加载中...',
-                    ErrorPromptImg: require('../images/loading.png'),
-                });
-                this.getDoctorDetail();
-            }
-        })
-    }
     // 获取个人信息
     getDoctorDetail() {
         fetch(requestUrl.getDoctorDetail, {
             method: 'GET',
             headers: {
-
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -143,7 +126,29 @@ export default class PersonalInfo extends Component {
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container}>
-                <Nav isLoading={this.state.isLoading} title={"个人信息"} leftClick={this.goBack.bind(this)} />
+                <NavigationEvents
+                    onWillFocus={() => {
+                        Storage.getItem("userInfo", (data) => {
+                            if (data) {
+                                this.setState({
+                                    userInfo: data,
+                                })
+                            } else {
+                                this.setState({
+                                    isLoading: true,
+                                    ErrorPromptFlag: true,
+                                    ErrorPromptText: '加载中...',
+                                    ErrorPromptImg: require('../images/loading.png'),
+                                });
+                                this.getDoctorDetail();
+                            }
+                        })
+                    }}
+                />
+                <Nav
+                    isLoading={this.state.isLoading}
+                    title={"个人信息"}
+                    leftClick={this.goBack.bind(this)} />
                 <ScrollView
                     style={styles.scrollView}
                 >

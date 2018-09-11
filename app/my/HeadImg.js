@@ -71,7 +71,7 @@ export default class HeadImg extends Component {
         fetch(requestUrl.getDoctorDetail, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -244,13 +244,13 @@ export default class HeadImg extends Component {
                 ErrorPromptText: '提交中...',
                 ErrorPromptImg: require('../images/loading.png'),
             })
-            // 修改医生信息接口
+            // 修改医生头像接口
             let formData = new FormData();
             formData.append("headImg", this.state.headImgUrl);
             fetch(requestUrl.updateDoctorDetail, {
                 method: 'POST',
                 headers: {
-                    
+
                     "token": global.Token,
                 },
                 body: formData,

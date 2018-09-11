@@ -6,6 +6,7 @@ import { global } from '../utils/Global';// 常量
 import ErrorPrompt from "../common/ErrorPrompt";
 import LinearGradient from 'react-native-linear-gradient';
 import { Storage } from "../utils/AsyncStorage";
+import { NavigationEvents } from "react-navigation";
 
 export default class TurnDoctorSearch extends Component {
     static navigationOptions = {
@@ -56,7 +57,6 @@ export default class TurnDoctorSearch extends Component {
                 this.getDoctorDetail();
             }
         })
-        this.findDoctorList(this.state.searchText, 1, '');
     }
     // 获取个人信息
     getDoctorDetail() {
@@ -127,6 +127,15 @@ export default class TurnDoctorSearch extends Component {
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container}>
+                <NavigationEvents
+                    onWillFocus={() => {
+                        this.setState({
+                            doctorArr: [],
+                            pageNo: 1,
+                        })
+                        this.findDoctorList(this.state.searchText, 1, '');
+                    }}
+                />
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏
@@ -152,11 +161,9 @@ export default class TurnDoctorSearch extends Component {
                                 placeholderTextColor={global.Colors.placeholder}
                                 autoFocus={true}
                                 onChangeText={(text) => {
-                                    if (!regExp.RegNull.test(text)) {
-                                        this.setState({
-                                            searchText: text
-                                        });
-                                    }
+                                    this.setState({
+                                        searchText: text.replace(/[^\u4e00-\u9fa5]/gi, '')
+                                    });
                                 }}
                                 onSubmitEditing={() => {
                                     this.setState({
@@ -170,7 +177,6 @@ export default class TurnDoctorSearch extends Component {
                                 keyboardType={"default"}
                                 enablesReturnKeyAutomatically={true}//ios禁止空确认
                                 returnKeyType={'search'}
-                            // returnKeyLabel
                             />
                         </View>
                         <TouchableOpacity

@@ -8,7 +8,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ErrorPrompt from "../common/ErrorPrompt";
 import Communications from 'react-native-communications';
 import { BoxShadow } from 'react-native-shadow';
-import { StackActions, NavigationActions } from 'react-navigation';
+import { StackActions, NavigationActions, NavigationEvents } from 'react-navigation';
 
 
 export default class My extends Component {
@@ -29,25 +29,6 @@ export default class My extends Component {
             telMaskFlag: false,// 客服电话弹框
         }
     }
-    componentWillMount() {
-        Storage.getItem("userInfo", (data) => {
-            if (data) {
-                this.setState({
-                    userInfo: data,
-                    signStatus: 'AUTHENTICATION_SUCCESS',
-                })
-            } else {
-                this.setState({
-                    isLoading: true,
-                    ErrorPromptFlag: true,
-                    ErrorPromptText: '加载中...',
-                    ErrorPromptImg: require('../images/loading.png'),
-                });
-                this.getSignStates();
-            }
-        })
-    }
-
     // 获取后台认证状态
     getSignStates() {
         fetch(requestUrl.getSignStatus, {
@@ -277,6 +258,26 @@ export default class My extends Component {
                 alwaysBounceVertical={true}// ios不满一屏时弹性
                 bounces={false}// ios弹性
                 style={styles.container}>
+                <NavigationEvents
+                    onWillFocus={() => {
+                        Storage.getItem("userInfo", (data) => {
+                            if (data) {
+                                this.setState({
+                                    userInfo: data,
+                                    signStatus: 'AUTHENTICATION_SUCCESS',
+                                })
+                            } else {
+                                this.setState({
+                                    isLoading: true,
+                                    ErrorPromptFlag: true,
+                                    ErrorPromptText: '加载中...',
+                                    ErrorPromptImg: require('../images/loading.png'),
+                                });
+                                this.getSignStates();
+                            }
+                        })
+                    }}
+                />
                 <StatusBar
                     animated={true}//是否动画
                     hidden={false}//是否隐藏

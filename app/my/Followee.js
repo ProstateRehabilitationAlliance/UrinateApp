@@ -6,6 +6,7 @@ import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
 import { BoxShadow } from 'react-native-shadow';
 import Nav from "../common/Nav";
+import { NavigationEvents } from "react-navigation";
 
 export default class Contact extends Component {
     static navigationOptions = {
@@ -28,19 +29,19 @@ export default class Contact extends Component {
             dataFlag: true,// 是否有下一页
         }
     }
-    getInitalState() {
-        // 1初始化state
-    }
-    componentWillMount() {
-
-    }
-    componentDidMount() {
-        this.findStar(this.state.pageNo);
-    }
     render() {
         const { navigate, goBack } = this.props.navigation;
         return (
             <View style={styles.container} >
+                <NavigationEvents
+                    onWillFocus={() => {
+                        this.setState({
+                            pageNo: 1,
+                            doctorArr: [],
+                        })
+                        this.findStar(1);
+                    }}
+                />
                 <Nav
                     isLoading={this.state.isLoading}
                     title={"我的医生"}
@@ -152,7 +153,6 @@ export default class Contact extends Component {
     }
     // 加载数据
     findStar(pageNo) {
-        console.log(pageNo)
         this.setState({
             isLoading: true,
             ErrorPromptFlag: true,
@@ -162,7 +162,7 @@ export default class Contact extends Component {
         fetch(requestUrl.findStar + '?pageSize=' + this.state.pageSize + '&pageNo=' + pageNo, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -210,7 +210,7 @@ export default class Contact extends Component {
         fetch(requestUrl.unFocus, {
             method: 'POST',
             headers: {
-                
+
                 "token": global.Token,
             },
             body: formData,
