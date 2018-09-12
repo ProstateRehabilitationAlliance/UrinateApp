@@ -30,6 +30,8 @@ export default class TurnOrderDetails extends Component {
             orderImgArr: [],// 订单图片
             draftInfo: {},// 草稿信息
             replyText: '',// 回复信息
+            keyHeight: 0,
+            keyFlag: false,
         }
     }
     getInitalState() {
