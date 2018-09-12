@@ -415,6 +415,7 @@ export default class PatientsDetails extends Component {
                                 })
                             }}
                         >
+                            {/* 上传报告 */}
                             <View style={styles.contentItem}>
                                 <Text style={styles.contentTitleText}>上传报告</Text>
                                 <FlatList
@@ -444,6 +445,7 @@ export default class PatientsDetails extends Component {
                                 // }}
                                 />
                             </View>
+                            {/* 问诊记录 */}
                             <View style={styles.contentItem}>
                                 <Text style={styles.contentTitleText}>问诊记录</Text>
                                 <FlatList
@@ -473,6 +475,7 @@ export default class PatientsDetails extends Component {
                                 // }}
                                 />
                             </View>
+                            {/* 评估记录 */}
                             <View style={styles.contentItem}>
                                 <Text style={styles.contentTitleText}>评估记录</Text>
                                 <FlatList
@@ -502,6 +505,7 @@ export default class PatientsDetails extends Component {
                                 // }}
                                 />
                             </View>
+                            {/* 解读报告记录 */}
                             <View style={styles.contentItem}>
                                 <Text style={styles.contentTitleText}>解读报告记录</Text>
                                 <FlatList
@@ -1068,7 +1072,7 @@ export default class PatientsDetails extends Component {
 
     // 根据患者ID查询 上传报告列表
     getMedicalReportList(pageNo) {
-        fetch(requestUrl.getMedicalReportList + '?patientId=' + this.state.patientId + "&pageNo=" + pageNo + "&pageSize=" + this.state.pageSize, {
+        fetch(requestUrl.getMedicalReportList + '?patientId=' + this.state.patientId + "&pageNo=" + pageNo + "&pageSize=1000", {
             method: 'GET',
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -1141,11 +1145,17 @@ export default class PatientsDetails extends Component {
         return (
             <View key={item.date} style={styles.uploadImgItem}>
                 <Text style={styles.uploadImgTitle}>上传时间 {item.date}</Text>
-                <ScrollView
+                <View style={{
+                    flexDirection: 'row',
+                    flexWrap: "wrap",
+                }}>
+                    {tempArr}
+                </View>
+                {/* <ScrollView
                     horizontal={true}
                 >
                     {tempArr}
-                </ScrollView>
+                </ScrollView> */}
             </View>
         )
     }
@@ -1580,11 +1590,11 @@ const styles = StyleSheet.create({
     },
     // 垂直滚动容器
     itemBox: {
-        height: global.px2dp(238),
+        // height: global.px2dp(238),
         backgroundColor: global.Colors.colorededed,
         // paddingLeft: global.px2dp(8),
         // paddingRight: global.px2dp(8),
-        // paddingBottom: global.px2dp(28),
+        paddingBottom: global.px2dp(8),
         // paddingTop: global.px2dp(8),
     },
     // 上传报告 - start
