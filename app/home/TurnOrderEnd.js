@@ -446,8 +446,8 @@ const styles = StyleSheet.create({
         lineHeight: global.px2dp(21),
     },
     annexContent: {
-        paddingLeft: global.px2dp(15),
-        paddingRight: global.px2dp(15),
+        marginLeft: global.px2dp(15),
+        marginRight: global.px2dp(15),
     },
     annexBtn: {
 
