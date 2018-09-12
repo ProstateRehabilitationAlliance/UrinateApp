@@ -531,7 +531,10 @@ export default class Home extends Component {
                                             })
                                         }
                                     } else {
-                                        navigate('Order');
+                                        // activeFlag 是否有待接收的订单
+                                        navigate('Order', {
+                                            activeFlag: this.state.acceptedOrderCount > 0 ? true : false,
+                                        });
                                     }
                                 }}>
                                 <Image
@@ -605,7 +608,10 @@ export default class Home extends Component {
                                             })
                                         }
                                     } else {
-                                        navigate('TurnOrder');
+                                        // activeFlag 是否有待接收的订单
+                                        navigate('TurnOrder', {
+                                            activeFlag: this.state.acceptedTurnOrderCount > 0 ? true : false,
+                                        });
                                     }
                                 }}>
                                 <Image

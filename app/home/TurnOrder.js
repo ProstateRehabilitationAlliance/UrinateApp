@@ -35,8 +35,13 @@ export default class TurnOrder extends Component {
         // 1初始化state
     }
     componentWillMount() {
-        // 2仅调用一次在 render 前
-        // this.getOrderList(1, this.state.screenActive);
+        if (this.props.navigation.state.params) {
+            if (!this.props.navigation.state.params.activeFlag) {
+                this.setState({
+                    screenActive: 1,
+                })
+            }
+        }
     }
     componentDidMount() {
         // 4获取数据 在 render 后

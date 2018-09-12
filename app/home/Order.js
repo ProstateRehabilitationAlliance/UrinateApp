@@ -34,8 +34,13 @@ export default class Order extends Component {
         // 1初始化state
     }
     componentWillMount() {
-        // 2仅调用一次在 render 前
-        // this.getOrderList(1, this.state.screenActive);
+        if (this.props.navigation.state.params) {
+            if (!this.props.navigation.state.params.activeFlag) {
+                this.setState({
+                    screenActive: 1,
+                })
+            }
+        }
     }
     componentDidMount() {
         // 4获取数据 在 render 后
@@ -324,7 +329,7 @@ export default class Order extends Component {
         fetch(requestUrl.inquiryOrder[screenActive] + "?pageNo=" + pageNo + "&pageSize" + this.state.pageSize, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
