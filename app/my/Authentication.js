@@ -6,6 +6,7 @@ import { global } from '../utils/Global';// 常量
 import Button from "../common/Button";
 import Nav from "../common/Nav";
 import ErrorPrompt from "../common/ErrorPrompt";
+import { CachedImage, ImageCache } from "react-native-img-cache";
 export default class Authentication extends Component {
     static navigationOptions = {
         header: null,
@@ -265,7 +266,7 @@ export default class Authentication extends Component {
                                     })
                                 }}
                                 activeOpacity={.8}>
-                                <Image
+                                <CachedImage
                                     style={styles.idCardImg}
                                     source={this.state.idCardFrontUrl ? { uri: this.state.idCardFrontUrl } : { uri: requestUrl.idCardFrontUrl }}
                                 />
@@ -315,7 +316,7 @@ export default class Authentication extends Component {
                                         })
                                     }}
                                     activeOpacity={.8}>
-                                    <Image
+                                    <CachedImage
                                         style={styles.aptitudeImg}
                                         source={this.state.doctorCardFrontUrl ? { uri: this.state.doctorCardFrontUrl } : { uri: requestUrl.doctorCardFrontUrl }}
                                     />
@@ -334,7 +335,7 @@ export default class Authentication extends Component {
                                     }}
                                     style={styles.aptitudeBtn}
                                 >
-                                    <Image style={styles.aptitudeImg} source={this.state.workCardUrl ? { uri: this.state.workCardUrl } : { uri: requestUrl.workCardUrl }} />
+                                    <CachedImage style={styles.aptitudeImg} source={this.state.workCardUrl ? { uri: this.state.workCardUrl } : { uri: requestUrl.workCardUrl }} />
                                 </TouchableOpacity>
                             </View>
                         </View>

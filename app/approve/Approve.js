@@ -9,6 +9,7 @@ import UpFile from "../common/UpFile";
 import ErrorPrompt from "../common/ErrorPrompt";
 import SubmitPrompt from "../common/SubmitPrompt";
 import { StackActions, NavigationActions } from 'react-navigation';
+import { CachedImage, ImageCache } from "react-native-img-cache";
 
 export default class Approve extends Component {
     static navigationOptions = {
@@ -252,7 +253,7 @@ export default class Approve extends Component {
                                         })
                                     }}
                                     activeOpacity={.8}>
-                                    <Image
+                                    <CachedImage
                                         style={styles.idCardImg}
                                         source={this.state.idCardFrontUrl ? { uri: this.state.idCardFrontUrl } : { uri: requestUrl.idCardFrontUrl }}
                                     />
@@ -395,7 +396,7 @@ export default class Approve extends Component {
                                         })
                                     }}
                                     activeOpacity={.8}>
-                                    <Image
+                                    <CachedImage
                                         style={styles.certificateImg}
                                         source={this.state.doctorCardFrontUrl ? { uri: this.state.doctorCardFrontUrl } : { uri: requestUrl.doctorCardFrontUrl }}
                                     />
@@ -404,7 +405,7 @@ export default class Approve extends Component {
                                     style={styles.imgBtn}
                                     onPress={() => { }}
                                     activeOpacity={.8}>
-                                    <Image
+                                    <CachedImage
                                         style={styles.certificateImg}
                                         source={this.state.doctorCardContrary ? { uri: this.state.doctorCardContrary } : require('../images/example_img.png')}
                                     />
@@ -479,7 +480,7 @@ export default class Approve extends Component {
                                         })
                                     }}
                                     activeOpacity={.8}>
-                                    <Image
+                                    <CachedImage
                                         style={styles.certificateImg}
                                         source={this.state.workCardUrl ? { uri: this.state.workCardUrl } : { uri: requestUrl.workCardUrl }}
                                     />

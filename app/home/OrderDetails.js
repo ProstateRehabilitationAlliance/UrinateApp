@@ -7,6 +7,7 @@ import LinearGradient from "react-native-linear-gradient";//
 import ErrorPrompt from "../common/ErrorPrompt";
 import { BoxShadow } from 'react-native-shadow';
 import { NavigationEvents } from "react-navigation";
+import { CachedImage, ImageCache } from "react-native-img-cache";
 
 export default class OrderDetails extends Component {
     static navigationOptions = {
@@ -418,7 +419,7 @@ export default class OrderDetails extends Component {
                                             }}
                                             style={styles.annexBtn}
                                         >
-                                            <Image style={styles.annexImg} source={{ uri: item }} />
+                                            <CachedImage style={styles.annexImg} source={{ uri: item }} />
                                         </TouchableOpacity>
                                     )
                                 })}

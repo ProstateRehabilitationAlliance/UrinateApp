@@ -7,6 +7,7 @@ import ErrorPrompt from "../common/ErrorPrompt";
 import { BoxShadow } from 'react-native-shadow';
 import { NavigationEvents } from "react-navigation";
 import LinearGradient from "react-native-linear-gradient";
+import { CachedImage, ImageCache } from "react-native-img-cache";
 export default class PatientsDetails extends Component {
     static navigationOptions = {
         header: null,
@@ -1138,7 +1139,7 @@ export default class PatientsDetails extends Component {
                     style={styles.imgItem}
                     key={i}
                 >
-                    <Image style={styles.uploadImg} source={{ uri: item.imgUrls[i] }} />
+                    <CachedImage style={styles.uploadImg} source={{ uri: item.imgUrls[i] }} />
                 </TouchableOpacity>
             )
         }

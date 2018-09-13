@@ -7,6 +7,7 @@ import ErrorPrompt from "../common/ErrorPrompt";
 import LinearGradient from 'react-native-linear-gradient';
 import { Storage } from "../utils/AsyncStorage";
 import { NavigationEvents } from "react-navigation";
+import { CachedImage, ImageCache } from "react-native-img-cache";
 
 export default class TurnDoctorSearch extends Component {
     static navigationOptions = {
@@ -279,7 +280,7 @@ export default class TurnDoctorSearch extends Component {
                 key={item.id}
             >
                 <View style={styles.itemContent}>
-                    <Image
+                    <CachedImage
                         style={styles.doctorImg}
                         source={item.headImg ? { uri: item.headImg } : require('../images/default_doc_img.png')} />
                     <View style={styles.infoBox}>

@@ -8,6 +8,7 @@ import ErrorPrompt from "../common/ErrorPrompt";
 import { Storage } from '../utils/AsyncStorage';
 import Nav from "../common/Nav";// 导航组件
 import ImagePicker from 'react-native-image-picker';
+import { CachedImage, ImageCache } from "react-native-img-cache";
 const photoOptions = {
     title: '请选择',
     cancelButtonTitle: '取消',
@@ -142,7 +143,7 @@ export default class HeadImg extends Component {
                 />
                 <ScrollView>
                     <View style={styles.upImgBtn}>
-                        <Image style={styles.upImg} source={this.state.headImgUrl ? { uri: this.state.headImgUrl } : require('../images/default_hear_img.png')} />
+                        <CachedImage style={styles.upImg} source={this.state.headImgUrl ? { uri: this.state.headImgUrl } : require('../images/default_hear_img.png')} />
                     </View>
                     <View style={styles.btnBox}>
                         <Button text={'保 存'} click={this.submit.bind(this)} />

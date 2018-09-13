@@ -7,6 +7,7 @@ import { global } from '../utils/Global';// 常量
 import { BoxShadow } from 'react-native-shadow';
 import Nav from "../common/Nav";
 import { NavigationEvents } from "react-navigation";
+import { CachedImage, ImageCache } from "react-native-img-cache";
 
 export default class Contact extends Component {
     static navigationOptions = {
@@ -112,7 +113,7 @@ export default class Contact extends Component {
                 <BoxShadow
                     setting={shadowOpt}>
                     <View style={styles.itemContent}>
-                        <Image
+                        <CachedImage
                             style={styles.doctorImg}
                             source={item.headImg ? { uri: item.headImg } : require('../images/default_doc_img.png')} />
                         <View style={styles.infoBox}>

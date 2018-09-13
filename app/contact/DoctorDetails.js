@@ -6,6 +6,7 @@ import { global } from '../utils/Global';// 常量
 import ErrorPrompt from "../common/ErrorPrompt";
 import LinearGradient from 'react-native-linear-gradient';
 import { BoxShadow } from 'react-native-shadow';
+import { CachedImage, ImageCache } from "react-native-img-cache";
 
 export default class DoctorDetails extends Component {
     static navigationOptions = {
@@ -191,7 +192,7 @@ export default class DoctorDetails extends Component {
                         setting={shadowOpt}>
                         <View style={styles.infoContent}>
                             <View style={styles.infoBox}>
-                                <Image
+                                <CachedImage
                                     style={styles.headImg}
                                     source={this.state.userInfo.headImg ? { uri: this.state.userInfo.headImg } : require('../images/default_doc_img.png')} />
                                 <View style={styles.textInfoBox}>

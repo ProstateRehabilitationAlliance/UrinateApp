@@ -7,6 +7,7 @@ import Nav from "../common/Nav";// 导航组件
 import ErrorPrompt from "../common/ErrorPrompt";
 import { Storage } from '../utils/AsyncStorage';
 import { NavigationEvents } from "react-navigation";
+import { CachedImage, ImageCache } from "react-native-img-cache";
 export default class PersonalInfo extends Component {
     static navigationOptions = {
         header: null,
@@ -168,7 +169,7 @@ export default class PersonalInfo extends Component {
                             }}>
                             <Text style={styles.itemTitle}>照片</Text>
                             <View style={styles.itemBox}>
-                                <Image
+                                <CachedImage
                                     style={styles.headImg}
                                     source={this.state.userInfo.headImg ? { uri: this.state.userInfo.headImg } : require('../images/default_doc_img.png')} />
                                 <Image source={require('../images/arrow_right_grey.png')} />

@@ -4,6 +4,7 @@ import { regExp } from './netWork/RegExp';// 正则
 import { requestUrl } from './netWork/Url';// IP地址
 import { global } from './utils/Global';// 常量
 import { Storage } from "./utils/AsyncStorage";
+import { CachedImage, ImageCache } from "react-native-img-cache";
 import { StackActions, NavigationActions } from 'react-navigation';
 export default class Start extends Component {
     static navigationOptions = {
@@ -97,12 +98,12 @@ export default class Start extends Component {
                         showsHorizontalScrollIndicator={false}
                         bounces={false}// ios弹性
                     >
-                        <Image
+                        <CachedImage
                             resizeMode={"cover"}// cover填满并裁去多余 contain等比例缩放留白 stretch拉伸填充
                             style={styles.startImg}
                             source={{ uri: "https://m.360buyimg.com/babel/jfs/t26095/57/1041327989/55624/ccd7caf0/5b865819N416fa14a.jpg" }}
                         />
-                        <Image
+                        <CachedImage
                             resizeMode={"cover"}// cover填满并裁去多余 contain等比例缩放留白 stretch拉伸填充
                             style={styles.startImg}
                             source={{ uri: "https://m.360buyimg.com/babel/jfs/t26095/57/1041327989/55624/ccd7caf0/5b865819N416fa14a.jpg" }}
@@ -117,7 +118,7 @@ export default class Start extends Component {
                                 this.props.navigation.dispatch(resetAction);
                             }}
                         >
-                            <Image
+                            <CachedImage
                                 resizeMode={"cover"}// cover填满并裁去多余 contain等比例缩放留白 stretch拉伸填充
                                 style={styles.startImg}
                                 source={{ uri: "https://m.360buyimg.com/babel/jfs/t26095/57/1041327989/55624/ccd7caf0/5b865819N416fa14a.jpg" }}
@@ -126,7 +127,7 @@ export default class Start extends Component {
                     </ScrollView>
                     :
                     <View style={styles.startImgBox}>
-                        <Image
+                        <CachedImage
                             resizeMode={"cover"}// cover填满并裁去多余 contain等比例缩放留白 stretch拉伸填充
                             style={styles.startImg}
                             source={{ uri: "https://m.360buyimg.com/babel/jfs/t26095/57/1041327989/55624/ccd7caf0/5b865819N416fa14a.jpg" }}

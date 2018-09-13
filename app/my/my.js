@@ -9,8 +9,7 @@ import ErrorPrompt from "../common/ErrorPrompt";
 import Communications from 'react-native-communications';
 import { BoxShadow } from 'react-native-shadow';
 import { StackActions, NavigationActions, NavigationEvents } from 'react-navigation';
-
-
+import { CachedImage, ImageCache } from "react-native-img-cache";
 export default class My extends Component {
     constructor(props) {
         super(props);
@@ -240,6 +239,12 @@ export default class My extends Component {
             )
         }
     }
+    componentDidMount() {
+        let cache = ImageCache.get().cache;
+        console.log(cache)
+        // let sss = ImageCache.get().getPath();
+        // console.log(sss)
+    }
     render() {
         const { navigate, goBack } = this.props.navigation;
         const telShadowOpt = {
@@ -294,11 +299,7 @@ export default class My extends Component {
                     colors={global.LinearGradient}
                     style={styles.linearGradient}>
                     <View style={styles.navContent}>
-                        <Image
-                            style={styles.doctorImg}
-                            source={this.state.userInfo && this.state.userInfo.headImg ? { uri: this.state.userInfo.headImg } : require('../images/default_doc_img.png')}
-                            defaultSource={require('../images/default_doc_img.png')}// 默认图片
-                        />
+                        <CachedImage style={styles.doctorImg} source={this.state.userInfo && this.state.userInfo.headImg ? { uri: this.state.userInfo.headImg } : require('../images/default_doc_img.png')} />
                         {this.navHTML()}
                     </View>
                 </LinearGradient>
