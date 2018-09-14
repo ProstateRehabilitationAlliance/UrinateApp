@@ -355,9 +355,15 @@ export default class TurnDoctorSearch extends Component {
             .then((responseData) => {
                 console.log('responseData', responseData);
                 if (responseData.code == 20000) {
+                    let newData = responseData.result;
+                    for (let i = 0; i < newData.length; i++) {
+                        if (newData[i].id == global.Token) {
+                            newData.splice(i, 1);
+                        }
+                    }
                     if (responseData.result.length >= this.state.pageSize) {
                         let temp = this.state.doctorArr;
-                        temp = temp.concat(responseData.result);
+                        temp = temp.concat(newData);
                         this.setState({
                             isLoading: false,
                             ErrorPromptFlag: false,
@@ -366,7 +372,7 @@ export default class TurnDoctorSearch extends Component {
                         })
                     } else {
                         let temp = this.state.doctorArr;
-                        temp = temp.concat(responseData.result);
+                        temp = temp.concat(newData);
                         this.setState({
                             isLoading: false,
                             ErrorPromptFlag: false,
