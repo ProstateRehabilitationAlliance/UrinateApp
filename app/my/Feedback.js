@@ -92,6 +92,18 @@ export default class Feedback extends Component {
                     ErrorPromptFlag: false,
                 })
             }, global.TimingCount)
+        } else if (this.state.text.length >= 1000) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '内容过长，请精简后重新提交',
+                ErrorPromptImg: require('../images/error.png'),
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
         } else {
             this.setState({
                 isLoading: true,
@@ -104,7 +116,7 @@ export default class Feedback extends Component {
             fetch(requestUrl.addFeedback, {
                 method: 'POST',
                 headers: {
-                    
+
                     "token": global.Token,
                 },
                 body: formData,

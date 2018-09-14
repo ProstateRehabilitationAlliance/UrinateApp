@@ -664,6 +664,18 @@ export default class TurnOrderDetails extends Component {
                     ErrorPromptFlag: false,
                 })
             }, global.TimingCount)
+        } else if (this.state.replyText.length >= 1000) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '内容过长，请精简后重新提交',
+                ErrorPromptImg: require('../images/error.png'),
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
         } else {
             this.setState({
                 isLoading: true,
@@ -731,6 +743,18 @@ export default class TurnOrderDetails extends Component {
             this.setState({
                 ErrorPromptFlag: true,
                 ErrorPromptText: '请输入内容',
+                ErrorPromptImg: require('../images/error.png'),
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (this.state.replyText.length >= 1000) {
+            this.setState({
+                ErrorPromptFlag: true,
+                ErrorPromptText: '内容过长，请精简后重新提交',
                 ErrorPromptImg: require('../images/error.png'),
             })
             clearTimeout(this.timer)
