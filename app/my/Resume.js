@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, ScrollView, } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, KeyboardAvoidingView, TextInput, ScrollView, } from 'react-native';
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
@@ -123,26 +123,31 @@ export default class Resume extends Component {
                     rightClick={this.submit.bind(this)}
                     dom={<Text style={styles.submitText}>保存</Text>}
                 />
-                <ScrollView>
-                    <TextInput
-                        style={[styles.textareaStyle, {
-                            minHeight: 246,
-                        }]}
-                        placeholder={'请编辑您的简介…'}
-                        placeholderTextColor={global.Colors.placeholder}
-                        multiline={true}
-                        onChangeText={(text) => {
-                            this.setState({
-                                newText: text,
-                            })
-                        }}
-                        defaultValue={this.state.newText}
-                        onContentSizeChange={this.onContentSizeChange.bind(this)}
-                        underlineColorAndroid={'transparent'}
-                        onBlur={this.blurReg.bind(this)}
-                        keyboardType={'default'}
-                    />
-                </ScrollView>
+                <KeyboardAvoidingView
+                    behavior={global.IOS ? "padding" : null}
+                    style={{ flex: 1 }}
+                >
+                    <ScrollView>
+                        <TextInput
+                            style={[styles.textareaStyle, {
+                                minHeight: 246,
+                            }]}
+                            placeholder={'请编辑您的简介…'}
+                            placeholderTextColor={global.Colors.placeholder}
+                            multiline={true}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    newText: text,
+                                })
+                            }}
+                            defaultValue={this.state.newText}
+                            onContentSizeChange={this.onContentSizeChange.bind(this)}
+                            underlineColorAndroid={'transparent'}
+                            onBlur={this.blurReg.bind(this)}
+                            keyboardType={'default'}
+                        />
+                    </ScrollView>
+                </KeyboardAvoidingView>
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View>
         );

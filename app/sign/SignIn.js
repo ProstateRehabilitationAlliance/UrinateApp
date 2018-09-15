@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, StatusBar, TextInput, BackHandler } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, StatusBar, TextInput, BackHandler, KeyboardAvoidingView } from 'react-native';
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
@@ -36,129 +36,134 @@ export default class SignIn extends Component {
     render() {
         const { navigate, goBack } = this.props.navigation;
         return (
-            <ScrollView
-                style={styles.container}
-                keyboardShouldPersistTaps={'handled'}
+            <KeyboardAvoidingView
+                behavior={global.IOS ? "padding" : null}
+                style={{ flex: 1 }}
             >
-                <StatusBar
-                    animated={true}//是否动画
-                    hidden={false}//是否隐藏
-                    backgroundColor={'#000'}//android 设置状态栏背景颜色
-                    translucent={false}//android 设置状态栏是否为透明
-                    showHideTransition="fade"//IOS状态栏改变时动画 fade:默认 slide
-                    networkActivityIndicatorVisible={this.state.isLoading}//IOS设定网络活动指示器(就是那个菊花)是否显示在状态栏。
-                    statusBarStyle={"default"}//ios:白底黑字  android:黑底白字
-                />
-                {/* logo */}
-                <View style={styles.logoContent}>
-                    <Image
-                        style={styles.logoImg}
-                        source={require('../images/logo.png')}
+                <ScrollView
+                    style={styles.container}
+                    keyboardShouldPersistTaps={'handled'}
+                >
+                    <StatusBar
+                        animated={true}//是否动画
+                        hidden={false}//是否隐藏
+                        backgroundColor={'#000'}//android 设置状态栏背景颜色
+                        translucent={false}//android 设置状态栏是否为透明
+                        showHideTransition="fade"//IOS状态栏改变时动画 fade:默认 slide
+                        networkActivityIndicatorVisible={this.state.isLoading}//IOS设定网络活动指示器(就是那个菊花)是否显示在状态栏。
+                        statusBarStyle={"default"}//ios:白底黑字  android:黑底白字
                     />
-                </View>
-                <View style={styles.loginContent}>
-                    <Image
-                        style={styles.textLogo}
-                        source={require('../images/textLogo.png')}
-                    />
-                    {/* 单纯输入框 */}
-                    <View style={[styles.inputItem, this.state.doctorPhoneFocus ? styles.doctorPhoneItemFocus : null, this.state.doctorPhoneReg ? null : styles.errorStyle]}>
-                        {this.state.doctorPhoneFocus ? <Text style={styles.inputTitle}>手机号</Text> : null}
-                        <View style={styles.inputBox}>
-                            <TextInput
-                                style={styles.textInput}
-                                placeholder={'请输入手机号'}
-                                placeholderTextColor={global.Colors.placeholder}
-                                onChangeText={(text) => this.setState({ doctorPhone: text })}
-                                defaultValue={this.state.doctorPhone}
-                                underlineColorAndroid={'transparent'}
-                                keyboardType={'numeric'}
-                                onFocus={this.doctorPhoneFocus.bind(this)}
-                                onBlur={this.doctorPhoneBlur.bind(this)}
-                                maxLength={11}
-                            />
-                            {this.state.doctorPhoneFocus ? <TouchableOpacity
-                                activeOpacity={.8}
-                                onPress={() =>
-                                    this.setState({
-                                        doctorPhone: '',
-                                    })
-                                }
-                                style={styles.clearBtn}
-                            >
-                                <Image
-                                    style={styles.clearImg}
-                                    source={require('../images/clear.png')}
-                                />
-                            </TouchableOpacity> : null}
-                        </View>
+                    {/* logo */}
+                    <View style={styles.logoContent}>
+                        <Image
+                            style={styles.logoImg}
+                            source={require('../images/logo.png')}
+                        />
                     </View>
-                    {/* 密码输入 */}
-                    <View style={[styles.inputItem, styles.passwordItem, this.state.doctorPasswordFocus ? styles.passwordItemFocus : null, this.state.doctorPasswordReg ? null : styles.errorStyle]}>
-                        {this.state.doctorPasswordFocus ? <Text style={styles.inputTitle}>密码</Text> : null}
-                        <View style={styles.passwordBox}>
-                            <TextInput
-                                style={styles.textInput}
-                                placeholder={'请输入密码'}
-                                placeholderTextColor={global.Colors.placeholder}
-                                onChangeText={(text) => this.setState({ doctorPassword: text })}
-                                underlineColorAndroid={'transparent'}
-                                keyboardType={'default'}
-                                secureTextEntry={this.state.isEyes ? true : false}
-                                onFocus={this.doctorPasswordFocus.bind(this)}
-                                onBlur={this.doctorPasswordBlur.bind(this)}
-                            />
-                            <View style={styles.passwordBox}>
-                                <TouchableOpacity
+                    <View style={styles.loginContent}>
+                        <Image
+                            style={styles.textLogo}
+                            source={require('../images/textLogo.png')}
+                        />
+                        {/* 单纯输入框 */}
+                        <View style={[styles.inputItem, this.state.doctorPhoneFocus ? styles.doctorPhoneItemFocus : null, this.state.doctorPhoneReg ? null : styles.errorStyle]}>
+                            {this.state.doctorPhoneFocus ? <Text style={styles.inputTitle}>手机号</Text> : null}
+                            <View style={styles.inputBox}>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeholder={'请输入手机号'}
+                                    placeholderTextColor={global.Colors.placeholder}
+                                    onChangeText={(text) => this.setState({ doctorPhone: text })}
+                                    defaultValue={this.state.doctorPhone}
+                                    underlineColorAndroid={'transparent'}
+                                    keyboardType={'numeric'}
+                                    onFocus={this.doctorPhoneFocus.bind(this)}
+                                    onBlur={this.doctorPhoneBlur.bind(this)}
+                                    maxLength={11}
+                                />
+                                {this.state.doctorPhoneFocus ? <TouchableOpacity
                                     activeOpacity={.8}
                                     onPress={() =>
                                         this.setState({
-                                            isEyes: !this.state.isEyes
+                                            doctorPhone: '',
                                         })
                                     }
-                                    style={styles.eyesBtn}
+                                    style={styles.clearBtn}
                                 >
                                     <Image
-                                        style={styles.eyeImg}
-                                        source={this.state.isEyes ? require('../images/eyes_no.png') : require('../images/eyes_yes.png')}
+                                        style={styles.clearImg}
+                                        source={require('../images/clear.png')}
                                     />
-                                </TouchableOpacity>
-                                <View style={styles.isolationLine}></View>
-                                <TouchableOpacity
-                                    activeOpacity={.8}
-                                    onPress={() => navigate("ForgetPassword")}
-                                    style={styles.forgetBtn}
-                                >
-                                    <Text style={styles.forgetText}>忘记密码</Text>
-                                </TouchableOpacity>
+                                </TouchableOpacity> : null}
                             </View>
                         </View>
-                    </View>
-                    {/* 登录按钮 */}
-                    <View style={styles.btnBox}>
-                        <Button text="登录" click={this.signIn.bind(this)} />
-                    </View>
-                    {/* 跳转链接 注册 手机号登录 */}
-                    <View style={styles.hrefContent}>
-                        <TouchableOpacity
-                            onPress={() => navigate("SignCodeIn")}
-                            style={styles.hrefItem}
-                        >
-                            <Text style={styles.hrefText}>手机号登录</Text>
-                        </TouchableOpacity>
-                        <View style={styles.isolationLine}>
+                        {/* 密码输入 */}
+                        <View style={[styles.inputItem, styles.passwordItem, this.state.doctorPasswordFocus ? styles.passwordItemFocus : null, this.state.doctorPasswordReg ? null : styles.errorStyle]}>
+                            {this.state.doctorPasswordFocus ? <Text style={styles.inputTitle}>密码</Text> : null}
+                            <View style={styles.passwordBox}>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeholder={'请输入密码'}
+                                    placeholderTextColor={global.Colors.placeholder}
+                                    onChangeText={(text) => this.setState({ doctorPassword: text })}
+                                    underlineColorAndroid={'transparent'}
+                                    keyboardType={'default'}
+                                    secureTextEntry={this.state.isEyes ? true : false}
+                                    onFocus={this.doctorPasswordFocus.bind(this)}
+                                    onBlur={this.doctorPasswordBlur.bind(this)}
+                                />
+                                <View style={styles.passwordBox}>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() =>
+                                            this.setState({
+                                                isEyes: !this.state.isEyes
+                                            })
+                                        }
+                                        style={styles.eyesBtn}
+                                    >
+                                        <Image
+                                            style={styles.eyeImg}
+                                            source={this.state.isEyes ? require('../images/eyes_no.png') : require('../images/eyes_yes.png')}
+                                        />
+                                    </TouchableOpacity>
+                                    <View style={styles.isolationLine}></View>
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() => navigate("ForgetPassword")}
+                                        style={styles.forgetBtn}
+                                    >
+                                        <Text style={styles.forgetText}>忘记密码</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
                         </View>
-                        <TouchableOpacity
-                            onPress={() => navigate("SignUp")}
-                            style={styles.hrefItem}
-                        >
-                            <Text style={styles.hrefText}>新用户注册</Text>
-                        </TouchableOpacity>
+                        {/* 登录按钮 */}
+                        <View style={styles.btnBox}>
+                            <Button text="登录" click={this.signIn.bind(this)} />
+                        </View>
+                        {/* 跳转链接 注册 手机号登录 */}
+                        <View style={styles.hrefContent}>
+                            <TouchableOpacity
+                                onPress={() => navigate("SignCodeIn")}
+                                style={styles.hrefItem}
+                            >
+                                <Text style={styles.hrefText}>手机号登录</Text>
+                            </TouchableOpacity>
+                            <View style={styles.isolationLine}>
+                            </View>
+                            <TouchableOpacity
+                                onPress={() => navigate("SignUp")}
+                                style={styles.hrefItem}
+                            >
+                                <Text style={styles.hrefText}>新用户注册</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
 
-                {this.state.ErrorPrompt ? null : <ErrorPrompt text={this.state.ErrorText} imgUrl={this.state.ErrorImg} />}
-            </ScrollView>
+                    {this.state.ErrorPrompt ? null : <ErrorPrompt text={this.state.ErrorText} imgUrl={this.state.ErrorImg} />}
+                </ScrollView>
+            </KeyboardAvoidingView>
         );
     }
     // 账号焦点事件
@@ -316,7 +321,7 @@ export default class SignIn extends Component {
             fetch(requestUrl.login, {
                 method: 'POST',
                 headers: {
-                    
+
                 },
                 body: formData,
             })

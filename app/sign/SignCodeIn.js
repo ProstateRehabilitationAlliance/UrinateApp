@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, StatusBar, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, KeyboardAvoidingView, ScrollView, StatusBar, TextInput } from 'react-native';
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
@@ -45,175 +45,180 @@ export default class SignCodeIn extends Component {
     render() {
         const { navigate, goBack } = this.props.navigation;
         return (
-            <ScrollView
-                keyboardShouldPersistTaps={'handled'}
-                style={styles.container}
+            <KeyboardAvoidingView
+                behavior={global.IOS ? "padding" : null}
+                style={{ flex: 1 }}
             >
-                <StatusBar
-                    animated={true}//是否动画
-                    hidden={false}//是否隐藏
-                    backgroundColor={'#000'}//android 设置状态栏背景颜色
-                    translucent={false}//android 设置状态栏是否为透明
-                    showHideTransition="fade"//IOS状态栏改变时动画 fade:默认 slide
-                    networkActivityIndicatorVisible={this.state.isLoading}//IOS设定网络活动指示器(就是那个菊花)是否显示在状态栏。
-                    statusBarStyle={"default"}//ios:白底黑字  android:黑底白字
-                />
-                {/* logo */}
-                <View style={styles.logoContent}>
-                    <Image
-                        style={styles.logoImg}
-                        source={require('../images/logo.png')}
+                <ScrollView
+                    keyboardShouldPersistTaps={'handled'}
+                    style={styles.container}
+                >
+                    <StatusBar
+                        animated={true}//是否动画
+                        hidden={false}//是否隐藏
+                        backgroundColor={'#000'}//android 设置状态栏背景颜色
+                        translucent={false}//android 设置状态栏是否为透明
+                        showHideTransition="fade"//IOS状态栏改变时动画 fade:默认 slide
+                        networkActivityIndicatorVisible={this.state.isLoading}//IOS设定网络活动指示器(就是那个菊花)是否显示在状态栏。
+                        statusBarStyle={"default"}//ios:白底黑字  android:黑底白字
                     />
-                </View>
-                <View style={styles.loginContent}>
-                    <Image
-                        style={styles.textLogo}
-                        source={require('../images/textLogo.png')}
-                    />
-                    {/* 单纯输入框 */}
-                    <View style={[styles.inputItem, this.state.doctorPhoneFocus ? styles.doctorPhoneItemFocus : null, this.state.phoneReg ? null : styles.errorStyle]}>
-                        {this.state.doctorPhoneFocus ? <Text style={styles.inputTitle}>手机号</Text> : null}
-                        <View style={styles.inputBox}>
-                            <TextInput
-                                style={styles.textInput}
-                                placeholder={'请输入手机号'}
-                                placeholderTextColor={global.Colors.placeholder}
-                                onChangeText={(text) => this.setState({ doctorPhone: text })}
-                                defaultValue={this.state.doctorPhone}
-                                underlineColorAndroid={'transparent'}
-                                keyboardType={'numeric'}
-                                onFocus={this.doctorPhoneFocus.bind(this)}
-                                onBlur={this.doctorPhoneBlur.bind(this)}
-                                maxLength={11}
-                            />
-                            {this.state.doctorPhoneFocus ? <TouchableOpacity
-                                activeOpacity={.8}
-                                onPress={() =>
-                                    this.setState({
-                                        doctorPhone: '',
-                                    })
-                                }
-                                style={styles.clearBtn}
-                            >
-                                <Image
-                                    style={styles.clearImg}
-                                    source={require('../images/clear.png')}
-                                />
-                            </TouchableOpacity> : null}
-                        </View>
+                    {/* logo */}
+                    <View style={styles.logoContent}>
+                        <Image
+                            style={styles.logoImg}
+                            source={require('../images/logo.png')}
+                        />
                     </View>
-                    {/* 验证码输入 */}
-                    <View style={[styles.inputItem, styles.passwordItem, this.state.smsCodeFocus ? styles.smsCodeFocus : null, this.state.smsCodeReg ? null : styles.errorStyle]}>
-                        {this.state.smsCodeFocus ? <Text style={styles.inputTitle}>校验码</Text> : null}
-                        <View style={styles.passwordBox}>
-                            <TextInput
-                                style={styles.textInput}
-                                placeholder={'请输入校验码'}
-                                placeholderTextColor={global.Colors.placeholder}
-                                onChangeText={(text) => this.setState({ smsCode: text })}
-                                defaultValue={this.state.smsCode}
-                                underlineColorAndroid={'transparent'}
-                                keyboardType={'numeric'}
-                                secureTextEntry={this.state.isEyes ? true : false}
-                                maxLength={6}
-                                onFocus={this.smsCodeFocus.bind(this)}
-                                onBlur={this.smsCodeBlur.bind(this)}
-                            />
-                            <View style={styles.passwordBox}>
-                                {this.state.smsCodeFocus ? <TouchableOpacity
+                    <View style={styles.loginContent}>
+                        <Image
+                            style={styles.textLogo}
+                            source={require('../images/textLogo.png')}
+                        />
+                        {/* 单纯输入框 */}
+                        <View style={[styles.inputItem, this.state.doctorPhoneFocus ? styles.doctorPhoneItemFocus : null, this.state.phoneReg ? null : styles.errorStyle]}>
+                            {this.state.doctorPhoneFocus ? <Text style={styles.inputTitle}>手机号</Text> : null}
+                            <View style={styles.inputBox}>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeholder={'请输入手机号'}
+                                    placeholderTextColor={global.Colors.placeholder}
+                                    onChangeText={(text) => this.setState({ doctorPhone: text })}
+                                    defaultValue={this.state.doctorPhone}
+                                    underlineColorAndroid={'transparent'}
+                                    keyboardType={'numeric'}
+                                    onFocus={this.doctorPhoneFocus.bind(this)}
+                                    onBlur={this.doctorPhoneBlur.bind(this)}
+                                    maxLength={11}
+                                />
+                                {this.state.doctorPhoneFocus ? <TouchableOpacity
                                     activeOpacity={.8}
                                     onPress={() =>
                                         this.setState({
-                                            smsCode: '',
+                                            doctorPhone: '',
                                         })
                                     }
-                                    style={styles.eyesBtn}
+                                    style={styles.clearBtn}
                                 >
                                     <Image
-                                        style={styles.eyeImg}
+                                        style={styles.clearImg}
                                         source={require('../images/clear.png')}
                                     />
                                 </TouchableOpacity> : null}
-                                <View style={styles.isolationLine}></View>
-                                <CountDownButton
-                                    style={{
-                                        // paddingRight: global.px2dp(10),
-                                        // paddingLeft: global.px2dp(10),
-                                    }}
-                                    textStyle={{
-                                        fontSize: global.px2dp(15),
-                                        color: global.Colors.color,
-                                    }}
-                                    timerCount={120}
-                                    timerTitle={this.state.TimingText}
-                                    enable={true}
-                                    onClick={(shouldStartCounting) => {
-                                        if (!this.state.doctorPhone) {
-                                            this.setState({
-                                                ErrorPrompt: false,
-                                                phoneReg: false,
-                                                ErrorText: '请输入手机号',
-                                                ErrorImg: require('../images/error.png')
-                                            })
-                                            clearTimeout(this.timer);
-                                            this.timer = setTimeout(() => {
-                                                this.setState({
-                                                    ErrorPrompt: true,
-                                                })
-                                            }, global.TimingCount)
-                                            shouldStartCounting(false);
-                                        } else if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
-                                            this.setState({
-                                                ErrorPrompt: false,
-                                                phoneReg: false,
-                                                ErrorText: '手机号码格式不正确',
-                                                ErrorImg: require('../images/error.png')
-                                            })
-                                            clearTimeout(this.timer);
-                                            this.timer = setTimeout(() => {
-                                                this.setState({
-                                                    ErrorPrompt: true,
-                                                })
-                                            }, global.TimingCount)
-                                            shouldStartCounting(false);
-                                        } else {
-                                            this.getLoginSms();
-                                            shouldStartCounting(true);
-                                        }
-                                    }}
-                                    timerEnd={() => {
-                                        this.setState({
-                                            TimingText: '重新获取'
-                                        })
-                                    }} />
                             </View>
                         </View>
-                    </View>
-                    {/* 登录按钮 */}
-                    <View style={styles.btnBox}>
-                        <Button text="登录" click={this.signCodeIn.bind(this)} />
-                    </View>
-                    {/* 跳转链接 密码登录 新用户注册 */}
-                    <View style={styles.hrefContent}>
-                        <TouchableOpacity
-                            onPress={() => navigate("SignIn")}
-                            style={styles.hrefItem}
-                        >
-                            <Text style={styles.hrefText}>密码登录</Text>
-                        </TouchableOpacity>
-                        <View style={styles.isolationLine}>
+                        {/* 验证码输入 */}
+                        <View style={[styles.inputItem, styles.passwordItem, this.state.smsCodeFocus ? styles.smsCodeFocus : null, this.state.smsCodeReg ? null : styles.errorStyle]}>
+                            {this.state.smsCodeFocus ? <Text style={styles.inputTitle}>校验码</Text> : null}
+                            <View style={styles.passwordBox}>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeholder={'请输入校验码'}
+                                    placeholderTextColor={global.Colors.placeholder}
+                                    onChangeText={(text) => this.setState({ smsCode: text })}
+                                    defaultValue={this.state.smsCode}
+                                    underlineColorAndroid={'transparent'}
+                                    keyboardType={'numeric'}
+                                    secureTextEntry={this.state.isEyes ? true : false}
+                                    maxLength={6}
+                                    onFocus={this.smsCodeFocus.bind(this)}
+                                    onBlur={this.smsCodeBlur.bind(this)}
+                                />
+                                <View style={styles.passwordBox}>
+                                    {this.state.smsCodeFocus ? <TouchableOpacity
+                                        activeOpacity={.8}
+                                        onPress={() =>
+                                            this.setState({
+                                                smsCode: '',
+                                            })
+                                        }
+                                        style={styles.eyesBtn}
+                                    >
+                                        <Image
+                                            style={styles.eyeImg}
+                                            source={require('../images/clear.png')}
+                                        />
+                                    </TouchableOpacity> : null}
+                                    <View style={styles.isolationLine}></View>
+                                    <CountDownButton
+                                        style={{
+                                            // paddingRight: global.px2dp(10),
+                                            // paddingLeft: global.px2dp(10),
+                                        }}
+                                        textStyle={{
+                                            fontSize: global.px2dp(15),
+                                            color: global.Colors.color,
+                                        }}
+                                        timerCount={120}
+                                        timerTitle={this.state.TimingText}
+                                        enable={true}
+                                        onClick={(shouldStartCounting) => {
+                                            if (!this.state.doctorPhone) {
+                                                this.setState({
+                                                    ErrorPrompt: false,
+                                                    phoneReg: false,
+                                                    ErrorText: '请输入手机号',
+                                                    ErrorImg: require('../images/error.png')
+                                                })
+                                                clearTimeout(this.timer);
+                                                this.timer = setTimeout(() => {
+                                                    this.setState({
+                                                        ErrorPrompt: true,
+                                                    })
+                                                }, global.TimingCount)
+                                                shouldStartCounting(false);
+                                            } else if (!regExp.Reg_TelNo.test(this.state.doctorPhone)) {
+                                                this.setState({
+                                                    ErrorPrompt: false,
+                                                    phoneReg: false,
+                                                    ErrorText: '手机号码格式不正确',
+                                                    ErrorImg: require('../images/error.png')
+                                                })
+                                                clearTimeout(this.timer);
+                                                this.timer = setTimeout(() => {
+                                                    this.setState({
+                                                        ErrorPrompt: true,
+                                                    })
+                                                }, global.TimingCount)
+                                                shouldStartCounting(false);
+                                            } else {
+                                                this.getLoginSms();
+                                                shouldStartCounting(true);
+                                            }
+                                        }}
+                                        timerEnd={() => {
+                                            this.setState({
+                                                TimingText: '重新获取'
+                                            })
+                                        }} />
+                                </View>
+                            </View>
                         </View>
-                        <TouchableOpacity
-                            onPress={() => navigate("SignUp")}
-                            style={styles.hrefItem}
-                        >
-                            <Text style={styles.hrefText}>新用户注册</Text>
-                        </TouchableOpacity>
+                        {/* 登录按钮 */}
+                        <View style={styles.btnBox}>
+                            <Button text="登录" click={this.signCodeIn.bind(this)} />
+                        </View>
+                        {/* 跳转链接 密码登录 新用户注册 */}
+                        <View style={styles.hrefContent}>
+                            <TouchableOpacity
+                                onPress={() => navigate("SignIn")}
+                                style={styles.hrefItem}
+                            >
+                                <Text style={styles.hrefText}>密码登录</Text>
+                            </TouchableOpacity>
+                            <View style={styles.isolationLine}>
+                            </View>
+                            <TouchableOpacity
+                                onPress={() => navigate("SignUp")}
+                                style={styles.hrefItem}
+                            >
+                                <Text style={styles.hrefText}>新用户注册</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
 
-                {this.state.ErrorPrompt ? null : <ErrorPrompt text={this.state.ErrorText} imgUrl={this.state.ErrorImg} />}
-            </ScrollView>
+                    {this.state.ErrorPrompt ? null : <ErrorPrompt text={this.state.ErrorText} imgUrl={this.state.ErrorImg} />}
+                </ScrollView>
+            </KeyboardAvoidingView>
         );
     }
     // 账号焦点事件
@@ -343,7 +348,7 @@ export default class SignCodeIn extends Component {
             fetch(requestUrl.loginSms + '?loginPhone=' + this.state.doctorPhone, {
                 method: 'GET',
                 headers: {
-                    
+
                 },
             })
                 .then((response) => response.json())
@@ -462,7 +467,7 @@ export default class SignCodeIn extends Component {
             fetch(requestUrl.smsLogin, {
                 method: 'POST',
                 headers: {
-                    
+
                 },
                 body: formData,
             })

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView } from 'react-native';
 import { regExp } from '../netWork/RegExp';// 正则
 import { requestUrl } from '../netWork/Url';// IP地址
 import { global } from '../utils/Global';// 常量
@@ -38,29 +38,34 @@ export default class Feedback extends Component {
         return (
             <View style={styles.container}>
                 <Nav isLoading={this.state.isLoading} title={"意见反馈"} leftClick={this.goBack.bind(this)} />
-                <ScrollView>
-                    <TextInput
-                        style={[styles.textareaStyle, {
-                            minHeight: 246,
-                        }]}
-                        placeholder={'请输入您的意见建议…'}
-                        placeholderTextColor={global.Colors.placeholder}
-                        multiline={true}
-                        onChangeText={(text) => {
-                            this.setState({
-                                text: text,
-                            })
-                        }}
-                        defaultValue={this.state.text}
-                        onContentSizeChange={this.onContentSizeChange.bind(this)}
-                        underlineColorAndroid={'transparent'}
-                        onBlur={this.blurReg.bind(this)}
-                        keyboardType={'default'}
-                    />
-                    <View style={styles.btnBox}>
-                        <Button text={'保存'} click={this.submit.bind(this)} style={{ borderRadius: global.px2dp(3) }} />
-                    </View>
-                </ScrollView>
+                <KeyboardAvoidingView
+                    behavior={global.IOS ? "padding" : null}
+                    style={{ flex: 1 }}
+                >
+                    <ScrollView>
+                        <TextInput
+                            style={[styles.textareaStyle, {
+                                minHeight: 246,
+                            }]}
+                            placeholder={'请输入您的意见建议…'}
+                            placeholderTextColor={global.Colors.placeholder}
+                            multiline={true}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    text: text,
+                                })
+                            }}
+                            defaultValue={this.state.text}
+                            onContentSizeChange={this.onContentSizeChange.bind(this)}
+                            underlineColorAndroid={'transparent'}
+                            onBlur={this.blurReg.bind(this)}
+                            keyboardType={'default'}
+                        />
+                        <View style={styles.btnBox}>
+                            <Button text={'保存'} click={this.submit.bind(this)} style={{ borderRadius: global.px2dp(3) }} />
+                        </View>
+                    </ScrollView>
+                </KeyboardAvoidingView>
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View>
         );
