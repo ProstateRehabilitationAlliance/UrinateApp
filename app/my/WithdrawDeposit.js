@@ -214,7 +214,7 @@ export default class WithdrawDeposit extends Component {
                                     <Text style={{ fontSize: global.px2dp(28), color: global.Colors.text333 }}>￥</Text>
                                     <TextInput
                                         style={styles.amountInput}
-                                        placeholder={'可体现金额' + this.state.balance}
+                                        placeholder={'可提现金额' + this.state.balance}
                                         placeholderTextColor={global.Colors.placeholder}
                                         onChangeText={(text) => this.setState({ pic: text })}
                                         underlineColorAndroid={'transparent'}
