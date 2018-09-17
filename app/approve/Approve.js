@@ -69,7 +69,7 @@ export default class Approve extends Component {
         fetch(requestUrl.getHospitalJson, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -93,7 +93,7 @@ export default class Approve extends Component {
         fetch(requestUrl.getBranchServiceJson, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -117,7 +117,7 @@ export default class Approve extends Component {
         fetch(requestUrl.getDoctorTitleJson, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -145,7 +145,7 @@ export default class Approve extends Component {
         fetch(requestUrl.getAuthentication, {
             method: 'GET',
             headers: {
-                
+
                 "token": global.Token,
             },
         }).then((response) => response.json())
@@ -207,7 +207,7 @@ export default class Approve extends Component {
                                 formData.append("file", {
                                     uri: data.uri,
                                     type: 'image/jpeg',
-                                    name: data.fileName
+                                    name: "fileName.jpg",
                                 });
                                 formData.append("recordType", 'doctor-sign');
                                 fetch(requestUrl.uploadAuthentication, {
@@ -350,7 +350,7 @@ export default class Approve extends Component {
                                 formData.append("file", {
                                     uri: data.uri,
                                     type: 'image/jpeg',
-                                    name: data.fileName
+                                    name: "fileName.jpg",
                                 });
                                 formData.append("recordType", 'doctor-sign');
                                 fetch(requestUrl.uploadAuthentication, {
@@ -434,7 +434,7 @@ export default class Approve extends Component {
                                 formData.append("file", {
                                     uri: data.uri,
                                     type: 'image/jpeg',
-                                    name: data.fileName
+                                    name: "fileName.jpg",
                                 });
                                 formData.append("recordType", 'doctor-sign');
                                 fetch(requestUrl.uploadAuthentication, {
@@ -781,7 +781,7 @@ export default class Approve extends Component {
                 fetch(requestUrl.addAuthentication, {
                     method: 'POST',
                     headers: {
-                        
+
                         "token": global.Token,
                     },
                     body: formData,
@@ -856,7 +856,7 @@ export default class Approve extends Component {
                 fetch(requestUrl.updateAuthentication, {
                     method: 'POST',
                     headers: {
-                        
+
                         "token": global.Token,
                     },
                     body: formData,

@@ -171,11 +171,16 @@ export default class HeadImg extends Component {
     }
 
     uploadHeadImg(response) {
+        this.setState({
+            ErrorPromptFlag: true,
+            ErrorPromptText: '加载中...',
+            ErrorPromptImg: require('../images/loading.png'),
+        });
         let formData = new FormData();
         formData.append("file", {
             uri: response.uri,
             type: 'image/jpeg',
-            name: response.fileName
+            name: "fileName.jpg",
         });
         formData.append("recordType", 'user-head');
         fetch(requestUrl.uploadHeadImg, {
@@ -190,18 +195,19 @@ export default class HeadImg extends Component {
                 console.log('responseData', responseData);
                 if (responseData.code == 20000) {
                     this.setState({
-                        headImgUrl: responseData.result
+                        ErrorPromptFlag: false,
+                        headImgUrl: responseData.result,
                     })
                 } else {
                     this.setState({
-                        ErrorPrompt: true,
-                        ErrorText: '头像上传失败请重新上传',
-                        ErrorImg: require('../images/error.png'),
+                        ErrorPromptFlag: true,
+                        ErrorPromptText: '头像上传失败请重新上传',
+                        ErrorPromptImg: require('../images/error.png'),
                     });
                     clearTimeout(this.timer);
                     this.timer = setTimeout(() => {
                         this.setState({
-                            ErrorPrompt: false,
+                            ErrorPromptFlag: false,
                         })
                     }, global.TimingCount)
                 }
@@ -308,14 +314,14 @@ const styles = StyleSheet.create({
 
     upImgBtn: {
         width: global.SCREEN_WIDTH,
-        height: global.px2dp(245),
+        height: global.SCREEN_WIDTH,
         backgroundColor: global.Colors.textfff,
         alignItems: 'center',
         justifyContent: 'center',
     },
     upImg: {
         width: global.SCREEN_WIDTH,
-        height: global.px2dp(245),
+        height: global.SCREEN_WIDTH,
     },
     btnBox: {
         marginTop: global.px2dp(33),
