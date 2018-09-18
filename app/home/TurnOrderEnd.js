@@ -60,6 +60,8 @@ export default class TurnOrderEnd extends Component {
                             .then((responseData) => {
                                 console.log('responseData', responseData);
                                 if (responseData.code == 20000) {
+                                    let idCard = responseData.result.patientCard.substr(0, 3) + "***********" + responseData.result.patientCard.substr(responseData.result.patientCard.length - 4, responseData.result.patientCard.length);
+                                    responseData.result.patientCard = idCard;
                                     this.setState({
                                         patientInfo: responseData.result,
                                     })
