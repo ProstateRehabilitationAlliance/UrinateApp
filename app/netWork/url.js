@@ -4,7 +4,7 @@ export let requestUrl = {
     "idCardFrontUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/IdCardSample.jpg',// 身份证示例图片
     "doctorCardFrontUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/WorkLicenseCardSample.jpg',// 医生执业证示例图片
     "workCardUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/HandIdCardSample.jpg',// 手持身份证示例图片
-    "workCardUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/startImg.jpg',// 启动页图片
+    "startImgUrl": 'https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/startImg.jpg',// 启动页图片
     "IP": IP,
     // 登录注册
     "register": IP + "/api-user/doctor/register",// 注册接口

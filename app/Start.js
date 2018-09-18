@@ -42,13 +42,17 @@ export default class Start extends Component {
                                         index: 0,
                                         actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
                                     });
-                                    this.props.navigation.dispatch(resetAction);
+                                    setTimeout(() => {
+                                        this.props.navigation.dispatch(resetAction);
+                                    }, 1000)
                                 } else {
                                     const resetAction = StackActions.reset({
                                         index: 0,
                                         actions: [NavigationActions.navigate({ routeName: 'Home' })],
                                     });
-                                    this.props.navigation.dispatch(resetAction);
+                                    setTimeout(() => {
+                                        this.props.navigation.dispatch(resetAction);
+                                    }, 1000)
                                 }
                             })
                             .catch(
@@ -61,7 +65,9 @@ export default class Start extends Component {
                             index: 0,
                             actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
                         });
-                        this.props.navigation.dispatch(resetAction);
+                        setTimeout(() => {
+                            this.props.navigation.dispatch(resetAction);
+                        }, 1000)
                     }
                 })
             } else {
@@ -91,6 +97,13 @@ export default class Start extends Component {
                     networkActivityIndicatorVisible={this.state.isLoading}//IOS设定网络活动指示器(就是那个菊花)是否显示在状态栏。
                     statusBarStyle={"default"}//ios:白底黑字  android:黑底白字
                 />
+                <View style={styles.startImgBox}>
+                    <Image
+                        resizeMode={"cover"}// cover填满并裁去多余 contain等比例缩放留白 stretch拉伸填充
+                        style={styles.startImg}
+                        source={{ uri: "https://checking-records-1256660245.cos.ap-beijing.myqcloud.com/startImg.jpg" }}
+                    />
+                </View>
                 {/* {this.state.initializeFlag ?
                     <ScrollView
                         horizontal={true}
@@ -98,16 +111,6 @@ export default class Start extends Component {
                         showsHorizontalScrollIndicator={false}
                         bounces={false}// ios弹性
                     >
-                        <CachedImage
-                            resizeMode={"cover"}// cover填满并裁去多余 contain等比例缩放留白 stretch拉伸填充
-                            style={styles.startImg}
-                            source={{ uri: "https://m.360buyimg.com/babel/jfs/t26095/57/1041327989/55624/ccd7caf0/5b865819N416fa14a.jpg" }}
-                        />
-                        <CachedImage
-                            resizeMode={"cover"}// cover填满并裁去多余 contain等比例缩放留白 stretch拉伸填充
-                            style={styles.startImg}
-                            source={{ uri: "https://m.360buyimg.com/babel/jfs/t26095/57/1041327989/55624/ccd7caf0/5b865819N416fa14a.jpg" }}
-                        />
                         <TouchableOpacity
                             activeOpacity={.8}
                             onPress={() => {
@@ -118,21 +121,10 @@ export default class Start extends Component {
                                 this.props.navigation.dispatch(resetAction);
                             }}
                         >
-                            <CachedImage
-                                resizeMode={"cover"}// cover填满并裁去多余 contain等比例缩放留白 stretch拉伸填充
-                                style={styles.startImg}
-                                source={{ uri: "https://m.360buyimg.com/babel/jfs/t26095/57/1041327989/55624/ccd7caf0/5b865819N416fa14a.jpg" }}
-                            />
                         </TouchableOpacity>
                     </ScrollView>
                     :
-                    <View style={styles.startImgBox}>
-                        <CachedImage
-                            resizeMode={"cover"}// cover填满并裁去多余 contain等比例缩放留白 stretch拉伸填充
-                            style={styles.startImg}
-                            source={{ uri: "https://m.360buyimg.com/babel/jfs/t26095/57/1041327989/55624/ccd7caf0/5b865819N416fa14a.jpg" }}
-                        />
-                    </View>
+                    
                 } */}
             </View>
         );
@@ -144,6 +136,9 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     startImgBox: {
+        backgroundColor: "#ffffff",
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     startImg: {
         width: global.SCREEN_WIDTH,
