@@ -23,7 +23,6 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		24DC681BDF8B4903AE418F49 /* RCTWeChatTests.xctest in Frameworks */ = {isa = PBXBuildFile; fileRef = CBA45FC147D845F19F286B60 /* RCTWeChatTests.xctest */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -37,12 +36,12 @@
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* UrinateAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* UrinateAppTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
-		432B98B166EB43B0ACD58050 /* libRCTWeChat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5C5E8E351884178B57C14B0 /* libRCTWeChat.a */; };
 		53B76407DDDB4A29801A0A8B /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB4DFEC5B72A4E7AA10C5620 /* libRNSVG.a */; };
 		5B37ADE9214D600600488612 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B37ADE8214D600600488612 /* SystemConfiguration.framework */; };
 		5B37ADEB214D601300488612 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B37ADEA214D601300488612 /* CoreTelephony.framework */; };
 		5B37ADED214D602700488612 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B37ADEC214D602700488612 /* libc++.tbd */; };
 		5B37ADEF214D603700488612 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B37ADEE214D603700488612 /* libz.tbd */; };
+		5B405AA1214F496E0080F772 /* libRCTWeChat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B1BD5CD214131DD00F3AB15 /* libRCTWeChat.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		7FAF4A19260341D6AD9DA295 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2410400B15724DB8A1327659 /* libBVLinearGradient.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -446,6 +445,7 @@
 			files = (
 				5B37ADEF214D603700488612 /* libz.tbd in Frameworks */,
 				5B37ADED214D602700488612 /* libc++.tbd in Frameworks */,
+				D72D7A69583D44D38C41AF7C /* libsqlite3.0.tbd in Frameworks */,
 				5B37ADEB214D601300488612 /* CoreTelephony.framework in Frameworks */,
 				5B37ADE9214D600600488612 /* SystemConfiguration.framework in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
@@ -463,9 +463,7 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				7FAF4A19260341D6AD9DA295 /* libBVLinearGradient.a in Frameworks */,
 				53B76407DDDB4A29801A0A8B /* libRNSVG.a in Frameworks */,
-				D72D7A69583D44D38C41AF7C /* libsqlite3.0.tbd in Frameworks */,
-				432B98B166EB43B0ACD58050 /* libRCTWeChat.a in Frameworks */,
-				24DC681BDF8B4903AE418F49 /* RCTWeChatTests.xctest in Frameworks */,
+				5B405AA1214F496E0080F772 /* libRCTWeChat.a in Frameworks */,
 				0E8FD48F9C044B868B59F4AE /* libRNImagePicker.a in Frameworks */,
 				DA951E9CD78E465BAF3DF2CF /* libRNFetchBlob.a in Frameworks */,
 			);
@@ -855,6 +853,8 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = H777WK24EA;
+						ProvisioningStyle = Automatic;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
@@ -1415,6 +1415,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = H777WK24EA;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1441,6 +1444,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/UrinateApp.app/UrinateApp";
 			};
 			name = Debug;
@@ -1449,7 +1453,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = H777WK24EA;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
@@ -1472,6 +1479,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/UrinateApp.app/UrinateApp";
 			};
 			name = Release;
@@ -1502,7 +1510,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.miniao.test;
+				PRODUCT_BUNDLE_IDENTIFIER = com.miniao.manager;
 				PRODUCT_NAME = UrinateApp;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1535,7 +1543,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.miniao.test;
+				PRODUCT_BUNDLE_IDENTIFIER = com.miniao.manager;
 				PRODUCT_NAME = UrinateApp;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1776,6 +1784,7 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/../node_modules/react-native/Libraries/LinkingIOS";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
