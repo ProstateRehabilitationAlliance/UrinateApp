@@ -103,19 +103,6 @@ export default class DoctorSearch extends Component {
                             ErrorPromptFlag: false,
                         })
                     }, global.TimingCount)
-                } else {
-                    this.setState({
-                        isLoading: false,
-                        ErrorPromptFlag: true,
-                        ErrorPromptText: '服务器繁忙',
-                        ErrorPromptImg: require('../images/error.png'),
-                    })
-                    clearTimeout(this.timer)
-                    this.timer = setTimeout(() => {
-                        this.setState({
-                            ErrorPromptFlag: false,
-                        })
-                    }, global.TimingCount)
                 }
             })
             .catch((error) => {
