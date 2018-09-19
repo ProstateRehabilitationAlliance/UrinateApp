@@ -578,10 +578,10 @@ export default class PatientsDetails extends Component {
                                     style={[styles.textareaStyle]}
                                     placeholder={'请输入用户标签...'}
                                     placeholderTextColor={global.Colors.placeholder}
-                                    multiline={true}
+                                    // multiline={true}
                                     onChangeText={(text) => {
                                         this.setState({
-                                            lableName: text.replace(/(^\s*)|(\s*$)/g, ""),
+                                            lableName: text.replace(/[^\u4e00-\u9fa5]/gi, ""),
                                         })
                                     }}
                                     defaultValue={this.state.lableName}
@@ -930,7 +930,20 @@ export default class PatientsDetails extends Component {
             this.setState({
                 isLoading: false,
                 ErrorPromptFlag: true,
-                ErrorPromptText: '请输入内容',
+                ErrorPromptText: '请输入文字',
+                ErrorPromptImg: require('../images/error.png'),
+            })
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.setState({
+                    ErrorPromptFlag: false,
+                })
+            }, global.TimingCount)
+        } else if (this.state.lableName.length > 10) {
+            this.setState({
+                isLoading: false,
+                ErrorPromptFlag: true,
+                ErrorPromptText: '输入内容过长',
                 ErrorPromptImg: require('../images/error.png'),
             })
             clearTimeout(this.timer)
@@ -1825,10 +1838,10 @@ const styles = StyleSheet.create({
         paddingRight: global.px2dp(8),
         paddingTop: global.px2dp(8),
         paddingBottom: global.px2dp(8),
-        fontSize: global.px2dp(13),
+        fontSize: global.px2dp(14),
         lineHeight: global.px2dp(20),
         height: global.px2dp(72),
-        textAlignVertical: 'top'
+        // textAlignVertical: 'top'
     },
     addLabelBtn: {
     },
