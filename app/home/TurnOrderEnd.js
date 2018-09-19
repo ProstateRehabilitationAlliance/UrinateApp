@@ -162,83 +162,6 @@ export default class TurnOrderEnd extends Component {
     }
     render() {
         const { navigate, goBack } = this.props.navigation;
-        const infoShadow = {
-            width: global.px2dp(345),
-            height: global.px2dp(114),
-            color: "#000",
-            border: 8,
-            radius: 0,
-            opacity: .1,
-            x: 0,
-            y: 0,
-            style: {
-                marginTop: global.px2dp(8),
-                marginRight: global.px2dp(15),
-                marginLeft: global.px2dp(15),
-                marginBottom: global.px2dp(8),
-            },
-        }
-        const descShadow = {
-            width: global.px2dp(345),
-            height: global.px2dp(256),
-            color: "#000",
-            border: 8,
-            radius: 0,
-            opacity: .1,
-            x: 0,
-            y: 0,
-            style: {
-                marginTop: global.px2dp(8),
-                marginRight: global.px2dp(15),
-                marginLeft: global.px2dp(15),
-                marginBottom: global.px2dp(8),
-            },
-        }
-        const imgShadow = {
-            width: global.px2dp(345),
-            height: global.px2dp(96),
-            color: "#000",
-            border: 8,
-            radius: 0,
-            opacity: .1,
-            x: 0,
-            y: 0,
-            style: {
-                marginTop: global.px2dp(8),
-                marginRight: global.px2dp(15),
-                marginLeft: global.px2dp(15),
-                marginBottom: global.px2dp(8),
-            },
-        }
-        const importShadow = {
-            width: global.px2dp(345),
-            height: global.px2dp(206),
-            color: "#000",
-            border: 8,
-            radius: 0,
-            opacity: .1,
-            x: 0,
-            y: 0,
-            style: {
-                marginTop: global.px2dp(8),
-                marginRight: global.px2dp(15),
-                marginLeft: global.px2dp(15),
-                marginBottom: global.px2dp(8),
-            },
-        }
-        const rowShadow = {
-            width: global.px2dp(345),
-            height: global.px2dp(43),
-            color: "#000",
-            border: 8,
-            radius: 0,
-            opacity: .1,
-            x: 0,
-            y: 0,
-            style: {
-
-            },
-        }
         return (
             <View style={styles.container}>
                 <StatusBar
@@ -271,99 +194,82 @@ export default class TurnOrderEnd extends Component {
                 </LinearGradient>
                 <ScrollView style={styles.scrollView}>
                     {/* 基本信息 - start */}
-                    <BoxShadow
-                        setting={infoShadow}>
-                        <View style={styles.infoContent}>
-                            <View style={styles.infoTopBox}>
-                                <View style={styles.infoTextBox}>
-                                    <Text style={styles.infoText}>{this.state.patientInfo ? this.state.patientInfo.patientName : "患者名"} {this.state.patientInfo ? this.state.patientInfo.patientSex : null} {this.state.patientInfo ? this.state.patientInfo.patientAge : null}岁</Text>
+                    <View style={styles.infoContent}>
+                        <View style={styles.infoTopBox}>
+                            <View style={styles.infoTextBox}>
+                                <Text style={styles.infoText}>{this.state.patientInfo ? this.state.patientInfo.patientName : "患者名"} {this.state.patientInfo ? this.state.patientInfo.patientSex : null} {this.state.patientInfo ? this.state.patientInfo.patientAge : null}岁</Text>
+                            </View>
+                            <TouchableOpacity
+                                activeOpacity={.8}
+                                onPress={() => { }}
+                                style={styles.yesBtn}
+                            >
+                                <View style={styles.yesBox}>
+                                    <Text style={styles.yesText}>订单已完成</Text>
                                 </View>
-                                <TouchableOpacity
-                                    activeOpacity={.8}
-                                    onPress={() => { }}
-                                    style={styles.yesBtn}
-                                >
-                                    <View style={styles.yesBox}>
-                                        <Text style={styles.yesText}>订单已完成</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={styles.infoBottomBox}>
-                                {this.state.patientInfo && this.state.patientInfo.patientTel ? <Text style={styles.infoValue}>手机号 :{this.state.patientInfo.patientTel}</Text> : null}
-                                <Text style={styles.infoValue}>身份证号 :{this.state.patientInfo ? this.state.patientInfo.patientCard : null}</Text>
-                                <Text style={styles.infoValue}>创建时间 :{this.state.patientInfo ? this.state.patientInfo.createTime : null}</Text>
-                            </View>
+                            </TouchableOpacity>
                         </View>
-                    </BoxShadow>
+                        <View style={styles.infoBottomBox}>
+                            {this.state.patientInfo && this.state.patientInfo.patientTel ? <Text style={styles.infoValue}>手机号 :{this.state.patientInfo.patientTel}</Text> : null}
+                            <Text style={styles.infoValue}>身份证号 :{this.state.patientInfo ? this.state.patientInfo.patientCard : null}</Text>
+                            <Text style={styles.infoValue}>创建时间 :{this.state.patientInfo ? this.state.patientInfo.createTime : null}</Text>
+                        </View>
+                    </View>
                     {/* 基本信息 - end */}
-                    <BoxShadow
-                        setting={descShadow}>
-                        <View style={styles.descContent}>
-                            <View style={styles.titleContent}>
-                                <View style={styles.titleLeftBox}>
-                                    <View style={styles.titleLine}></View>
-                                    <Text style={styles.titleText}>问题描述</Text>
-                                </View>
+                    <View style={styles.descContent}>
+                        <View style={styles.titleContent}>
+                            <View style={styles.titleLeftBox}>
+                                <View style={styles.titleLine}></View>
+                                <Text style={styles.titleText}>问题描述</Text>
                             </View>
-                            <ScrollView style={styles.problemScroll}>
-                                <View style={styles.problemBox}>
-                                    <Text style={styles.problemText}>{this.state.orderInfo ? this.state.orderInfo.orderDescription : null}</Text>
-                                </View>
-                            </ScrollView>
-                            <BoxShadow
-                                setting={rowShadow}>
-                                <View style={styles.lastItem}>
-                                    <Text style={styles.picText}>￥{this.state.orderInfo ? this.state.orderInfo.orderPrice / 100 : null}</Text>
-                                </View>
-                            </BoxShadow>
                         </View>
-                    </BoxShadow>
-                    <BoxShadow
-                        setting={imgShadow}>
-                        <View style={styles.imgContent}>
-                            <View style={styles.titleContent}>
-                                <View style={styles.titleLeftBox}>
-                                    <View style={styles.titleLine}></View>
-                                    <Text style={styles.titleText}>附件拍照</Text>
-                                </View>
+                        <View style={styles.problemBox}>
+                            <Text style={styles.problemText}>{this.state.orderInfo ? this.state.orderInfo.orderDescription : null}</Text>
+                        </View>
+                        <View style={styles.lastItem}>
+                            <Text style={styles.picText}>￥{this.state.orderInfo ? this.state.orderInfo.orderPrice / 100 : null}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.imgContent}>
+                        <View style={styles.titleContent}>
+                            <View style={styles.titleLeftBox}>
+                                <View style={styles.titleLine}></View>
+                                <Text style={styles.titleText}>附件拍照</Text>
                             </View>
-                            <ScrollView
-                                horizontal={true}
-                                style={styles.annexContent}>
-                                {this.state.orderImgArr.map((item, index) => {
-                                    return (
-                                        <TouchableOpacity
-                                            activeOpacity={.8}
-                                            key={index}
-                                            onPress={() => {
-                                                navigate('LookImg', {
-                                                    data: this.state.orderImgArr,
-                                                    index: index,
-                                                })
-                                            }}
-                                            style={styles.annexBtn}
-                                        >
-                                            <CachedImage style={styles.annexImg} source={{ uri: item }} />
-                                        </TouchableOpacity>
-                                    )
-                                })}
-                            </ScrollView>
                         </View>
-                    </BoxShadow>
-                    <BoxShadow
-                        setting={importShadow}>
-                        <View style={styles.importContent}>
-                            <View style={styles.titleContent}>
-                                <View style={styles.titleLeftBox}>
-                                    <View style={styles.titleLine}></View>
-                                    <Text style={styles.titleText}>医生回复</Text>
-                                </View>
+                        <ScrollView
+                            horizontal={true}
+                            style={styles.annexContent}>
+                            {this.state.orderImgArr.map((item, index) => {
+                                return (
+                                    <TouchableOpacity
+                                        activeOpacity={.8}
+                                        key={index}
+                                        onPress={() => {
+                                            navigate('LookImg', {
+                                                data: this.state.orderImgArr,
+                                                index: index,
+                                            })
+                                        }}
+                                        style={styles.annexBtn}
+                                    >
+                                        <CachedImage style={styles.annexImg} source={{ uri: item }} />
+                                    </TouchableOpacity>
+                                )
+                            })}
+                        </ScrollView>
+                    </View>
+                    <View style={styles.importContent}>
+                        <View style={styles.titleContent}>
+                            <View style={styles.titleLeftBox}>
+                                <View style={styles.titleLine}></View>
+                                <Text style={styles.titleText}>医生回复</Text>
                             </View>
-                            <ScrollView style={styles.textareaScroll}>
-                                <Text>{this.state.replyText}</Text>
-                            </ScrollView>
                         </View>
-                    </BoxShadow>
+                        <ScrollView style={styles.textareaScroll}>
+                            <Text>{this.state.replyText}</Text>
+                        </ScrollView>
+                    </View>
                 </ScrollView>
                 {this.state.ErrorPromptFlag ? <ErrorPrompt text={this.state.ErrorPromptText} imgUrl={this.state.ErrorPromptImg} /> : null}
             </View >
@@ -415,7 +321,12 @@ const styles = StyleSheet.create({
     infoContent: {
         backgroundColor: global.Colors.textfff,
         borderRadius: global.px2dp(5),
+        width: global.px2dp(345),
         height: global.px2dp(114),
+        marginTop: global.px2dp(8),
+        marginRight: global.px2dp(15),
+        marginLeft: global.px2dp(15),
+        marginBottom: global.px2dp(8),
     },
     infoTopBox: {
         height: global.px2dp(35),
@@ -468,32 +379,35 @@ const styles = StyleSheet.create({
     // 基本信息 - end
     // 图片盒子
     imgContent: {
+        width: global.px2dp(345),
         height: global.px2dp(96),
         borderRadius: global.px2dp(5),
         backgroundColor: global.Colors.textfff,
+        marginTop: global.px2dp(8),
+        marginRight: global.px2dp(15),
+        marginLeft: global.px2dp(15),
+        marginBottom: global.px2dp(8),
     },
     // 描述 盒子
     descContent: {
+        width: global.px2dp(345),
         backgroundColor: global.Colors.textfff,
-        height: global.px2dp(256),
-        justifyContent: 'space-between',
         borderRadius: global.px2dp(5),
-        overflow: 'hidden',
+        marginTop: global.px2dp(8),
+        marginRight: global.px2dp(15),
+        marginLeft: global.px2dp(15),
+        marginBottom: global.px2dp(8),
     },
     // 回复盒子
     importContent: {
         backgroundColor: global.Colors.textfff,
-        height: global.px2dp(206),
-        justifyContent: 'space-between',
         borderRadius: global.px2dp(5),
-        overflow: 'hidden',
-    },
-    problemScroll: {
-        maxHeight: global.px2dp(177),
+        marginTop: global.px2dp(8),
+        marginRight: global.px2dp(15),
+        marginLeft: global.px2dp(15),
+        marginBottom: global.px2dp(8),
     },
     problemBox: {
-        justifyContent: 'center',
-        minHeight: global.px2dp(177)
     },
     problemText: {
         fontSize: global.px2dp(15),
@@ -552,6 +466,8 @@ const styles = StyleSheet.create({
         paddingLeft: global.px2dp(15),
         paddingRight: global.px2dp(15),
         backgroundColor: global.Colors.textfff,
+        borderTopColor: global.Colors.text999,
+        borderTopWidth: global.Pixel,
     },
     importBtnBox: {
         height: global.px2dp(53),
@@ -607,7 +523,6 @@ const styles = StyleSheet.create({
         paddingRight: global.px2dp(8),
         paddingTop: global.px2dp(8),
         paddingBottom: global.px2dp(8),
-        height: global.px2dp(154),
     },
     replyText: {
         fontSize: global.px2dp(14),
