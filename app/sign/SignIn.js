@@ -142,13 +142,13 @@ export default class SignIn extends Component {
                         <View style={styles.btnBox}>
                             <Button text="登录" click={this.signIn.bind(this)} />
                         </View>
-                        {/* 跳转链接 注册 手机号登录 */}
+                        {/* 跳转链接 注册 验证码登录 */}
                         <View style={styles.hrefContent}>
                             <TouchableOpacity
                                 onPress={() => navigate("SignCodeIn")}
                                 style={styles.hrefItem}
                             >
-                                <Text style={styles.hrefText}>手机号登录</Text>
+                                <Text style={styles.hrefText}>验证码登录</Text>
                             </TouchableOpacity>
                             <View style={styles.isolationLine}>
                             </View>
